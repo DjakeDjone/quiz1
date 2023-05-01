@@ -12,16 +12,23 @@ export default defineComponent({
         return {
         }
     },
-    mounted() {
+    beforeMount() {
+        console.log('QuizPage mounted');
+        // get quiz id from url
+        const id = this.$route.params.id;
+        // get quiz from store
+        this.quiz.loadQuiz(id as unknown as number);
     },
     methods: {
         next() {
             const btnNext = document.getElementById('next') as HTMLButtonElement;
             if (this.quiz.idx < this.quiz.currentQuiz.questions.length - 1) {
                 this.quiz.idx++;
-                btnNext.style.display = 'block';
             } else {
-                btnNext.style.display = 'none';
+                btnNext.innerText = 'Finish';
+                btnNext.onclick = () => {
+                    this.$router.push('/quiz/' + this.quiz.currentQuiz.id + '/result');
+                }
             }
         },
         prev() {
@@ -43,28 +50,31 @@ export default defineComponent({
     <h1>
         QuizPage
     </h1>
-    <div class="question">
-        <!-- <h2>{{ quiz.currentQuestion.question }}</h2>
+    <div class="question" v-if="quiz.currentQuiz.questions">
+        <h2>{{ quiz.currentQuiz.questions[0].question }}</h2>
         <div class="answers">
-            <div v-for="answer in quiz.currentQuestion.answers" :key="answer.id" class="answer">
-                <input type="radio" :id="answer.id.toString()" :value="answer.id" v-model="quiz.currentAnswer">
-                <label :for="answer.id.toString()">{{ answer.text }}</label>
+            <div v-for="answer in quiz.currentQuiz.questions[quiz.idx].answers" class="answer">
+                <input type="radio" :value="answer" />
+                <label>{{ answer.text }}</label>
             </div>
         </div>
         <div class="buttons">
             <button id="prev" @click="prev">Prev</button>
             <button id="next" @click="next">Next</button>
-        </div> -->
+        </div>
+    </div>
+    <div v-else>
+        Loading...
     </div>
 </template>
 
 <style scoped>
 .question {
-    background-color: var(--bg-color-secondary);
     padding: 1rem;
     border-radius: 0.5rem;
     max-width: 30rem;
     margin: 0 auto;
+    background-color: var(--bg-color-secondary);
 }
 
 .answers {

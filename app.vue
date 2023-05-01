@@ -16,6 +16,12 @@ export default defineComponent({
     this.user.loadCookies();
     this.user.connect();
   },
+  methods: {
+    changeColorMode() {
+      const html = document.getElementsByTagName('html')[0];
+      html.classList.toggle('dark');
+    },
+  },
 })
 </script>
 
@@ -29,26 +35,105 @@ export default defineComponent({
         <li>
           <NuxtLink to="/create">Create</NuxtLink>
         </li>
+        <li id="mode">
+          <div class="checkbox-wrapper-54">
+            <label class="switch">
+              <input type="checkbox" @click="changeColorMode()">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </li>
       </ul>
     </nav>
     <div class="page">
       <NuxtPage />
     </div>
     <div id="errorFeld">
-        <TransitionGroup name="list" tag="ul">
-          <li v-for="msg in messagestore.messages" :key="msg.id">
-            <Message>
-              {{ msg.content }}
-            </Message>
-          </li>
-        </TransitionGroup>
-      </div>
+      <TransitionGroup name="list" tag="ul">
+        <li v-for="msg in messagestore.messages" :key="msg.id">
+          <Message>
+            {{ msg.content }}
+          </Message>
+        </li>
+      </TransitionGroup>
+    </div>
   </main>
 </template>
 <style>
+
+.checkbox-wrapper-54 input[type="checkbox"] {
+  visibility: hidden;
+  display: none;
+}
+/* #mode {
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin: 1em;
+} */
+.checkbox-wrapper-54 *,
+.checkbox-wrapper-54 ::after,
+.checkbox-wrapper-54 ::before {
+  box-sizing: border-box;
+}
+
+/* The switch - the box around the slider */
+.checkbox-wrapper-54 .switch {
+  --width-of-switch: 3em;
+  --height-of-switch: 1em;
+  /* size of sliding icon -- sun and moon */
+  --size-of-icon: 1em;
+  /* it is like a inline-padding of switch */
+  --slider-offset: 0.3em;
+  position: relative;
+  width: var(--width-of-switch);
+  height: var(--height-of-switch);
+  display: inline-block;
+}
+
+/* The slider */
+.checkbox-wrapper-54 .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: transparent;
+  transition: .4s;
+  border-radius: 30px;
+}
+
+.checkbox-wrapper-54 .slider:before {
+  position: absolute;
+  content: "";
+  height: var(--size-of-icon, 1.4em);
+  width: var(--size-of-icon, 1.4em);
+  border-radius: 20px;
+  left: var(--slider-offset, 0.3em);
+  top: 50%;
+  transform: translateY(-50%);
+  background: linear-gradient(40deg, #ff0080, #ff8c00 70%);
+  ;
+  transition: .4s;
+}
+
+.checkbox-wrapper-54 input:checked+.slider {
+  background-color: #303136;
+}
+
+.checkbox-wrapper-54 input:checked+.slider:before {
+  left: calc(100% - (var(--size-of-icon, 1.4em) + var(--slider-offset, 0.3em)));
+  background: #303136;
+  /* change the value of second inset in box-shadow to change the angle and direction of the moon  */
+  box-shadow: inset -3px -2px 5px -2px #8983f7, inset -10px -4px 0 0 #a3dafb;
+}
+
 * {
   text-align: center;
+  color: black;
 }
+
 input[type="text"] {
   transition: all 0.3s ease-in-out;
   width: calc(100%-3rem);
@@ -63,6 +148,7 @@ input[type="text"] {
   scale: 1;
   margin: auto;
 }
+
 input[type="text"]:focus {
   box-shadow: var(--box-shadow);
   scale: 1.05;
@@ -73,22 +159,33 @@ input[type="text"]:focus {
 /* define variables */
 :root {
   --color-primary: #000;
-  --color-secondary: #fff;
-  --bg-color-primary: #00000060;
-  --bg-color-secondary: #0b5b444e;
-  --nav-color-primary: #12f8bfa2;
+  --color-secondary: #ffffff;
+  --bg-color-primary: #ffffff60;
+  --bg-color-secondary: #7c7c7c4e;
+  --nav-color-primary: #b9b9b9ab;
   --box-shadow: #00000095 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
-} 
+  --box-shadow-light: #00000063 0px 10px 20px, rgba(0, 0, 0, 0.108) 0px 6px 6px;
+  --box-shadow-small: #00000063 0px 10px 20px, rgba(0, 0, 0, 0.108) 0px 6px 6px;
+  --box-shadow-card: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;
+}
 
 /* darkmode */
 @media (prefers-color-scheme: dark) {
   :root {
     --color-primary: #fff;
     --color-secondary: #000;
-    --bg-color-primary: #0f745ba2;
-    --bg-color-secondary: #b1fce85c;
-    --nav-color-primary: #72e8caa2;
+    --bg-color-primary: #000000ec;
+    --bg-color-secondary: #ffffff2e;
+    --nav-color-primary: #ffffff1e;
     --box-shadow: #ffffff63 0px 10px 20px, rgba(0, 0, 0, 0.108) 0px 6px 6px;
+    --box-shadow-light: #ffffff63 0px 10px 20px, rgba(0, 0, 0, 0.108) 0px 6px 6px;
+    --box-shadow-small: #ffffff63 0px 10px 20px, rgba(0, 0, 0, 0.108) 0px 6px 6px;
+    --box-shadow-card: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;
+    --box-shadow-card-hover: rgb(204, 219, 232) 1px 1px 4px 0px inset, rgba(255, 255, 255, 0.5) -4px -5px 5px 1px inset;
+  }
+
+  * {
+    color: white;
   }
 }
 
@@ -101,6 +198,7 @@ input[type="text"]:focus {
 
 .page {
   padding: 1rem;
+  padding-top: 4rem;
   min-height: 100vh;
   background-color: var(--bg-color-primary);
 }
@@ -108,8 +206,10 @@ input[type="text"]:focus {
 
 <style scoped>
 nav {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  width: 100%;
   z-index: 1000;
   backdrop-filter: blur(10px);
   box-shadow: var(--box-shadow);
@@ -118,36 +218,21 @@ nav {
 nav ul {
   display: flex;
   list-style: none;
-  padding: 1rem;
+  padding: .8rem;
   align-items: center;
   justify-content: space-around;
   background-color: var(--nav-color-primary);
-}
-.up-enter-active,
-.up-leave-active,
-.down-enter-active,
-.down-leave-active {
-  transition: all 0.3s;
+  font-size: 1.2rem;
+  text-decoration: none;
 }
 
-.up-enter-from {
-  opacity: 0;
-  transform: translate(0, 3rem);
+.router-link-active {
+  text-decoration: underline;
 }
 
-.up-leave-to {
-  opacity: 0;
-  transform: translate(0, -3rem);
-}
-
-.down-enter-from {
-  opacity: 0;
-  transform: translate(0, -3rem);
-}
-
-.down-leave-to {
-  opacity: 0;
-  transform: translate(0, 3rem);
+a {
+  text-decoration: none;
+  color: var(--color-primary);
 }
 
 #errorFeld {
@@ -167,6 +252,7 @@ nav ul {
 *::-webkit-scrollbar {
   width: 0.5rem;
 }
+
 .list-move,
 /* apply transition to moving elements */
 .list-enter-active,
@@ -185,6 +271,7 @@ nav ul {
 .list-leave-active {
   position: absolute;
 }
+
 @media screen and (max-width: 768px) {
   #errorFeld {
     align-items: flex-end;

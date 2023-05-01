@@ -1,6 +1,7 @@
 <script lang="ts">
 import { useUserstore } from '~/stores/user';
 import { useQuizStore } from '~/stores/quiz';
+import { SourceTextModule } from 'vm';
 
 export default defineComponent({
     name: "CreateQuiz",
@@ -17,12 +18,26 @@ export default defineComponent({
     methods: {
         createQuiz() {
             this.quiz.createQuiz();
+            // console.log(this.quiz.ownQuiz);
         },
         addQuestion() {
             this.quiz.addQuestion();
         },
         addAnswer(id: number) {
             this.quiz.addAnswer(id);
+        },
+        showDetails(id: number) {
+            const answers = document.getElementsByClassName('answer' + id.toString());
+            const details = document.getElementById('showDetails'+id.toString()) as HTMLElement;
+            for (let i = 0; i < answers.length; i++) {
+                const answer = answers[i] as HTMLElement;
+                answer.classList.toggle('show');
+                if (answer.classList.contains('show')) {
+                    details.style.transform = 'rotate(180deg)';
+                } else {
+                    details.style.transform = 'rotate(0deg)';
+                }
+            }
         }
     }
 });
@@ -33,28 +48,37 @@ export default defineComponent({
     <div>
         <h1>Create Quiz</h1>
         <form @submit.prevent="createQuiz()">
-            <div>
+            <div class="inputDiv">
                 <label for="quizName">Quiz Name</label>
                 <input type="text">
             </div>
-            <div>
+            <div class="inputDiv">
                 <label for="quizDescription">Quiz Description</label>
                 <input type="text">
             </div>
-            <div>
+            <div class="inputDiv">
                 <label for="quizCategory">Quiz Category</label>
                 <input type="text">
             </div>
             <h2>Questions</h2>
-            <div v-for="question, i in quiz.ownQuiz.questions" :id="question.id.toString + ''" class="question">
-                <input type="text" v-model="question.question">
-                <div class="answer" v-for="answer in question.answers">
-                    <input type="text" v-model="answer.text">
-                    <input type="checkbox" v-model="answer.correct">
-                    <nuxt-icon name="add" @click="addAnswer(question.id)" />
+            <div v-for="question, i in quiz.ownQuiz.questions" :id="question.id.toString + ''" class="questionAnswer">
+                <div class="question inputDiv">
+                    <input type="text" v-model="question.question">
+                    <nuxt-icon name="details" @click="showDetails(i)" :id="'showDetails' + i"></nuxt-icon>
                 </div>
+                <div class="answers">
+                    <div :class="'answer' + i.toString()" class="answer" v-for="answer in question.answers">
+                        <div class="inputDiv">
+                            <input type="text" v-model="answer.text">
+                            <input type="checkbox" v-model="answer.correct">
+                        </div>
+                    </div>
+                    <div :class="'answer' + i.toString()" class="answer">
+                        <nuxt-icon name="add" @click="addAnswer(question.id)" />
+                    </div>
+                </div>
+                <nuxt-icon name="add" @click="addQuestion()" />
             </div>
-            <nuxt-icon name="add" @click="addQuestion()"/>
             <button type="submit">
                 Create Quiz
             </button>
@@ -84,51 +108,72 @@ button:active {
     scale: 0.9;
 }
 
-input[type="text"] {
-    transition: scale 0.2s ease-in-out;
-    background-color: var(--bg-color-primary);
+.inputDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: .8rem 0;
+}
+.nuxt-icon {
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    margin-left: 1rem;
+}
+.nuxt-icon:hover {
+    font-size: 1.2rem;
+}
+.inputDiv input {
+    transition: all 0.4s ease-in-out;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
     width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
+    max-width: 30rem;
+    transition: all 0.2s ease-in-out;
 }
 
-input[type="text"]:hover {
-    scale: 1.01;
-    background-color: var(--bg-color-secondary);
-}
-
-input[type="text"]:focus {
-    border: 1px solid #000000ad !important;
+.inputDiv input:focus,
+.inputDiv input:hover,
+.inputDiv input:active {
     outline: none;
-    background-color: var(--bg-color-secondary);
+    box-shadow: var(--box-shadow-small);
+    border-bottom: 2px solid var(--bg-color-primary);
 }
 
-input[type="checkbox"] {
-    /* ...existing styles */
-    display: grid;
-    place-content: center;
-}
-
-input[type="checkbox"]::before {
-    transition: all 120ms ease-in-out;
-    content: "";
-    width: 0.65em;
-    height: 0.65em;
-    transform: scale(0) rotate(45deg) !important;
-    transition: 120ms transform ease-in-out;
-    box-shadow: inset 1em 1em var(--form-control-color);
-}
-
-input[type="checkbox"]:checked::before {
-    transform: scale(1);
-}
 
 .question {
     margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.question>span {
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    margin-bottom: 0.5rem;
+}
+
+.question>span:hover {
+    scale: 1.2;
+}
+
+.question>span:active {
+    scale: 0.9;
+
+}
+
+.questionAnswer :has(.question > span:active) .answer,
+.questionAnswer :has(.question > span:hover) .answer,
+.questionAnswer :has(.question > span:focus) .answer {
+    opacity: 1;
+    max-height: 100vh;
+}
+
+.anser:focus,
+.answer:active {
+    opacity: 1;
+    max-height: 100vh;
 }
 
 .answer {
@@ -136,18 +181,15 @@ input[type="checkbox"]:checked::before {
     margin: 0;
     display: grid;
     grid-template-columns: 1fr auto;
-    opacity: 1;
+    align-items: center;
+    justify-content: space-between;
+    opacity: 0;
     height: 100%;
-    display: none;
     max-height: 0vh;
+    overflow: hidden;
 }
 
-.question:focus .answer,
-.question:hover .answer,
-.question:active .answer,
-.question input:focus~.answer,
-.question input:hover~.answer,
-.question input:active~.answer {
-    opacity: 1;
-    max-height: 100vh;
+.show {
+    opacity: 1 !important;
+    max-height: 100vh !important;
 }</style>

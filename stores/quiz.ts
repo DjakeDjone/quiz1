@@ -13,7 +13,7 @@ export type question = {
     question: string;
     answers: answer[];
 };
-export type quiz = {
+export type Quiz = {
     id: number;
     name: string;
     created: string;
@@ -27,32 +27,54 @@ export const useQuizStore = defineStore({
     state: () => ({
         user: useUserstore(),
         msg: useMessagestore(),
-        currentQuiz: {} as quiz,
+        currentQuiz: {} as Quiz,
         idx: 0,
-        quizzes: [] as quiz[], // TODO: change to quiz type
+        quizzes: [] as Quiz[], // TODO: change to quiz type
         filterWords: [] as string[],
         ownQuiz: {
-            id: 0,
-            name: '',
+            name: 'My Quiz',
             questions: [
                 {
                     id: 1,
-                    question: 'Was ist die beste Seite, um Quizze zu erstellen?',
+                    question: 'What is the capital of Germany?',
                     answers: [
-                        { id: 1, text: 'fri3dl.com', correct: true },
-                        { id: 2, text: 'die erstbeste Seite im Darknet', correct: false },
-                        { id: 3, text: 'motherfuckingwebsite.com', correct: false },
+                        {
+                            id: 1,
+                            text: 'Berlin',
+                            correct: true,
+                        },
+                        {
+                            id: 2,
+                            text: 'Hamburg',
+                            correct: false,
+                        },
+                        {
+                            id: 3,
+                            text: 'Munich',
+                            correct: false,
+                        },
+                        {
+                            id: 4,
+                            text: 'Cologne',
+                            correct: false,
+                        },
                     ],
                 },
-            ],
-        },
+            ] as question[],
+            description: 'This is my quiz',
+            signalWords: ['test'],
+        } as Quiz,
     }),
     actions: {
         async createQuiz() {
             const data = {
-                name: "test",
-                // creator:
+                name: this.ownQuiz.name,
+                creator: 'kdvgywzce6392x5',
+                description: this.ownQuiz.description,
+                signalWords: this.ownQuiz.signalWords,
+                questions: this.ownQuiz.questions,
             }
+            console.log(this.ownQuiz);
             try {
                 const record = await this.user.db.collection('quizes').create(data)
             } catch (e) {
@@ -65,13 +87,24 @@ export const useQuizStore = defineStore({
         async loadRelevantQuizzes() {
             console.log(this.user.REST_API_URL);
             try {
+                this.filterWords = ['test'];
+                if (this.filterWords.length == 0) this.filterWords = [''];
+                let filter = '';
+                for (let i = 0; i < this.filterWords.length; i++) {
+                    filter += 'signalWords ~ "' + this.filterWords[i] + '"';
+                    if (i < this.filterWords.length - 1) filter += ' OR ';
+                }
+                console.log("FILTER:", filter);
                 const resultList = await this.user.db.collection('quizes').getList(1, 50, {
                     sort: '-created',
+                    filter: filter,
+                    expand: 'relField1,relField2.subRelField',
                 });
                 console.log("RESULT:", resultList.items);
                 const len = resultList.totalItems
+                this.quizzes = [];
                 for (let i = 0; i < len; i++) {
-                    this.quizzes.push(resultList.items[i] as unknown as quiz);
+                    this.quizzes.push(resultList.items[i] as unknown as Quiz);
                 }
                 console.log("QUIZZES:", this.quizzes);
             } catch (e) {
@@ -88,9 +121,11 @@ export const useQuizStore = defineStore({
             try {
                 const record = await this.user.db.collection('quizes').getOne(id.toString(), {
                     expand: 'relField1,relField2.subRelField',
-                });  
-                this.currentQuiz = record as unknown as quiz;
-                console.log("RECORD:", record);
+                });
+                this.currentQuiz = record as unknown as Quiz;
+                const questions1 = JSON.parse(record.questions);
+                console.log("QUESTIONS1:", questions1.questions);
+                console.log("QUIZ:", this.currentQuiz.questions);
             } catch (e) {
                 this.msg.throwError('cant load data because db is null')
             }
@@ -99,7 +134,13 @@ export const useQuizStore = defineStore({
             this.ownQuiz.questions.push({
                 id: this.ownQuiz.questions.length + 1,
                 question: '',
-                answers: [],
+                answers: [
+                    {
+                        id: 1,
+                        text: '',
+                        correct: false,
+                    },
+                ],
             });
         },
         addAnswer(questionIndex: number) {
@@ -108,6 +149,12 @@ export const useQuizStore = defineStore({
                 text: '',
                 correct: false,
             });
-        }
+        },
+        removeQuestion(questionIndex: number) {
+            this.ownQuiz.questions.splice(questionIndex, 1);
+        },
+        removeAnswer(questionIndex: number, answerIndex: number) {
+            this.ownQuiz.questions[questionIndex].answers.splice(answerIndex, 1);
+        },
     }
 });
