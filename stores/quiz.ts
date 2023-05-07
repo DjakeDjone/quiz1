@@ -12,7 +12,7 @@ export type question = {
     id: number;
     question: string;
     answers: answer[];
-    chosenAnswer?: number;
+    chosenAnswer: number;
 };
 export type Quiz = {
     id: number;
@@ -98,6 +98,7 @@ export const useQuizStore = defineStore({
                                     correct: false,
                                 },
                             ],
+                            chosenAnswer: 0,
                         },
                     ] as question[],
                     description: 'This is my quiz',
@@ -168,6 +169,7 @@ export const useQuizStore = defineStore({
                         correct: false,
                     },
                 ],
+                chosenAnswer: 0,
             });
         },
         addAnswer(questionIndex: number) {
