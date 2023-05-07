@@ -12,6 +12,7 @@ export type question = {
     id: number;
     question: string;
     answers: answer[];
+    chosenAnswer?: number;
 };
 export type Quiz = {
     id: number;
@@ -77,6 +78,32 @@ export const useQuizStore = defineStore({
             console.log(this.ownQuiz);
             try {
                 const record = await this.user.db.collection('quizes').create(data)
+                console.log("RECORD:", record);
+                this.msg.throwSuccess("Quiz created", 5000);
+                this.ownQuiz = {
+                    name: 'My Quiz',
+                    questions: [
+                        {
+                            id: 1,
+                            question: 'What is the capital of Germany?',
+                            answers: [
+                                {
+                                    id: 1,
+                                    text: 'Berlin',
+                                    correct: true,
+                                },
+                                {
+                                    id: 2,
+                                    text: 'Hamburg',
+                                    correct: false,
+                                },
+                            ],
+                        },
+                    ] as question[],
+                    description: 'This is my quiz',
+                    signalWords: ['test'],
+                } as Quiz;
+                this.saveOwnQuiz();
             } catch (e) {
                 this.msg.throwError("Creating Quiz failed", 3000)
             }
@@ -144,8 +171,9 @@ export const useQuizStore = defineStore({
             });
         },
         addAnswer(questionIndex: number) {
-            this.ownQuiz.questions[questionIndex].answers.push({
-                id: this.ownQuiz.questions[questionIndex].answers.length + 1,
+            console.log(this.ownQuiz.questions[questionIndex - 1]);
+            this.ownQuiz.questions[questionIndex-1].answers.push({
+                id: this.ownQuiz.questions[questionIndex-1].answers.length + 1,
                 text: '',
                 correct: false,
             });

@@ -94,11 +94,6 @@ export default defineComponent({
     padding: 1rem;
 }
 
-.quizze>div:hover {
-    /* box-shadow: var(--box-shadow); */
-    /* scale: .9; */
-}
-
 .quizze>div:active button,
 .quizze>div:focus button {
     transition: all .2s ease-in-out;

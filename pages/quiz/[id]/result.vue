@@ -36,12 +36,16 @@ export default defineComponent({
             <h2>Score: {{ score() }}</h2>
             <h2>Max Score: {{ quiz.currentQuiz.questions.length }}</h2>
         </div>
-        <h2>{{ quiz.currentQuiz.questions[0].question }}</h2>
         <div class="answers">
             <div v-for="question, i in quiz.currentQuiz.questions">
-                <div v-for="answer in quiz.currentQuiz.questions[i].answers" class="answer">
-                    <input type="radio" :value="answer" />
-                    <label>{{ answer.text }}</label>
+                <h2>{{ question.question }}</h2>
+                <div class="answers">
+                    <!-- chosen -->
+                    <p>
+                        <!-- <span v-if="question. == question.correctAnswerId">✅</span> -->
+                        <span>❌</span>
+                        <!-- {{ question.answers[question.chosenAnswerId].answer }} -->
+                    </p>
                 </div>
             </div>
         </div>

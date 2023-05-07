@@ -14,6 +14,8 @@ export default defineComponent({
         }
     },
     mounted() {
+        const answersDetails = document.getElementById('answersDetails') as HTMLDivElement;
+        const answerContainer = document.getElementById('answerContainer') as HTMLDivElement;
     },
     methods: {
         createQuiz() {
@@ -24,21 +26,11 @@ export default defineComponent({
             this.quiz.addQuestion();
         },
         addAnswer(id: number) {
-            this.quiz.addAnswer(id);
+            this.quiz.addAnswer(id+1);
         },
-        showDetails(id: number) {
-            const answers = document.getElementsByClassName('answer' + id.toString());
-            const details = document.getElementById('showDetails'+id.toString()) as HTMLElement;
-            for (let i = 0; i < answers.length; i++) {
-                const answer = answers[i] as HTMLElement;
-                answer.classList.toggle('show');
-                if (answer.classList.contains('show')) {
-                    details.style.transform = 'rotate(180deg)';
-                } else {
-                    details.style.transform = 'rotate(0deg)';
-                }
-            }
-        }
+        removeAnswer(questionId: number, answerId: number) {
+            this.quiz.removeAnswer(questionId, answerId);
+        },
     }
 });
 </script>
@@ -64,22 +56,22 @@ export default defineComponent({
             <div v-for="question, i in quiz.ownQuiz.questions" :id="question.id.toString + ''" class="questionAnswer">
                 <div class="question inputDiv">
                     <input type="text" v-model="question.question">
-                    <nuxt-icon name="details" @click="showDetails(i)" :id="'showDetails' + i"></nuxt-icon>
-                </div>
-                <div class="answers">
-                    <div :class="'answer' + i.toString()" class="answer" v-for="answer in question.answers">
-                        <div class="inputDiv">
-                            <input type="text" v-model="answer.text">
-                            <input type="checkbox" v-model="answer.correct">
+                    <!-- <nuxt-icon name="details" @click="showDetails(i)" :id="'showDetails' + i"></nuxt-icon> -->
+                    <div class="answers">
+                        <div v-for="answer, j in question.answers" class="answer">
+                            <input type="radio" v-model="answer.correct" :value="answer.correct" :name="i.toString()" />
+                            <!-- <label>{{ answer.text }}</label> -->
+                            <input type="text" :v-model="answer.text" :value="answer.text">
+                            <nuxt-icon class="deleteIcon" name="delete" @click="removeAnswer(i, j)" />
                         </div>
-                    </div>
-                    <div :class="'answer' + i.toString()" class="answer">
-                        <nuxt-icon name="add" @click="addAnswer(question.id)" />
+                        <div>
+                            <nuxt-icon name="add" @click="addAnswer(i)" />
+                        </div>
                     </div>
                 </div>
                 <nuxt-icon name="add" @click="addQuestion()" />
             </div>
-            <button type="submit">
+            <button class="button" type="submit">
                 Create Quiz
             </button>
         </form>
@@ -87,7 +79,14 @@ export default defineComponent({
 </template>
 
 <style scoped>
-button {
+
+.deleteIcon{
+    font-size: 1.2rem !important;
+    margin-left: -1.8rem !important;
+    margin-top: 0.5rem !important;
+    z-index: 1;
+}
+.button {
     cursor: pointer;
     background-color: var(--bg-color-primary);
     color: var(--text-color-primary);
@@ -112,24 +111,29 @@ button:active {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: .8rem 0;
+    max-width: 30rem;
+    margin: auto auto 1rem auto !important;
+    border-radius: 0.5rem;
 }
+
 .nuxt-icon {
     cursor: pointer;
     transition: all 0.2s ease-in-out;
     margin-left: 1rem;
 }
+
 .nuxt-icon:hover {
     font-size: 1.2rem;
 }
+
 .inputDiv input {
     transition: all 0.4s ease-in-out;
     border: none;
     border-radius: 0.5rem;
     padding: 0.5rem 1rem;
+    background-color: var(--bg-color-secondary);
     font-size: 1rem;
     width: 100%;
-    max-width: 30rem;
     transition: all 0.2s ease-in-out;
 }
 
@@ -139,6 +143,7 @@ button:active {
     outline: none;
     box-shadow: var(--box-shadow-small);
     border-bottom: 2px solid var(--bg-color-primary);
+    
 }
 
 
@@ -146,6 +151,7 @@ button:active {
     margin: 0;
     display: flex;
     flex-direction: column;
+    background-color: var(--bg-color-secondary);
 }
 
 .question>span {
@@ -153,43 +159,47 @@ button:active {
     transition: all 0.2s ease-in-out;
     margin-bottom: 0.5rem;
 }
-
-.question>span:hover {
-    scale: 1.2;
-}
-
-.question>span:active {
-    scale: 0.9;
-
-}
-
-.questionAnswer :has(.question > span:active) .answer,
-.questionAnswer :has(.question > span:hover) .answer,
-.questionAnswer :has(.question > span:focus) .answer {
-    opacity: 1;
-    max-height: 100vh;
-}
-
-.anser:focus,
-.answer:active {
-    opacity: 1;
-    max-height: 100vh;
-}
-
 .answer {
-    transition: opacity 0.2s ease-in-out, max-height .5s ease-in-out;
+    display: flex;
+    flex-direction: row;
     margin: 0;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: center;
-    justify-content: space-between;
-    opacity: 0;
-    height: 100%;
-    max-height: 0vh;
-    overflow: hidden;
+}
+.answer input[type="radio"] {
+    margin-right: 1rem;
+    cursor: pointer;
+    background-color: var(--bg-color-primary);
+    /* webcit */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    /* end webkit */
+    width: 1rem;
+    height: 1rem;
+    padding: 0;
+    border-radius: 50% 50% 0 50%;
+    border: rgb(255, 0, 21) 1px solid;
+    transform: rotate(-45deg);
+    transition: all 0.2s ease-in-out, transform 0.7s ease-in-out;
+}
+.answer {
+    margin: 0.5rem;
 }
 
-.show {
-    opacity: 1 !important;
-    max-height: 100vh !important;
-}</style>
+.answer input:checked {
+    background-color: var(--bg-color-primary);
+    border: 2px solid rgb(29, 196, 3);
+    content: '✔';
+    font-size: 1.5rem;
+    transform: rotate(315deg);
+}
+.answer input[type="text"] {
+    width: 100% !important;
+}
+.answers {
+    width: calc(100% - 2rem);
+    margin: 1rem;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+}
+</style>
