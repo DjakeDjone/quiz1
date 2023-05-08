@@ -2,6 +2,7 @@
 import { useUserstore } from './stores/user';
 import { useMessagestore } from './stores/msg';
 import { useQuizStore } from './stores/quiz';
+import { Html } from './.nuxt/components';
 
 export default defineComponent({
   name: 'App',
@@ -18,15 +19,34 @@ export default defineComponent({
   },
   methods: {
     changeColorMode() {
-      const html = document.getElementsByTagName('html')[0];
-      html.classList.toggle('dark');
+      const checkbox = document.querySelector('.switch input[type="checkbox"]') as HTMLInputElement;
+      // if (checkbox.checked) {
+      //   // :root
+      //   document.documentElement.style.setProperty('--color-primary', '#fff');
+      //   document.documentElement.style.setProperty('--color-secondary', '#000');
+      //   document.documentElement.style.setProperty('--bg-color-primary', '#000000ec');
+      //   document.documentElement.style.setProperty('--bg-color-secondary', '#ffffff2e');
+      //   document.documentElement.style.setProperty('--nav-color-primary', '#ffffff1e');
+      //   document.documentElement.style.setProperty('--box-shadow', '#ffffff63 0px 10px 20px, rgba(0, 0, 0, 0.108) 0px 6px 6px');
+      //   document.documentElement.style.setProperty('--box-shadow-light', '#ffffff63 0px 10px 20px, rgba(0, 0, 0, 0.108) 0px 6px 6px');
+      //   document.body.innerHTML.replace('<style> * { color: white; } </style>', '');
+      // } else {
+      //   document.documentElement.style.setProperty('--color-primary', '#000');
+      //   document.documentElement.style.setProperty('--color-secondary', '#fff');
+      //   document.documentElement.style.setProperty('--bg-color-primary', '#ffffff60');
+      //   document.documentElement.style.setProperty('--bg-color-secondary', '#7c7c7c4e');
+      //   document.documentElement.style.setProperty('--nav-color-primary', '#b9b9b9ab');
+      //   document.documentElement.style.setProperty('--box-shadow', '#00000095 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px');
+      //   document.documentElement.style.setProperty('--box-shadow-light', '#00000063 0px 10px 20px, rgba(0, 0, 0, 0.108) 0px 6px 6px');
+      //   document.body.innerHTML.replace('<style> * { color: black; } </style>', '');
+      // }
     },
   },
 })
 </script>
 
 <template>
-  <main>
+  <main id="mainMain">
     <nav>
       <ul>
         <li>
@@ -114,12 +134,11 @@ export default defineComponent({
   top: 50%;
   transform: translateY(-50%);
   background: linear-gradient(40deg, #ff0080, #ff8c00 70%);
-  ;
   transition: .4s;
 }
 
 .checkbox-wrapper-54 input:checked+.slider {
-  background-color: #303136;
+  background-color: transparent;
 }
 
 .checkbox-wrapper-54 input:checked+.slider:before {
@@ -131,7 +150,6 @@ export default defineComponent({
 
 * {
   text-align: center;
-  color: black;
 }
 
 input[type="text"] {
@@ -144,7 +162,6 @@ input[type="text"] {
   font-size: 1.2rem;
   font-family: inherit;
   background-color: var(--bg-color-secondary);
-  color: var(--color-primary);
   scale: 1;
   margin: auto;
 }

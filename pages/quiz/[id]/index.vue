@@ -24,11 +24,17 @@ export default defineComponent({
             const btnNext = document.getElementById('next') as HTMLButtonElement;
             if (this.quiz.idx + 1 < this.quiz.currentQuiz.questions.length - 1) {
                 this.quiz.idx++;
+                btnNext.innerText = 'Next';
+                btnNext.style.opacity = '1';
+                btnNext.style.cursor = 'pointer';
+                const btnPrev = document.getElementById('prev') as HTMLButtonElement;
+                btnPrev.style.opacity = '1';
+                btnPrev.style.cursor = 'pointer';
+            } else if (this.quiz.idx + 1 > this.quiz.currentQuiz.questions.length - 1) {
+                this.$router.push('/quiz/' + this.quiz.currentQuiz.id + '/result');
             } else {
                 btnNext.innerText = 'Finish';
-                btnNext.onclick = () => {
-                    this.$router.push('/quiz/' + this.quiz.currentQuiz.id + '/result');
-                }
+                this.quiz.idx++;
             }
         },
         prev() {
@@ -37,11 +43,20 @@ export default defineComponent({
                 this.quiz.idx--;
                 btnPrev.style.opacity = '1';
                 btnPrev.style.cursor = 'pointer';
+                const btnNext = document.getElementById('next') as HTMLButtonElement;
+                btnNext.innerText = 'Next';
+                btnNext.onclick = () => {
+                    this.next();
+                }
             } else {
                 btnPrev.style.opacity = '0.5';
                 btnPrev.style.cursor = 'not-allowed';
             }
         },
+        selectAnswer(answerId: number) {
+            this.quiz.currentQuiz.questions[this.quiz.idx].chosenAnswer = answerId;
+            console.log(this.quiz.currentQuiz.questions[this.quiz.idx].chosenAnswer);
+        }
     }
 });
 </script>
@@ -51,10 +66,10 @@ export default defineComponent({
         QuizPage
     </h1>
     <div class="question" v-if="quiz.currentQuiz.questions">
-        <h2>{{ quiz.currentQuiz.questions[0].question }}</h2>
+        <h2>{{ quiz.currentQuiz.questions[quiz.idx].question }}</h2>
         <div class="answers">
             <div v-for="answer, i in quiz.currentQuiz.questions[quiz.idx].answers" class="answer">
-                <input type="radio" :value="quiz.currentQuiz.questions[0].chosenAnswer" :name="i.toString + ''" />
+                <input type="radio" @click="selectAnswer(i)" :name="i.toString + ''" />
                 <label>{{ answer.text }}</label>
             </div>
         </div>
@@ -64,7 +79,7 @@ export default defineComponent({
         </div>
     </div>
     <div v-else>
-        Loading...
+        <LoadingPage />
     </div>
 </template>
 
@@ -122,8 +137,32 @@ input[type="radio"]:hover {
 input[type="radio"]:active {
     transform: scale(0.9);
 }
-.answer input {
+.answer input[type="radio"] {
     margin-right: 1rem;
+    cursor: pointer;
+    background-color: var(--bg-color-primary);
+    /* webcit */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    /* end webkit */
+    width: 1rem;
+    height: 1rem;
+    padding: 0;
+    border-radius: 50% 50% 0 50%;
+    border: rgb(255, 0, 21) 1px solid;
+    transform: rotate(-45deg);
+    transition: all 0.2s ease-in-out, transform 0.7s ease-in-out;
+}
+
+
+
+input[type="radio"]:checked {
+    background-color: var(--bg-color-primary);
+    border: 2px solid rgb(29, 196, 3);
+    content: '✔';
+    font-size: 1.5rem;
+    transform: rotate(315deg);
 }
 
 .buttons {

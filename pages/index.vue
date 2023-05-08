@@ -116,7 +116,7 @@ button {
     border: none;
     border-radius: 1rem;
     background-color: var(--bg-color-secondary);
-    color: var(--text-color-primary);
+    /* color: var(--text-color-primary); */
     box-shadow: var(--box-shadow-card);
     padding: .5rem;
     cursor: pointer;

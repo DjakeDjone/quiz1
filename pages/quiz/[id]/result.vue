@@ -12,6 +12,9 @@ export default defineComponent({
         return {
         }
     },
+    mounted() {
+        console.log("Quiz: ", this.quiz.currentQuiz);
+    },
     methods: {
         score() {
             let score = 0;
@@ -37,14 +40,21 @@ export default defineComponent({
             <h2>Max Score: {{ quiz.currentQuiz.questions.length }}</h2>
         </div>
         <div class="answers">
-            <div v-for="question, i in quiz.currentQuiz.questions">
-                <h2>{{ question.question }}</h2>
+            <div v-for="question, i in quiz.currentQuiz.questions" class="questionContainer">
+                <h2 class="question">{{ question.question }}</h2>
                 <div class="answers">
                     <!-- chosen -->
                     <p>
-                        <!-- <span v-if="question. == question.correctAnswerId">✅</span> -->
+                    <div v-if="question.answers[question.chosenAnswer] == undefined || !question.answers[question.chosenAnswer].correct" class="answer">
                         <span>❌</span>
-                        <!-- {{ question.answers[question.chosenAnswerId].answer }} -->
+                        <p>{{ question.answers[0].text }}</p>
+                    </div>
+                    <div class="answer" v-for="answer in question.answers">
+                        <div v-if="answer.correct" class="answer">
+                            <span>✅</span>
+                            <p>{{ answer.text }}</p>
+                        </div>
+                    </div>
                     </p>
                 </div>
             </div>
@@ -78,5 +88,25 @@ button:hover {
 
 button:active {
     scale: .9;
+}
+.answer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+.answer span {
+    margin-right: .5rem;
+}
+.questionContainer {
+    margin: 1rem;
+    padding: .5rem 1rem;
+    border-radius: .5rem;
+    background-color: var(--bg-color-secondary);
+}
+.question {
+    margin-bottom: .5rem;
+    text-decoration: underline;
+    padding: .5rem;
 }
 </style>

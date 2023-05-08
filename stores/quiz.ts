@@ -74,8 +74,9 @@ export const useQuizStore = defineStore({
                 description: this.ownQuiz.description,
                 signalWords: this.ownQuiz.signalWords,
                 questions: this.ownQuiz.questions,
-            }
-            console.log(this.ownQuiz);
+            };
+            
+            console.log("myQuiz:", this.ownQuiz);
             try {
                 const record = await this.user.db.collection('quizes').create(data)
                 console.log("RECORD:", record);

@@ -42,15 +42,15 @@ export default defineComponent({
         <form @submit.prevent="createQuiz()">
             <div class="inputDiv">
                 <label for="quizName">Quiz Name</label>
-                <input type="text">
+                <input type="text" v-model="quiz.ownQuiz.name">
             </div>
             <div class="inputDiv">
                 <label for="quizDescription">Quiz Description</label>
-                <input type="text">
+                <input type="text" v-model="quiz.ownQuiz.description">
             </div>
             <div class="inputDiv">
                 <label for="quizCategory">Quiz Category</label>
-                <input type="text">
+                <input type="text" v-model="quiz.ownQuiz.signalWords">
             </div>
             <h2>Questions</h2>
             <div v-for="question, i in quiz.ownQuiz.questions" :id="question.id.toString + ''" class="questionAnswer">
@@ -59,9 +59,9 @@ export default defineComponent({
                     <!-- <nuxt-icon name="details" @click="showDetails(i)" :id="'showDetails' + i"></nuxt-icon> -->
                     <div class="answers">
                         <div v-for="answer, j in question.answers" class="answer">
-                            <input type="radio" v-model="answer.correct" :value="answer.correct" :name="i.toString()" />
+                            <input type="radio" v-model="answer.correct" :name="i.toString()" />
                             <!-- <label>{{ answer.text }}</label> -->
-                            <input type="text" :v-model="answer.text" :value="answer.text">
+                            <input type="text" v-model="answer.text">
                             <nuxt-icon class="deleteIcon" name="delete" @click="removeAnswer(i, j)" />
                         </div>
                         <div>
@@ -143,7 +143,6 @@ button:active {
     outline: none;
     box-shadow: var(--box-shadow-small);
     border-bottom: 2px solid var(--bg-color-primary);
-    
 }
 
 
