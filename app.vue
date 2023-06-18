@@ -20,26 +20,7 @@ export default defineComponent({
   methods: {
     changeColorMode() {
       const checkbox = document.querySelector('.switch input[type="checkbox"]') as HTMLInputElement;
-      // if (checkbox.checked) {
-      //   // :root
-      //   document.documentElement.style.setProperty('--color-primary', '#fff');
-      //   document.documentElement.style.setProperty('--color-secondary', '#000');
-      //   document.documentElement.style.setProperty('--bg-color-primary', '#000000ec');
-      //   document.documentElement.style.setProperty('--bg-color-secondary', '#ffffff2e');
-      //   document.documentElement.style.setProperty('--nav-color-primary', '#ffffff1e');
-      //   document.documentElement.style.setProperty('--box-shadow', '#ffffff63 0px 10px 20px, rgba(0, 0, 0, 0.108) 0px 6px 6px');
-      //   document.documentElement.style.setProperty('--box-shadow-light', '#ffffff63 0px 10px 20px, rgba(0, 0, 0, 0.108) 0px 6px 6px');
-      //   document.body.innerHTML.replace('<style> * { color: white; } </style>', '');
-      // } else {
-      //   document.documentElement.style.setProperty('--color-primary', '#000');
-      //   document.documentElement.style.setProperty('--color-secondary', '#fff');
-      //   document.documentElement.style.setProperty('--bg-color-primary', '#ffffff60');
-      //   document.documentElement.style.setProperty('--bg-color-secondary', '#7c7c7c4e');
-      //   document.documentElement.style.setProperty('--nav-color-primary', '#b9b9b9ab');
-      //   document.documentElement.style.setProperty('--box-shadow', '#00000095 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px');
-      //   document.documentElement.style.setProperty('--box-shadow-light', '#00000063 0px 10px 20px, rgba(0, 0, 0, 0.108) 0px 6px 6px');
-      //   document.body.innerHTML.replace('<style> * { color: black; } </style>', '');
-      // }
+
     },
   },
 })
@@ -55,13 +36,8 @@ export default defineComponent({
         <li>
           <NuxtLink to="/create">Create</NuxtLink>
         </li>
-        <li id="mode">
-          <div class="checkbox-wrapper-54">
-            <label class="switch">
-              <input type="checkbox" @click="changeColorMode()">
-              <span class="slider"></span>
-            </label>
-          </div>
+        <li>
+          <NuxtLink to="/user">User</NuxtLink>
         </li>
       </ul>
     </nav>
@@ -194,11 +170,18 @@ input[type="text"]:focus {
     --bg-color-primary: #000000ec;
     --bg-color-secondary: #ffffff2e;
     --nav-color-primary: #ffffff1e;
-    --box-shadow: #ffffff63 0px 10px 20px, rgba(0, 0, 0, 0.108) 0px 6px 6px;
-    --box-shadow-light: #ffffff63 0px 10px 20px, rgba(0, 0, 0, 0.108) 0px 6px 6px;
-    --box-shadow-small: #ffffff63 0px 10px 20px, rgba(0, 0, 0, 0.108) 0px 6px 6px;
-    --box-shadow-card: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;
-    --box-shadow-card-hover: rgb(204, 219, 232) 1px 1px 4px 0px inset, rgba(255, 255, 255, 0.5) -4px -5px 5px 1px inset;
+    --shadow-color: rgba(240, 46, 170, 0.4);
+    --box-shadow: var(--shadow-color) 0px 0px 0px 3px;
+    --box-shadow-light: var(--shadow-color) 0px 0px 0px 4px, rgba(240, 46, 170, 0.3) 0px 0px 0px 5px, rgba(240, 46, 170, 0.2) 0px 0px 0px 6px, rgba(240, 46, 170, 0.1) 0px 0px 0px 7px, rgba(240, 46, 170, 0.05) 0px 0px 0px 8px;
+    /* --box-shadow-light: var(--shadow-color) -5px 5px, rgba(240, 46, 170, 0.3) -10px 10px, rgba(240, 46, 170, 0.2) -15px 15px, rgba(240, 46, 170, 0.1) -20px 20px, rgba(240, 46, 170, 0.05) -25px 25px; */
+
+    --box-shadow-small: var(--shadow-color) -5px 5px, rgba(240, 46, 170, 0.3) -10px 10px, rgba(240, 46, 170, 0.2) -15px 15px, rgba(240, 46, 170, 0.1) -20px 20px, rgba(240, 46, 170, 0.05) -25px 25px;
+    --box-shadow-card: var(--shadow-color) -5px 5px, rgba(240, 46, 170, 0.3) -10px 10px;
+    --box-shadow-card-hover: var(--shadow-color) -5px 5px, rgba(240, 46, 170, 0.3) -10px 10px, rgba(240, 46, 170, 0.2) -15px 15px, rgba(240, 46, 170, 0.1) -20px 20px, rgba(240, 46, 170, 0.05) -25px 25px;
+
+    /* --box-shadow-small: #ffffff63 0px 10px 20px, rgba(0, 0, 0, 0.108) 0px 6px 6px; */
+    /* --box-shadow-card: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset; */
+    /* --box-shadow-card-hover: rgb(204, 219, 232) 1px 1px 4px 0px inset, rgba(255, 255, 255, 0.5) -4px -5px 5px 1px inset; */
   }
 
   * {

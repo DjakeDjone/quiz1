@@ -17,6 +17,11 @@ export default defineComponent({
         openQuiz(id: number) {
             this.quiz.loadQuiz(id);
             this.$router.push('/quiz/' + id);
+        },
+        filter(text: string) {
+            console.log(text);
+            text = text.toLowerCase();
+            this.quiz.filterWords = text.split(' ');
         }
     }
 });
@@ -24,17 +29,17 @@ export default defineComponent({
 
 
 <template>
-    <h1>Quize:</h1>
+    <h1>Quizzes</h1>
     <div id="filter">
-        <NuxtIcon name="search" id="searchIcon" />
-        <input type="text" placeholder="Filter" id="search">
+        <NuxtIcon name="search" id="searchIcon"/>
+        <input type="text" placeholder="Filter" id="search" @input="(e: any) => { filter(e.target.value) }">
     </div>
     <div class="quizze">
-        <div v-for="quizPrev in quiz.quizzes">
-            <div>
+        <div v-for="quizPrev in quiz.quizzes" >
+            <div @click="openQuiz(quizPrev.id)">
                 <h1>{{ quizPrev.name }}</h1>
                 <p>{{ quizPrev.description }}</p>
-                <button @click="openQuiz(quizPrev.id)">Start</button>
+                <!-- <button @click="openQuiz(quizPrev.id)">Start</button> -->
             </div>
         </div>
     </div>
@@ -44,7 +49,8 @@ export default defineComponent({
 
 #searchIcon {
     cursor: pointer;
-    margin-right: .5rem;
+    margin-left: .5rem;
+    transition: all .2s ease-in-out;
 }
 #searchIcon:hover {
     scale: 1.1;
@@ -75,6 +81,11 @@ export default defineComponent({
     background-color: transparent;
     box-shadow: none;
 }
+#filter:hover,
+#filter:focus,
+#filter:active {
+    box-shadow: var(--box-shadow-light);
+}
 .quizze {
     display: flex;
     flex-direction: row;
@@ -93,41 +104,9 @@ export default defineComponent({
     margin: 1rem;
     padding: 1rem;
 }
-
-.quizze>div:active button,
-.quizze>div:focus button {
-    transition: all .2s ease-in-out;
-    box-shadow: var(--box-shadow);
-    scale: 1.1;
-}
-
-.quizze>div>div {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
-}
-
-.quizze>div>div>button {
-    width: 100%;
-}
-
-button {
-    border: none;
-    border-radius: 1rem;
-    background-color: var(--bg-color-secondary);
-    /* color: var(--text-color-primary); */
-    box-shadow: var(--box-shadow-card);
-    padding: .5rem;
+.quizze>div:hover {
     cursor: pointer;
-}
-
-button:hover {
+    scale: 1.01;
     box-shadow: var(--box-shadow-card-hover);
-    /* scale: 1.1; */
 }
-
-
-button:active {
-    scale: .9;
-}</style>
+</style>

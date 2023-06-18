@@ -59,8 +59,10 @@ export default defineComponent({
 <style scoped>
 main {
     display: flex;
-    align-items: center;
+    /* align-items: center; */
+    justify-content: center;
     height: 100vh;
+    width: 100%;
 }
 form {
     display: flex;
@@ -68,6 +70,8 @@ form {
     justify-content: center;
     align-items: center;
     width: 100%;
+    margin-top: 2rem;
+    height: 20rem;
     max-width: 20rem;
     padding: 1.2rem;
     border-radius: 2rem 0 2rem 0;
@@ -96,6 +100,8 @@ input {
     background-color: transparent;
     color: #fff;
     text-align: left;
+    border: none;
+    font-size: 1rem;
 }
 .form-control > * {
     width: 100%;

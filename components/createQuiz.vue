@@ -13,20 +13,29 @@ export default defineComponent({
             quiz,
         }
     },
+    data() {
+        return {
+            signalWords: ''
+        }
+    },
     mounted() {
         const answersDetails = document.getElementById('answersDetails') as HTMLDivElement;
         const answerContainer = document.getElementById('answerContainer') as HTMLDivElement;
     },
     methods: {
         createQuiz() {
+            this.splitSignalWords();
             this.quiz.createQuiz();
             // console.log(this.quiz.ownQuiz);
+        },
+        splitSignalWords() {
+            this.quiz.ownQuiz.signalWords = this.signalWords.split(', ');
         },
         addQuestion() {
             this.quiz.addQuestion();
         },
         addAnswer(id: number) {
-            this.quiz.addAnswer(id+1);
+            this.quiz.addAnswer(id + 1);
         },
         removeAnswer(questionId: number, answerId: number) {
             this.quiz.removeAnswer(questionId, answerId);
@@ -44,13 +53,17 @@ export default defineComponent({
                 <label for="quizName">Quiz Name</label>
                 <input type="text" v-model="quiz.ownQuiz.name">
             </div>
+            <div id="isPublicDiv">
+                <label for="isPublic">isPublic?</label>
+                <CustomInput v-model="quiz.ownQuiz.name" id="isPublic" />
+            </div>
             <div class="inputDiv">
                 <label for="quizDescription">Quiz Description</label>
                 <input type="text" v-model="quiz.ownQuiz.description">
             </div>
             <div class="inputDiv">
                 <label for="quizCategory">Quiz Category</label>
-                <input type="text" v-model="quiz.ownQuiz.signalWords">
+                <input type="text" v-model="signalWords">
             </div>
             <h2>Questions</h2>
             <div v-for="question, i in quiz.ownQuiz.questions" :id="question.id.toString + ''" class="questionAnswer">
@@ -65,11 +78,11 @@ export default defineComponent({
                             <nuxt-icon class="deleteIcon" name="delete" @click="removeAnswer(i, j)" />
                         </div>
                         <div>
-                            <nuxt-icon name="add" @click="addAnswer(i)" />
+                            <nuxt-icon name="add" @click="addAnswer(i)" class="add" />
                         </div>
                     </div>
                 </div>
-                <nuxt-icon name="add" @click="addQuestion()" />
+                <nuxt-icon name="add" @click="addQuestion()" class="add" />
             </div>
             <button class="button" type="submit">
                 Create Quiz
@@ -79,18 +92,49 @@ export default defineComponent({
 </template>
 
 <style scoped>
-
-.deleteIcon{
+#isPublicDiv {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+#isPublicDiv label {
+    margin-right: 1rem;
+}
+.deleteIcon {
     font-size: 1.2rem !important;
     margin-left: -1.8rem !important;
     margin-top: 0.5rem !important;
     z-index: 1;
 }
+
+.add {
+    margin-left: 1rem;
+    margin-top: 1rem;
+    font-size: 1.5rem;
+    width: 2rem;
+    height: 2rem;
+    /* background-color: var(--bg-color-secondary); */
+    border-radius: 1.4rem;
+    padding: 0.1rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+input[type="checkbox"] {}
+
+.add:hover {
+    rotate: 25deg !important;
+    font-size: 1.7rem;
+    margin-left: 0.9rem;
+    margin-top: 0.9rem;
+}
+
 .button {
     cursor: pointer;
-    background-color: var(--bg-color-primary);
+    background-color: var(--bg-color-secondary);
     color: var(--text-color-primary);
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+    box-shadow: var(--box-shadow-small);
     border: none;
     border-radius: 0.5rem;
     padding: 0.5rem 1rem;
@@ -100,7 +144,8 @@ export default defineComponent({
 }
 
 button:hover {
-    scale: 1.2;
+    scale: 1.1;
+    box-shadow: var(--box-shadow);
 }
 
 button:active {
@@ -123,7 +168,7 @@ button:active {
 }
 
 .nuxt-icon:hover {
-    font-size: 1.2rem;
+    scale: 1.1;
 }
 
 .inputDiv input {
@@ -141,7 +186,6 @@ button:active {
 .inputDiv input:hover,
 .inputDiv input:active {
     outline: none;
-    box-shadow: var(--box-shadow-small);
     border-bottom: 2px solid var(--bg-color-primary);
 }
 
@@ -158,11 +202,13 @@ button:active {
     transition: all 0.2s ease-in-out;
     margin-bottom: 0.5rem;
 }
+
 .answer {
     display: flex;
     flex-direction: row;
     margin: 0;
 }
+
 .answer input[type="radio"] {
     margin-right: 1rem;
     cursor: pointer;
@@ -180,6 +226,7 @@ button:active {
     transform: rotate(-45deg);
     transition: all 0.2s ease-in-out, transform 0.7s ease-in-out;
 }
+
 .answer {
     margin: 0.5rem;
 }
@@ -191,14 +238,24 @@ button:active {
     font-size: 1.5rem;
     transform: rotate(315deg);
 }
+
 .answer input[type="text"] {
     width: 100% !important;
 }
+
+input[type="text"]:hover,
+input[type="text"]:focus,
+input[type="text"]:active {
+    scale: 1;
+    outline: none;
+    box-shadow: var(--box-shadow-small);
+    border-bottom: 2px solid var(--bg-color-primary);
+}
+
 .answers {
     width: calc(100% - 2rem);
     margin: 1rem;
     display: flex;
     flex-direction: column;
     margin: 0;
-}
-</style>
+}</style>

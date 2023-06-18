@@ -63,7 +63,8 @@ export default defineComponent({
 <style scoped>
 main {
     display: flex;
-    align-items: center;
+    /* align-items: center; */
+    justify-content: center;
     height: 100vh;
 }
 
@@ -77,6 +78,8 @@ form {
     justify-content: center;
     align-items: center;
     width: 100%;
+    height: 25rem;
+    margin-top: 1rem;
     max-width: 20rem;
     padding: 1.2rem;
     border-radius: 2rem 0 2rem 0;

@@ -22,6 +22,7 @@ export type Quiz = {
     description: string;
     questions: question[];
     signalWords: string[];
+    public: boolean;
 };
 export const useQuizStore = defineStore({
     id: 'quiz',
@@ -64,18 +65,23 @@ export const useQuizStore = defineStore({
             ] as question[],
             description: 'This is my quiz',
             signalWords: ['test'],
+            public: true,
         } as Quiz,
     }),
     actions: {
         async createQuiz() {
+            if (!this.user.loggedIn) {
+                this.msg.throwError("You need to be logged in to create a quiz", 3000);
+                return;
+            }
             const data = {
                 name: this.ownQuiz.name,
-                creator: 'kdvgywzce6392x5',
+                creator: this.user.userId,
                 description: this.ownQuiz.description,
                 signalWords: this.ownQuiz.signalWords,
                 questions: this.ownQuiz.questions,
-            };
-            
+                public: this.ownQuiz.public,
+            };            
             console.log("myQuiz:", this.ownQuiz);
             try {
                 const record = await this.user.db.collection('quizes').create(data)
@@ -114,9 +120,8 @@ export const useQuizStore = defineStore({
             localStorage.setItem('ownQuiz', JSON.stringify(this.ownQuiz));
         },
         async loadRelevantQuizzes() {
-            console.log(this.user.REST_API_URL);
             try {
-                this.filterWords = ['test'];
+                // this.filterWords = ['test'];
                 if (this.filterWords.length == 0) this.filterWords = [''];
                 let filter = '';
                 for (let i = 0; i < this.filterWords.length; i++) {

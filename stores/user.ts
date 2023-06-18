@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import Cookies from "js-cookie";
 import PocketBase from 'pocketbase';
 import { useMessagestore } from "./msg";
+import { Quiz } from "./quiz";
 
 export const useUserstore = defineStore({
     id: "user",
@@ -12,15 +13,15 @@ export const useUserstore = defineStore({
         password: Cookies.get("password") || "",
         email: Cookies.get("email") || "",
         token: "",
-        REST_API_URL: 'http://127.0.0.1:8090',
-        db: new PocketBase('http://127.0.0.1:8090'),
+        userId: "",
+        quizzes: [] as Quiz[],
+        db: new PocketBase(useRuntimeConfig().public.apiBase),
         cookieAllowed: true as boolean | undefined,
-        API_Base: useRuntimeConfig().public.API_Base,
     }),
     actions: {
         async connect() {
             try {
-                this.db = new PocketBase(this.REST_API_URL);
+                this.db = new PocketBase(useRuntimeConfig().public.apiBase);
                 console.log("connected to database");
             } catch (e) {
                 this.msg.throwError("database could not be reached")
@@ -28,17 +29,24 @@ export const useUserstore = defineStore({
         },
         async register() {
             try {
+                console.log(this.username, this.email, this.password);
+                
                 // example create data
                 const data = {
                     "username": this.username,
                     "email": this.email,
-                    emailVisibility: true,
-                    password: this.password,
+                    "emailVisibility": true,
+                    "password": this.password,
+                    "passwordConfirm": this.password,
+                    "name": this.username,
                 };
                 const record = await this.db.collection('users').create(data);
-                console.log(this.username, this.email, this.password);
-                // const record = await this.db.collection('users').create(data); this.msg.throwSuccess("User created", 5000);
-                this.session();
+                console.log(record);
+                if (record.status == 201) {
+                    this.session();
+                } else {
+                    this.msg.throwError("User could not be created");
+                }
             } catch (e) {
                 this.msg.throwError("User could not be created");
             }
@@ -51,7 +59,12 @@ export const useUserstore = defineStore({
                 );
                 this.loggedIn = true;
                 this.token = this.db.authStore.token;
-                this.db.authStore.clear();
+                this.userId = authData.record.id;
+                let quizzes = await this.db.collection('quizes').getList(1, 40, {
+                    filter: 'creator = "' + this.userId + '"',
+                });
+                this.quizzes = quizzes.items as unknown as Quiz[];
+                console.log("userId:", this.userId);
             } catch (e) {
                 this.msg.throwError("User could not be logged in");
             }
