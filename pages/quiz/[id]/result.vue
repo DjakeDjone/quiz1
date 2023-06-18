@@ -45,14 +45,29 @@ export default defineComponent({
                 <div class="answers">
                     <!-- chosen -->
                     <p>
-                    <div v-if="question.answers[question.chosenAnswer] == undefined || !question.answers[question.chosenAnswer].correct" class="answer">
-                        <span>❌</span>
+                        {{ question.answers }}
+                        {{ question.chosenAnswer }}
+                    <div v-if="question.answers[question.chosenAnswer] == undefined || !question.answers[question.chosenAnswer].correct"
+                        class="answer">
+                        <i>Your answer: </i>
                         <p>{{ question.answers[0].text }}</p>
+                        <span>❌</span>
                     </div>
-                    <div class="answer" v-for="answer in question.answers">
-                        <div v-if="answer.correct" class="answer">
-                            <span>✅</span>
-                            <p>{{ answer.text }}</p>
+                    <div v-if="question.answers[question.chosenAnswer] == undefined || !question.answers[question.chosenAnswer].correct">
+                        <div class="answer" v-for="answer in question.answers">
+                            <div v-if="answer.correct" class="answer">
+                                <span>correct answerd </span>
+                                <p>{{ answer.text }}</p>
+                                <span>✅</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-if="question.answers[question.chosenAnswer] != undefined && question.answers[question.chosenAnswer].correct">
+                        <div class="answer" v-for="answer in question.answers">
+                            <div v-if="answer.correct" class="answer">
+                                <span>correct would have been</span>
+                                <p>{{ answer.text }}</p>
+                            </div>
                         </div>
                     </div>
                     </p>
@@ -89,21 +104,25 @@ button:hover {
 button:active {
     scale: .9;
 }
+
 .answer {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
 }
+
 .answer span {
     margin-right: .5rem;
 }
+
 .questionContainer {
     margin: 1rem;
     padding: .5rem 1rem;
     border-radius: .5rem;
     background-color: var(--bg-color-secondary);
 }
+
 .question {
     margin-bottom: .5rem;
     text-decoration: underline;
