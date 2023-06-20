@@ -44,33 +44,19 @@ export default defineComponent({
                 <h2 class="question">{{ question.question }}</h2>
                 <div class="answers">
                     <!-- chosen -->
-                    <p>
+                    <!-- <p>
                         {{ question.answers }}
                         {{ question.chosenAnswer }}
-                    <div v-if="question.answers[question.chosenAnswer] == undefined || !question.answers[question.chosenAnswer].correct"
-                        class="answer">
-                        <i>Your answer: </i>
-                        <p>{{ question.answers[0].text }}</p>
-                        <span>❌</span>
-                    </div>
-                    <div v-if="question.answers[question.chosenAnswer] == undefined || !question.answers[question.chosenAnswer].correct">
-                        <div class="answer" v-for="answer in question.answers">
-                            <div v-if="answer.correct" class="answer">
-                                <span>correct answerd </span>
-                                <p>{{ answer.text }}</p>
-                                <span>✅</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div v-if="question.answers[question.chosenAnswer] != undefined && question.answers[question.chosenAnswer].correct">
-                        <div class="answer" v-for="answer in question.answers">
-                            <div v-if="answer.correct" class="answer">
-                                <span>correct would have been</span>
-                                <p>{{ answer.text }}</p>
-                            </div>
-                        </div>
-                    </div>
-                    </p>
+                    </p> -->
+                    <!-- correct -->
+                    <p v-if="question.answers[chosenAnswer-1].correct" class="correctAnswer">{{ question.answers[chosenAnswer] }}</p>
+                    <!-- incorrect -->
+                    <p v-else class="wrongAnswer">{{ question.answers[chosenAnswer] }}</p>
+                    <!-- correct -->
+                    <span>correct would have been:</span>
+                    <!-- <div v-if="!question.answers[chosenAnswer-1].correct" v-for="answer, i in question.answers" class="answer">
+                        <span v-if="answer.correct">{{ answer }}; </span>
+                    </div> -->
                 </div>
             </div>
         </div>

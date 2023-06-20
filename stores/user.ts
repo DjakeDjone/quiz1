@@ -30,7 +30,7 @@ export const useUserstore = defineStore({
         async register() {
             try {
                 console.log(this.username, this.email, this.password);
-                
+
                 // example create data
                 const data = {
                     "username": this.username,
@@ -42,13 +42,11 @@ export const useUserstore = defineStore({
                 };
                 const record = await this.db.collection('users').create(data);
                 console.log(record);
-                if (record.status == 201) {
-                    this.session();
-                } else {
-                    this.msg.throwError("User could not be created");
-                }
+                this.session();
+                return true;
             } catch (e) {
                 this.msg.throwError("User could not be created");
+                return false;
             }
         },
         async session() {

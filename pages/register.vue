@@ -16,8 +16,11 @@ export default defineComponent({
         };
     },
     methods: {
-        register() {
-            this.userstore.register();
+        async register() {
+            const worked = this.userstore.register();
+            if (await worked) {
+                this.$router.push('/user');
+            }
             console.log(this.userstore.username);
         },
         showPassword() {

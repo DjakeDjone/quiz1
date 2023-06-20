@@ -22,7 +22,7 @@ export default defineComponent({
     methods: {
         next() {
             const btnNext = document.getElementById('next') as HTMLButtonElement;
-            if (this.quiz.idx + 1 < this.quiz.currentQuiz.questions.length - 1) {
+            if (this.quiz.idx < this.quiz.currentQuiz.questions.length - 1) {
                 this.quiz.idx++;
                 btnNext.innerText = 'Next';
                 btnNext.style.opacity = '1';
@@ -55,8 +55,8 @@ export default defineComponent({
         },
         selectAnswer(answerId: number) {
             this.quiz.currentQuiz.questions[this.quiz.idx].chosenAnswer = answerId;
-            console.log(this.quiz.currentQuiz.questions[this.quiz.idx].chosenAnswer);
-        }
+            console.log(this.quiz.idx, answerId);
+        },
     }
 });
 </script>
@@ -69,7 +69,7 @@ export default defineComponent({
         <h2>{{ quiz.currentQuiz.questions[quiz.idx].question }}</h2>
         <div class="answers">
             <div v-for="answer, i in quiz.currentQuiz.questions[quiz.idx].answers" class="answer">
-                <input type="radio" @click="selectAnswer(i)" :name="i.toString + ''" />
+                <input type="radio" @click="selectAnswer(i)" :name="i.toString + ''" :id="i.toString + ''" />
                 <label>{{ answer.text }}</label>
             </div>
         </div>

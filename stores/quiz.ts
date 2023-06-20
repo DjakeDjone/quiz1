@@ -71,6 +71,8 @@ export const useQuizStore = defineStore({
     actions: {
         async createQuiz() {
             if (!this.user.loggedIn) {
+                console.log("quiz: ", this.ownQuiz);
+                
                 this.msg.throwError("You need to be logged in to create a quiz", 3000);
                 return;
             }

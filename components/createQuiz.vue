@@ -40,6 +40,15 @@ export default defineComponent({
         removeAnswer(questionId: number, answerId: number) {
             this.quiz.removeAnswer(questionId, answerId);
         },
+        clickAnswer(questionId: number, answerId: number) {
+            this.quiz.ownQuiz.questions[questionId].answers[answerId].correct = !this.quiz.ownQuiz.questions[questionId].answers[answerId].correct;
+            console.log(this.quiz.ownQuiz.questions[questionId].answers[answerId]);
+            for (let i = 0; i < this.quiz.ownQuiz.questions[questionId].answers.length; i++) {
+                if (i != answerId) {
+                    this.quiz.ownQuiz.questions[questionId].answers[i].correct = false;
+                }
+            }
+        },
     }
 });
 </script>
@@ -72,7 +81,8 @@ export default defineComponent({
                     <!-- <nuxt-icon name="details" @click="showDetails(i)" :id="'showDetails' + i"></nuxt-icon> -->
                     <div class="answers">
                         <div v-for="answer, j in question.answers" class="answer">
-                            <input type="radio" v-model="answer.correct" :name="i.toString()" />
+                            <!-- <input type="radio" v-model="answer.correct" :name="i.toString()" /> -->
+                                <input type="radio" :name="i.toString()" @input="clickAnswer(i, j)" />
                             <!-- <label>{{ answer.text }}</label> -->
                             <input type="text" v-model="answer.text">
                             <nuxt-icon class="deleteIcon" name="delete" @click="removeAnswer(i, j)" />
