@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import Cookies from "js-cookie";
 import PocketBase from 'pocketbase';
 import { useMessagestore } from "./msg";
-import { Quiz } from "./quiz";
+import type { Quiz } from "./quiz";
 
 export const useUserstore = defineStore({
     id: "user",
@@ -19,26 +19,16 @@ export const useUserstore = defineStore({
         cookieAllowed: true as boolean | undefined,
     }),
     actions: {
-        async connect() {
-            try {
-                this.db = new PocketBase(useRuntimeConfig().public.apiBase);
-                console.log("connected to database");
-            } catch (e) {
-                this.msg.throwError("database could not be reached")
-            }
-        },
         async register() {
             try {
                 console.log(this.username, this.email, this.password);
 
-                // example create data
                 const data = {
                     "username": this.username,
                     "email": this.email,
                     "emailVisibility": true,
                     "password": this.password,
                     "passwordConfirm": this.password,
-                    "name": this.username,
                 };
                 const record = await this.db.collection('users').create(data);
                 console.log(record);

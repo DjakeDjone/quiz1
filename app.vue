@@ -1,8 +1,12 @@
 <script lang="ts" setup>
 import { useMessagestore } from './stores/msg';
-
+import { useUserstore } from './stores/user';
 
 const messagestore = useMessagestore();
+
+
+const router = useRouter();
+router.push('/user');
 
 </script>
 

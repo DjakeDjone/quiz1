@@ -43,16 +43,6 @@ export default defineComponent({
             <div v-for="question, i in quiz.currentQuiz.questions" class="questionContainer">
                 <h2 class="question">{{ question.question }}</h2>
                 <div class="answers">
-                    <!-- chosen -->
-                    <!-- <p>
-                        {{ question.answers }}
-                        {{ question.chosenAnswer }}
-                    </p> -->
-                    <!-- correct -->
-                    <p v-if="question.answers[chosenAnswer-1].correct" class="correctAnswer">{{ question.answers[chosenAnswer] }}</p>
-                    <!-- incorrect -->
-                    <p v-else class="wrongAnswer">{{ question.answers[chosenAnswer] }}</p>
-                    <!-- correct -->
                     <span>correct would have been:</span>
                     <!-- <div v-if="!question.answers[chosenAnswer-1].correct" v-for="answer, i in question.answers" class="answer">
                         <span v-if="answer.correct">{{ answer }}; </span>

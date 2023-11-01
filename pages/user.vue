@@ -6,7 +6,6 @@ const router = useRouter();
 if (process.client) {
     const user = useUserstore();
     user.loadCookies();
-    user.connect();
 }
 if (user.loggedIn) {
     console.log('logged in');

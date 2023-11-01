@@ -4,7 +4,7 @@ import { useMessagestore } from "./msg";
 import { useUserstore } from "./user";
 
 export type answer = {
-    id: number;
+    question: number;
     text: string;
     correct: boolean;
 };
@@ -21,7 +21,6 @@ export type Quiz = {
     creator: string;
     description: string;
     questions: question[];
-    signalWords: string[];
     public: boolean;
 };
 export const useQuizStore = defineStore({
@@ -35,36 +34,8 @@ export const useQuizStore = defineStore({
         filterWords: [] as string[],
         ownQuiz: {
             name: 'My Quiz',
-            questions: [
-                {
-                    id: 1,
-                    question: 'What is the capital of Germany?',
-                    answers: [
-                        {
-                            id: 1,
-                            text: 'Berlin',
-                            correct: true,
-                        },
-                        {
-                            id: 2,
-                            text: 'Hamburg',
-                            correct: false,
-                        },
-                        {
-                            id: 3,
-                            text: 'Munich',
-                            correct: false,
-                        },
-                        {
-                            id: 4,
-                            text: 'Cologne',
-                            correct: false,
-                        },
-                    ],
-                },
-            ] as question[],
+            questions: [] as question[],
             description: 'This is my quiz',
-            signalWords: ['test'],
             public: true,
         } as Quiz,
     }),
@@ -80,7 +51,6 @@ export const useQuizStore = defineStore({
                 name: this.ownQuiz.name,
                 creator: this.user.userId,
                 description: this.ownQuiz.description,
-                signalWords: this.ownQuiz.signalWords,
                 questions: this.ownQuiz.questions,
                 public: this.ownQuiz.public,
             };            
@@ -91,27 +61,9 @@ export const useQuizStore = defineStore({
                 this.msg.throwSuccess("Quiz created", 5000);
                 this.ownQuiz = {
                     name: 'My Quiz',
-                    questions: [
-                        {
-                            id: 1,
-                            question: 'What is the capital of Germany?',
-                            answers: [
-                                {
-                                    id: 1,
-                                    text: 'Berlin',
-                                    correct: true,
-                                },
-                                {
-                                    id: 2,
-                                    text: 'Hamburg',
-                                    correct: false,
-                                },
-                            ],
-                            chosenAnswer: 0,
-                        },
-                    ] as question[],
+                    questions: [] as question[],
                     description: 'This is my quiz',
-                    signalWords: ['test'],
+                    public: true,
                 } as Quiz;
                 this.saveOwnQuiz();
             } catch (e) {
@@ -172,7 +124,7 @@ export const useQuizStore = defineStore({
                 question: '',
                 answers: [
                     {
-                        id: 1,
+                        question: 1,
                         text: '',
                         correct: false,
                     },
@@ -183,7 +135,7 @@ export const useQuizStore = defineStore({
         addAnswer(questionIndex: number) {
             console.log(this.ownQuiz.questions[questionIndex - 1]);
             this.ownQuiz.questions[questionIndex-1].answers.push({
-                id: this.ownQuiz.questions[questionIndex-1].answers.length + 1,
+                question: this.ownQuiz.questions[questionIndex-1].answers.length + 1,
                 text: '',
                 correct: false,
             });
