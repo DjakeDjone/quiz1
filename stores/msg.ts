@@ -1,4 +1,3 @@
-import { Pinia } from "pinia";
 import { defineStore } from "pinia";
 
 type message = {
@@ -7,14 +6,14 @@ type message = {
     content: string,
     time: string,
 };
-export const useMessagestore = defineStore({
-    id: "msg",
+
+export const useMessagestore = defineStore("msgstore", {
     state: () => ({
         error: false,
         messages: [] as message[],
     }),
     actions: {
-        throwError(msg: string, duration: number = 5000) {
+        async throwError(msg: string, duration: number = 5000) {
             const id = this.messages.length;
             console.log("throwing error");
             this.messages.push({
@@ -28,7 +27,7 @@ export const useMessagestore = defineStore({
                 this.removeMessage(id);
             }, duration);
         },
-        throwWarning(msg: string, duration: number) {
+        async throwWarning(msg: string, duration: number) {
             let id = this.messages.length;
             this.messages.push({
                 id: id,
@@ -40,7 +39,7 @@ export const useMessagestore = defineStore({
                 this.removeMessage(id);
             }, duration);
         },
-        throwInfo(msg: string, duration: number) {
+        async throwInfo(msg: string, duration: number) {
             const id = this.messages.length;
             if (duration >= 5000) {
                 duration = 5000;
@@ -55,7 +54,7 @@ export const useMessagestore = defineStore({
                 this.removeMessage(id);
             }, duration);
         },
-        throwSuccess(msg: string, duration: number= 5000) {
+        async throwSuccess(msg: string, duration: number = 5000) {
             const id = this.messages.length;
             if (duration >= 5000) {
                 duration = 5000;
@@ -78,6 +77,6 @@ export const useMessagestore = defineStore({
         },
         removeMessage(id: number) {
             this.messages = this.messages.filter((msg) => msg.id != id);
-        }   
+        }
     },
 });

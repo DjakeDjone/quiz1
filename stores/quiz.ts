@@ -4,147 +4,164 @@ import { useMessagestore } from "./msg";
 import { useUserstore } from "./user";
 
 export type answer = {
-    question: number;
+    id: string;
     text: string;
+    question: string;
     correct: boolean;
 };
 export type question = {
-    id: number;
+    id: string;
     question: string;
-    answers: answer[];
+    quizId: string;
     chosenAnswer: number;
+    // only for frontend
+    answers: answer[];
 };
 export type Quiz = {
-    id: number;
+    id: string;
     name: string;
     created: string;
     creator: string;
     description: string;
-    questions: question[];
+    questions: question[]; // only at the frontend
     public: boolean;
 };
-export const useQuizStore = defineStore({
-    id: 'quiz',
+export const useQuizStore = defineStore("quiz", {
     state: () => ({
-        user: useUserstore(),
-        msg: useMessagestore(),
-        currentQuiz: {} as Quiz,
-        idx: 0,
-        quizzes: [] as Quiz[], // TODO: change to quiz type
-        filterWords: [] as string[],
-        ownQuiz: {
-            name: 'My Quiz',
-            questions: [] as question[],
-            description: 'This is my quiz',
-            public: true,
-        } as Quiz,
+        own_quizzes: [] as Quiz[],
+        public_quizzes: [] as Quiz[],
+        group_quizzes: [] as Quiz[],
+        pb: useUserstore().pb,
+        current_quiz: null as Quiz | null,
     }),
     actions: {
-        async createQuiz() {
-            if (!this.user.loggedIn) {
-                console.log("quiz: ", this.ownQuiz);
-                
-                this.msg.throwError("You need to be logged in to create a quiz", 3000);
-                return;
+        async createAnswer(question: string, text: string, correct: boolean) {
+            if (this.pb == null) {
+                useMessagestore().throwError("PocketBase not initialized");
             }
-            const data = {
-                name: this.ownQuiz.name,
-                creator: this.user.userId,
-                description: this.ownQuiz.description,
-                questions: this.ownQuiz.questions,
-                public: this.ownQuiz.public,
-            };            
-            console.log("myQuiz:", this.ownQuiz);
             try {
-                const record = await this.user.db.collection('quizes').create(data)
-                console.log("RECORD:", record);
-                this.msg.throwSuccess("Quiz created", 5000);
-                this.ownQuiz = {
-                    name: 'My Quiz',
-                    questions: [] as question[],
-                    description: 'This is my quiz',
-                    public: true,
-                } as Quiz;
-                this.saveOwnQuiz();
+                const data = {
+                    "text": text,
+                    "correct": correct,
+                    "question": question,
+                };
+                const record = await this.pb!.collection('answers').create(data);
+                console.log(record);
+                return true;
             } catch (e) {
-                this.msg.throwError("Creating Quiz failed", 3000)
+                useMessagestore().throwError("Answer could not be created");
+                return false;
             }
         },
-        saveOwnQuiz() {
-            localStorage.setItem('ownQuiz', JSON.stringify(this.ownQuiz));
-        },
-        async loadRelevantQuizzes() {
+        async createQuestion(quizId: string, question: string, answers: answer[]) {
+            if (this.pb == null) {
+                useMessagestore().throwError("PocketBase not initialized");
+                return false;
+            }
             try {
-                // this.filterWords = ['test'];
-                if (this.filterWords.length == 0) this.filterWords = [''];
-                let filter = '';
-                for (let i = 0; i < this.filterWords.length; i++) {
-                    filter += 'signalWords ~ "' + this.filterWords[i] + '"';
-                    if (i < this.filterWords.length - 1) filter += ' OR ';
+                const data = {
+                    "question": question,
+                    "quiz": quizId,
+                };
+                const record = await this.pb!.collection('questions').create(data);
+                console.log(record);
+                for (let i = 0; i < answers.length; i++) {
+                    answers[i].questionId = record.id;
+                    await this.createAnswer(record.id, answers[i].text, answers[i].correct);
                 }
-                console.log("FILTER:", filter);
-                const resultList = await this.user.db.collection('quizes').getList(1, 50, {
-                    sort: '-created',
-                    filter: filter,
-                    expand: 'relField1,relField2.subRelField',
-                });
-                console.log("RESULT:", resultList.items);
-                const len = resultList.totalItems
-                this.quizzes = [];
-                for (let i = 0; i < len; i++) {
-                    this.quizzes.push(resultList.items[i] as unknown as Quiz);
-                }
-                console.log("QUIZZES:", this.quizzes);
+                return true;
             } catch (e) {
-                this.msg.throwError('cant load data because db is null')
+                useMessagestore().throwError("Question could not be created");
+                return false;
             }
         },
-        loadOwnQuiz() {
-            const ownQuiz = localStorage.getItem('ownQuiz');
-            if (ownQuiz) {
-                this.ownQuiz = JSON.parse(ownQuiz);
+        async createQuiz() { 
+            this.pb = useUserstore().pb;
+            if (this.pb == null) {
+                useMessagestore().throwError("PocketBase not initialized");
+                return false;
             }
-        },
-        async loadQuiz(id: number) {
             try {
-                const record = await this.user.db.collection('quizes').getOne(id.toString(), {
-                    expand: 'relField1,relField2.subRelField',
-                });
-                this.currentQuiz = record as unknown as Quiz;
-                const questions1 = JSON.parse(record.questions);
-                console.log("QUESTIONS1:", questions1.questions);
-                console.log("QUIZ:", this.currentQuiz.questions);
+                const data = {
+                    "name": this.current_quiz?.name,
+                    "description": this.current_quiz?.description,
+                    "public": this.current_quiz?.public,
+                    "creator": useUserstore().username,
+                };
+                const record = await this.pb!.collection('quizzes').create(data);
+                console.log(record);
+                this.current_quiz!.id = record.id;
+                return true;
             } catch (e) {
-                this.msg.throwError('cant load data because db is null')
+                useMessagestore().throwError("Quiz could not be created");
+                return false;
             }
         },
-        addQuestion() {
-            this.ownQuiz.questions.push({
-                id: this.ownQuiz.questions.length + 1,
-                question: '',
-                answers: [
-                    {
-                        question: 1,
-                        text: '',
-                        correct: false,
-                    },
-                ],
-                chosenAnswer: 0,
-            });
+        async updateQuiz(quiz: Quiz) { // TODO
+            if (this.pb == null) {
+                useMessagestore().throwError("PocketBase not initialized");
+            }
+            try {
+                const data = {
+                    "name": quiz.name,
+                    "description": quiz.description,
+                    "public": quiz.public,
+                };
+                const record = await this.pb!.collection('quizzes').update(quiz.id, data);
+                console.log(record);
+                for (let i = 0; i < quiz.questions.length; i++) {
+                    await this.updateQuestion(quiz.questions[i]);
+                }
+            } catch (e) {
+                useMessagestore().throwError("Quiz could not be updated");
+                return false;
+            }
         },
-        addAnswer(questionIndex: number) {
-            console.log(this.ownQuiz.questions[questionIndex - 1]);
-            this.ownQuiz.questions[questionIndex-1].answers.push({
-                question: this.ownQuiz.questions[questionIndex-1].answers.length + 1,
-                text: '',
-                correct: false,
-            });
+        async updateQuestion(question: question) { // TODO
+            if (this.pb == null) {
+                useMessagestore().throwError("PocketBase not initialized");
+            }
+            try {
+                const data = {
+                    "question": question.question,
+                };
+                const record = await this.pb!.collection('questions').update(question.id, data);
+                console.log(record);
+                for (let i = 0; i < question.answers.length; i++) {
+                    await this.updateAnswer(question.answers[i]);
+                } 
+            } catch (e) {
+                useMessagestore().throwError("Question could not be updated");
+                return false;
+            }
         },
-        removeQuestion(questionIndex: number) {
-            this.ownQuiz.questions.splice(questionIndex, 1);
+        async updateAnswer(answer: answer) { // TODO
+            if (this.pb == null) {
+                useMessagestore().throwError("PocketBase not initialized");
+            }
+            try {
+                const data = {
+                    "text": answer.text,
+                    "correct": answer.correct,
+                    "question": answer.question,
+                };
+                const record = await this.pb!.collection('answers').update(answer.id, data);
+                console.log(record);
+                return true;
+            } catch (e) {
+                useMessagestore().throwError("Answer could not be updated");
+                return false;
+            }
         },
-        removeAnswer(questionIndex: number, answerIndex: number) {
-            this.ownQuiz.questions[questionIndex].answers.splice(answerIndex, 1);
+        async loadQuiz(quizId: string) { // TODO
         },
-    }
+        addQuestion(quiz: Quiz) { // TODO
+        },
+        addAnswer(question: question) { // TODO
+        },
+        removeQuestion(quiz: Quiz, questionIdx: number) { // TODO
+        }, 
+        removeAnswer(question: question, answerIdx: number) { // TODO
+        },
+    },
 });

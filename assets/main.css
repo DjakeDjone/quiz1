@@ -1,0 +1,17 @@
+@layer base {
+    :root {
+        --text: #040301;
+        --background: #fefaf6;
+        --primary: #ff8c00;
+        --secondary: #e5cef8;
+        --accent: #856f82;
+    }
+
+    .dark {
+        --text: #fefdfb;
+        --background: #090501;
+        --primary: #ff8c00;
+        --secondary: #1e0731;
+        --accent: #907a8d;
+    }
+}

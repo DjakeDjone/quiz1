@@ -3,10 +3,18 @@ import { useMessagestore } from './stores/msg';
 import { useUserstore } from './stores/user';
 
 const messagestore = useMessagestore();
+const userstore = useUserstore();
 
+userstore.init();
+// try to session
 
-const router = useRouter();
-router.push('/user');
+onBeforeMount(async() => {
+  await userstore.session();
+  const router = useRouter();
+  if (!userstore.loggedIn) {
+    router.push('/login');
+  }
+});
 
 </script>
 
