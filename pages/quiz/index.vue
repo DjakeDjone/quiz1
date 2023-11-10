@@ -6,11 +6,18 @@ const user = useUserstore();
 const quizStore = useQuizStore();
 
 const createQuiz = async () => {
-    const quiz = await quizStore.createQuiz();
-    if (quiz) {
-        useRouter().push('/quiz/' + quiz.id + '/edit');
+    const created = await quizStore.createQuiz();
+    if (created) {
+        // load quizz
+        const quizz = await quizStore.loadQuiz(quizStore.current_quiz.id);
+        if (quizz) {
+            console.log('Loaded quiz');
+            useRouter().push('/quiz/' + quizz.id + '/edit');
+        } else {
+            console.error('Failed to load quiz');
+        }
     } else {
-        console.log('error creating quiz');
+        console.error('Failed to create quiz');
     }
 };
 </script>

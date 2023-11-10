@@ -42,14 +42,13 @@ const type = computed(() => {
                 <v-icon v-if="type == 'upload'">mdi-upload</v-icon>
                 <v-icon v-if="type == 'unknown'">mdi-file</v-icon>
             </div>
-            <div class="w-[4rem] h-[4rem] break-words overflow-hidden ml-2 flex flex-col justify-center">
-                <p>{{ name }}</p>
+            <div class="w-[4rem] h-[4rem] ml-2 flex flex-col justify-center py-2">
+                <p class="break-words overflow-hidden">{{ name }}</p>
             </div>
             <!-- v-tooltip on hover -->
             <v-tooltip activator="parent" location="bottom">
                 <span>{{ name }}</span>
             </v-tooltip>
-
         </div>
     </div>
 </template>
