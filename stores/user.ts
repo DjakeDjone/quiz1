@@ -16,7 +16,6 @@ export const useUserstore = defineStore("user", {
         points: 0,
         token: "",
         userId: "",
-        quizzes: [] as Quiz[],
         pb: null as PocketBase | null,
         cookieAllowed: true as boolean,
     }),

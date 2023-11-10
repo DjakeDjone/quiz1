@@ -80,8 +80,10 @@ const setAnswerCorrect = (answer: answer) => {
                 </v-expansion-panels>
             </v-card-text>
             <v-btn @click="quizStore.addQuestion(quizStore.current_quiz!)">Frage hinzufügen</v-btn>
-            <v-card-item>
+            <v-card-item class="border-t-2 flex items-center !justify-between">
                 <v-btn @click="quizStore.updateQuiz(quizStore.current_quiz!)" color="primary">Speichern</v-btn>
+                <v-btn @click="quizStore.removeQuiz(quizStore.current_quiz!)" color="error">Löschen</v-btn>
+                <v-btn @click="$router.back()">Zurück</v-btn>
             </v-card-item>
         </v-card>
     </main>

@@ -42,7 +42,7 @@ const uploadFile = () => {
             </v-card-title> -->
             <v-card-item class="flex justify-center items-center">
                 <v-btn class="w-full m-2 sm:w-fit" color="primary" @click="$router.push('/quiz/')">
-                    Create Quiz
+                    View Quizzes
                 </v-btn>
                 <v-btn class="w-full m-2 sm:w-fit" color="secondary" @click="$router.push('/user')">
                     Profile and Groups

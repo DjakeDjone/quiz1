@@ -50,43 +50,23 @@ export const useQuizStore = defineStore("quiz", {
         } as Quiz,
     }),
     actions: {
-        async createAnswer(question: string, text: string, correct: boolean) {
-            if (this.pb == null) {
-                useMessagestore().throwError("PocketBase not initialized");
-            }
-            try {
-                const data = {
-                    "text": text,
-                    "correct": correct,
-                    "question": question,
-                };
-                const record = await this.pb!.collection('answers').create(data);
-                console.log(record);
-                return true;
-            } catch (e) {
-                useMessagestore().throwError("Answer could not be created");
-                return false;
-            }
-        },
-        async createQuestion(quizId: string, question: string, answers: answer[]) {
-            if (this.pb == null) {
+        async loadOwnQuizzes() {
+            if (useUserstore().pb == null) {
                 useMessagestore().throwError("PocketBase not initialized");
                 return false;
             }
-            try {
-                const data = {
-                    "question": question,
-                    "quiz": quizId,
-                };
-                const record = await this.pb!.collection('questions').create(data);
-                console.log(record);
-                for (let i = 0; i < answers.length; i++) {
-                    answers[i].question = record.id;
-                    await this.createAnswer(record.id, answers[i].text, answers[i].correct);
-                }
-                return true;
+            try {               
+                const record = await useUserstore().pb!.collection('quizzes').getFullList<Quiz>({
+                    filter: 'creator="' + useUserstore().userId + '"',
+                });
+                console.log("RECORD:", record);
+                record.forEach((quiz) => {
+                    quiz.pushed = true;
+                });
+                this.own_quizzes = record;
+                return record;
             } catch (e) {
-                useMessagestore().throwError("Question could not be created");
+                useMessagestore().throwError("Quizzes could not be loaded");
                 return false;
             }
         },
@@ -103,9 +83,11 @@ export const useQuizStore = defineStore("quiz", {
                     "public": this.current_quiz?.public,
                     "creator": useUserstore().userId
                 };
-                const record = await this.pb!.collection('quizzes').create(data);
+                const record = await useUserstore().pb!.collection('quizzes').create(data);
                 console.log(record);
                 this.current_quiz!.id = record.id;
+                this.current_quiz!.pushed = true;
+                this.own_quizzes.push(this.current_quiz!);
                 return true;
             } catch (e) {
                 useMessagestore().throwError("Quiz could not be created");
@@ -144,6 +126,7 @@ export const useQuizStore = defineStore("quiz", {
                 return false;
             }
         },
+
         async loadQuestions(quizId: string) {
             if (useUserstore().pb == null) {
                 useMessagestore().throwError("PocketBase not initialized");
