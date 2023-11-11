@@ -11,6 +11,8 @@ export type answer = {
     correct: boolean;
     // only for backend
     pushed: boolean;
+    // only for frontend
+    chosen: boolean;
 };
 export type question = {
     id: string;
@@ -188,6 +190,7 @@ export const useQuizStore = defineStore("quiz", {
                 question: question.id,
                 correct: correct,
                 pushed: false,
+                chosen: false,
             });
         },
         async removeQuestion(quiz: Quiz, questionIdx: number) {

@@ -28,7 +28,7 @@ const uploadFile = () => {
 
 
 <template>
-    <main>
+    <main class="p-4 max-w-3xl mx-auto">
         <div class="p-4">
             <div class="flex items-center">
                 <h2 class="text-2xl">Welcome</h2>

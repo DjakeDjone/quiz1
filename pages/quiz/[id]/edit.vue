@@ -39,11 +39,21 @@ const setAnswerCorrect = (answer: answer) => {
 
 <template>
     <main v-if="loaded">
-        <h1 class="p-4 text-3xl">Edit Quiz</h1>
+        <h1 class="p-4 text-3xl flex justify-between"><span>
+                <v-icon size="20">mdi-pencil</v-icon>
+                Edit Quiz
+            </span>
+            <v-btn @click="$router.back()" color="primary">
+                <v-icon>mdi-arrow-left</v-icon>
+                All Quizzes</v-btn>
+        </h1>
         <v-card>
             <v-card-title v-if="quizStore.current_quiz">
-                <v-text-field label="Title" variant="outlined" v-model="quizStore.current_quiz.name" v-on:update:model-value="quizStore.current_quiz.pushed = false"></v-text-field>
-                <v-textarea label="Description" variant="outlined" counter v-model="quizStore.current_quiz.description" v-on:update:model-value="quizStore.current_quiz.pushed = false" clearable clear-icon="mdi-close-circle-outline" rows="1"></v-textarea>
+                <v-text-field label="Title" variant="outlined" v-model="quizStore.current_quiz.name"
+                    v-on:update:model-value="quizStore.current_quiz.pushed = false"></v-text-field>
+                <v-textarea label="Description" variant="outlined" counter v-model="quizStore.current_quiz.description"
+                    v-on:update:model-value="quizStore.current_quiz.pushed = false" clearable
+                    clear-icon="mdi-close-circle-outline" rows="1"></v-textarea>
             </v-card-title>
             <v-card-text v-if="quizStore.current_quiz?.questions">
                 <v-expansion-panels v-for="question, i in quizStore.current_quiz?.questions" :key="question.id">
@@ -58,10 +68,14 @@ const setAnswerCorrect = (answer: answer) => {
                         <v-expansion-panel-text>
                             <v-card>
                                 <v-card-text>
-                                    <v-text-field v-model="question.question" label="Frage" variant="outlined" @input="question.pushed = false"></v-text-field>
+                                    <v-text-field v-model="question.question" label="Frage" variant="outlined"
+                                        @input="question.pushed = false"></v-text-field>
                                     <div v-if="question.answers">
                                         <v-text-field v-for="answer, j in question.answers" :key="answer.id"
-                                            v-model="answer.text" label="Antwort" variant="outlined" @input="answer.pushed = false" :prepend-icon="answer.correct ? 'mdi-check' : 'mdi-close'" @click:prepend="setAnswerCorrect(answer)"></v-text-field>
+                                            v-model="answer.text" label="Antwort" variant="outlined"
+                                            @input="answer.pushed = false"
+                                            :prepend-icon="answer.correct ? 'mdi-check' : 'mdi-close'"
+                                            @click:prepend="setAnswerCorrect(answer)"></v-text-field>
                                         <!-- add answer -->
                                         <v-btn @click="quizStore.addAnswer(question)">Antwort hinzufügen</v-btn>
                                     </div>
@@ -80,10 +94,15 @@ const setAnswerCorrect = (answer: answer) => {
                 </v-expansion-panels>
             </v-card-text>
             <v-btn @click="quizStore.addQuestion(quizStore.current_quiz!)">Frage hinzufügen</v-btn>
-            <v-card-item class="border-t-2 flex items-center !justify-between">
-                <v-btn @click="quizStore.updateQuiz(quizStore.current_quiz!)" color="primary">Speichern</v-btn>
-                <v-btn @click="quizStore.removeQuiz(quizStore.current_quiz!)" color="error">Löschen</v-btn>
-                <v-btn @click="$router.back()">Zurück</v-btn>
+            <v-card-item class="border-t-2">
+                <div class="w-full flex justify-evenly">
+                    <v-btn @click="quizStore.updateQuiz(quizStore.current_quiz!)" color="primary">
+                        <v-icon>mdi-content-save</v-icon>
+                        Speichern</v-btn>
+                    <v-btn @click="quizStore.removeQuiz(quizStore.current_quiz!)" color="error">
+                        <v-icon>mdi-delete</v-icon>
+                        Löschen</v-btn>
+                </div>
             </v-card-item>
         </v-card>
     </main>
