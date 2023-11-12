@@ -24,18 +24,30 @@ onMounted(async () => {
 
 const choseAnswer = (answer: answer) => {
     answer.chosen = !answer.chosen;
+    if (quizStore.current_quiz?.questions) {
+        const question = quizStore.current_quiz.questions.find(q => q.id === answer.question);
+        if (question && question.possible_answers <= 1) {
+            question.answers.forEach(a => {
+                if (a.id !== answer.id) {
+                    a.chosen = false;
+                }
+            });
+        }
+    }
 }
 
-const next = () => {
+const next = async () => {
     if (idx_carousel.value < quizStore.current_quiz?.questions.length - 1) {
         idx_carousel.value++;
         console.log('idx', idx_carousel);
     } else {
         // submit
-        const answers = quizStore.current_quiz?.questions.map(q => q.answers.filter(a => a.chosen).map(a => a.id));
-        console.log('answers', answers);
-        if (answers) {
-            // quizStore.submitAnswers(answers);
+        const points = await quizStore.submitAnswers();
+        if (points) {
+            useMessagestore().throwSuccess('Du hast ' + points + ' Punkte erreicht');
+            useRouter().push('/quiz/' + quizStore.current_quiz?.id + '/result');
+        } else {
+            useMessagestore().throwError('Es ist ein Fehler aufgetreten');
         }
     }
 }
@@ -64,7 +76,7 @@ const next = () => {
                     </v-card-title>
                     <v-card-text>
                         <v-list>
-                            <v-list-item v-for="answer in question.answers" :key="answer.id">
+                            <v-list-item v-for="answer, j in question.answers" :key="answer.id">
                                 <h3 class="text-xl flex">
                                     <v-checkbox v-model="answer.chosen" @click="choseAnswer(answer)" true-icon="mdi-check"
                                         false-icon="mdi-close">
@@ -90,8 +102,8 @@ const next = () => {
                                 <span>Weiter</span>
                             </v-tooltip>
                         </v-btn>
-                        <v-btn class="w-1/2" @click="idx_carousel = quizStore.current_quiz?.questions.length - 1"
-                            v-if="i === quizStore.current_quiz?.questions.length - 1" color="primary">
+                        <v-btn class="w-1/2" @click="next()" v-if="i === quizStore.current_quiz?.questions.length - 1"
+                            color="primary">
                             <v-icon>mdi-check</v-icon>
                             <v-tooltip location="bottom" activator="parent">
                                 <span>Fertig</span>

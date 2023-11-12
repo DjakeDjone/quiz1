@@ -18,8 +18,9 @@ export type question = {
     id: string;
     question: string;
     quizId: string;
-    chosenAnswer: number;
+    possible_answers: number;
     // only for frontend
+    // chosenAnswer: number;
     answers: answer[];
     // only for backend
     pushed: boolean;
@@ -34,6 +35,7 @@ export type Quiz = {
     public: boolean;
     // only for backend
     pushed: boolean;
+    points?: number;
 };
 export const useQuizStore = defineStore("quiz", {
     state: () => ({
@@ -161,6 +163,7 @@ export const useQuizStore = defineStore("quiz", {
                 console.log("ANSWERS:", record_answers);
                 record_answers.forEach((answer) => {
                     answer.pushed = true;
+                    answer.chosen = false;
                 });
                 return record_answers;
             } catch (e) {
@@ -174,7 +177,8 @@ export const useQuizStore = defineStore("quiz", {
                 id: "",
                 question: get_random_element(BSP_QUESTIONS),
                     quizId: quiz.id,
-                    chosenAnswer: -1,
+                    possible_answers: 1,
+                    // chosenAnswer: -1,
                     answers: [],
                     pushed: false,
             });
@@ -310,6 +314,14 @@ export const useQuizStore = defineStore("quiz", {
             try {
                 // question meta data
                 if (!question.pushed) {
+                    // correct answers anz
+                    let correct_answers = 0;
+                    for (let i = 0; i < question.answers.length; i++) {
+                        if (question.answers[i].correct) {
+                            correct_answers++;
+                        }
+                    }
+                    question.possible_answers = correct_answers;
                     if (question.id == "") {
                         // create question
                         const data = {
@@ -376,6 +388,33 @@ export const useQuizStore = defineStore("quiz", {
             } catch (e) {
                 console.error(e);
                 useMessagestore().throwError("Answer could not be saved");
+                return false;
+            }
+        },
+        async submitAnswers() { // 
+            let points = 0;
+            console.log("QUIZ:", this.current_quiz);
+            for (let i = 0; i < this.current_quiz.questions.length; i++) {
+                const poss_correct_answers = this.current_quiz.questions[i].possible_answers;
+                let correct_answers = 0;
+                for (let j = 0; j < this.current_quiz.questions[i].answers.length; j++) {
+                    if (this.current_quiz.questions[i].answers[j].chosen && this.current_quiz.questions[i].answers[j].correct) {
+                        correct_answers++;
+                    }
+                }
+                points += correct_answers / poss_correct_answers;
+            }
+            this.current_quiz.points = points;
+            const data = {
+                "points": points + useUserstore().points,
+            };
+            try {
+                const record = await useUserstore().pb!.collection('users').update(useUserstore().userId, data);
+                console.log(record);
+                return points;
+            } catch (e) {
+                console.error(e);
+                useMessagestore().throwError("Result could not be saved");
                 return false;
             }
         },

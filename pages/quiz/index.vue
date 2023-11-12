@@ -5,6 +5,8 @@ import { useQuizStore } from '~/stores/quiz';
 const user = useUserstore();
 const quizStore = useQuizStore();
 onMounted(async () => {
+    // load quizzes
+    quizStore.loadOwnQuizzes();
     watch(() => user.loggedIn, async (loggedIn) => {
         if (loggedIn) {
             await quizStore.loadOwnQuizzes();
@@ -60,11 +62,11 @@ const createQuiz = async () => {
                 <v-card-title>
                     <div class="flex justify-between w-full">
                         <span>{{ quiz.name }}</span>
-                        <v-btn @click="quizStore.removeQuiz(quiz)"><v-icon>mdi-delete</v-icon>
+                        <!-- <v-btn @click="quizStore.removeQuiz(quiz)"><v-icon>mdi-delete</v-icon>
                             <v-tooltip location="bottom" activator="parent">
                                 <span>Delete</span>
                             </v-tooltip>
-                        </v-btn>
+                        </v-btn> -->
                     </div>
                 </v-card-title>
                 <v-card-text>
@@ -74,7 +76,7 @@ const createQuiz = async () => {
                     <v-btn color="primary"
                         @click="useRouter().push('/quiz/' + quiz.id + '/edit')">Edit<v-icon>mdi-file-document-edit-outline</v-icon></v-btn>
                     <v-btn color="primary"
-                        @click="useRouter().push('/quiz/' + quiz.id + '/')">Make<v-icon>mdi-play-circle-outline</v-icon></v-btn>
+                        @click="useRouter().push('/quiz/' + quiz.id + '/')">Take<v-icon>mdi-play-circle-outline</v-icon></v-btn>
                 </v-card-actions>
             </v-card>
         </div>

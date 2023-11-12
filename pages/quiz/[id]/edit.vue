@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { useUserstore } from '~/stores/user';
-import { useQuizStore, type answer } from '~/stores/quiz';
+import { useQuizStore, type answer, type Quiz, type question } from '~/stores/quiz';
 import { useMessagestore } from '~/stores/msg';
 
 const user = useUserstore();
 const quizStore = useQuizStore();
 const quizId = useRoute().params.id as string;
 const loaded = ref(false);
+
 
 onMounted(async () => {
     console.log('quizId', quizId);
@@ -18,6 +19,26 @@ onMounted(async () => {
         console.log('quiz found');
         loaded.value = true;
     }
+    // 
+    let saving = false;
+    document.addEventListener('keydown', async (e) => {
+        if (e.ctrlKey && e.key === 's') {
+            if (saving) {
+                return;
+            }
+            saving = true;
+            e.preventDefault();
+            const saved = await quizStore.updateQuiz(quizStore.current_quiz!);
+            if (saved) {
+                useMessagestore().throwSuccess('Quiz gespeichert');
+            } else {
+                useMessagestore().throwError('Quiz konnte nicht gespeichert werden');
+            }
+            setTimeout(() => {
+                saving = false;
+            }, 1000);
+        }
+    });
 });
 
 const setAnswerCorrect = (answer: answer) => {
@@ -35,10 +56,64 @@ const setAnswerCorrect = (answer: answer) => {
         }
     }
 }
+
+const alert = ref({
+    show: false,
+    title: '',
+    text: '',
+    confirm: () => { },
+    cancel: () => { }
+})
+
+const confirmDeleteQuiz = (quiz: Quiz) => {
+    alert.value = {
+        show: true,
+        title: 'Quiz löschen',
+        text: 'Willst du das Quiz wirklich löschen?',
+        confirm: () => {
+            quizStore.removeQuiz(quiz);
+            alert.value.show = false;
+        },
+        cancel: () => {
+            alert.value.show = false;
+        }
+    }
+}
+
+const confirmDeleteQuestion = (question_idx: number) => {
+    alert.value = {
+        show: true,
+        title: 'Frage löschen',
+        text: 'Willst du die Frage wirklich löschen?',
+        confirm: () => {
+            quizStore.removeQuestion(quizStore.current_quiz!, question_idx);
+            alert.value.show = false;
+        },
+        cancel: () => {
+            alert.value.show = false;
+        }
+    }
+}
+
+const confirmDeleteAnswer = (question: question, answer_idx: number) => {
+    alert.value = {
+        show: true,
+        title: 'Antwort löschen',
+        text: 'Willst du die Antwort wirklich löschen?',
+        confirm: () => {
+            quizStore.removeAnswer(question, answer_idx);
+            alert.value.show = false;
+        },
+        cancel: () => {
+            alert.value.show = false;
+        }
+    }
+}
+
 </script>
 
 <template>
-    <main v-if="loaded">
+    <main v-if="loaded" id="main_editing">
         <h1 class="p-4 text-3xl flex justify-between"><span>
                 <v-icon size="20">mdi-pencil</v-icon>
                 Edit Quiz
@@ -75,7 +150,9 @@ const setAnswerCorrect = (answer: answer) => {
                                             v-model="answer.text" label="Antwort" variant="outlined"
                                             @input="answer.pushed = false"
                                             :prepend-icon="answer.correct ? 'mdi-check' : 'mdi-close'"
-                                            @click:prepend="setAnswerCorrect(answer)"></v-text-field>
+                                            @click:prepend="setAnswerCorrect(answer)" clearable
+                                            clear-icon="mdi-close-circle-outline"
+                                            @click:clear="confirmDeleteAnswer(question, j)"></v-text-field>
                                         <!-- add answer -->
                                         <v-btn @click="quizStore.addAnswer(question)">Antwort hinzufügen</v-btn>
                                     </div>
@@ -85,8 +162,7 @@ const setAnswerCorrect = (answer: answer) => {
                                     </div>
                                 </v-card-text>
                                 <v-card-actions class="flex justify-end">
-                                    <v-icon
-                                        @click="quizStore.removeQuestion(quizStore.current_quiz!, i)">mdi-delete</v-icon>
+                                    <v-icon @click="confirmDeleteQuestion(i)">mdi-delete</v-icon>
                                 </v-card-actions>
                             </v-card>
                         </v-expansion-panel-text>
@@ -95,16 +171,31 @@ const setAnswerCorrect = (answer: answer) => {
             </v-card-text>
             <v-btn @click="quizStore.addQuestion(quizStore.current_quiz!)">Frage hinzufügen</v-btn>
             <v-card-item class="border-t-2">
-                <div class="w-full flex justify-evenly">
-                    <v-btn @click="quizStore.updateQuiz(quizStore.current_quiz!)" color="primary">
+                <div class="w-full flex flex-col sm:flex-row sm:justify-evenly">
+                    <v-btn class="m-1" @click="quizStore.updateQuiz(quizStore.current_quiz!)" color="primary">
                         <v-icon>mdi-content-save</v-icon>
                         Speichern</v-btn>
-                    <v-btn @click="quizStore.removeQuiz(quizStore.current_quiz!)" color="error">
+                    <v-btn class="m-1" @click="confirmDeleteQuiz(quizStore.current_quiz!)" color="error">
                         <v-icon>mdi-delete</v-icon>
                         Löschen</v-btn>
+                    <v-btn class="m-1" @click="quizStore.loadQuiz(quizStore.current_quiz!.id)" color="primary">
+                        <v-icon>mdi-refresh</v-icon>
+                        Abbrechen</v-btn>
+                    <v-btn class="m-1" @click="$router.push('/quiz/' + quizStore.current_quiz?.id + '/')">Quiz starten</v-btn>
                 </div>
             </v-card-item>
         </v-card>
+        <!-- dialog -->
+        <v-dialog v-model="alert.show" max-width="500px">
+            <v-card>
+                <v-card-title>{{ alert.title }}</v-card-title>
+                <v-card-text>{{ alert.text }}</v-card-text>
+                <v-card-actions>
+                    <v-btn @click="alert.cancel()" color="error">Abbrechen</v-btn>
+                    <v-btn @click="alert.confirm()" color="primary">Bestätigen</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </main>
     <LoadingPage v-else />
 </template>
