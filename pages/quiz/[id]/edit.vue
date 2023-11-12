@@ -113,7 +113,7 @@ const confirmDeleteAnswer = (question: question, answer_idx: number) => {
 </script>
 
 <template>
-    <main v-if="loaded" id="main_editing">
+    <main v-if="loaded" id="main_editing" class="p-4 max-w-3xl mx-auto">
         <h1 class="p-4 text-3xl flex justify-between"><span>
                 <v-icon size="20">mdi-pencil</v-icon>
                 Edit Quiz
