@@ -8,7 +8,7 @@ const userstore = useUserstore();
 userstore.init();
 // try to session
 
-onBeforeMount(async() => {
+onBeforeMount(async () => {
   await userstore.session();
   const router = useRouter();
   if (!userstore.loggedIn) {

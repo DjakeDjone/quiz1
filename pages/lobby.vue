@@ -14,6 +14,12 @@ if (user.loggedIn) {
     router.push('/login');
 }
 
+onMounted(async () => {
+    console.log('quizStore', useQuizStore());
+    // load quizzes
+    await useQuizStore().searchQuizzes();
+});
+
 const show_dialog = ref(false);
 let dialog = ref({
     title: '',
@@ -66,6 +72,12 @@ const createGroup = async () => {
     }
     show_dialog.value = true;
 }
+const takeQuiz = async (quizId: string) => {
+    const quiz = await useQuizStore().loadQuiz(quizId);
+    if (quiz) {
+        router.push('/quiz/' + quizId);
+    }
+}
 </script>
 
 <template>
@@ -107,9 +119,17 @@ const createGroup = async () => {
         <div>
             <v-card>
                 <v-card-title>
-                    <v-text-field label="Search" variant="outlined"></v-text-field>
+                    <v-text-field label="Search" variant="outlined" v-model="useQuizStore().search"
+                        @keyup.enter="useQuizStore().searchQuizzes()" />
                 </v-card-title>
-                
+                <v-card-text>
+                    <v-list>
+                        <v-list-item v-for="quiz in useQuizStore().search_results" :key="quiz.id"
+                            @click="router.push('/quiz/' + quiz.id)">
+                            <v-list-item-title @click="takeQuiz(quiz.id)">{{ quiz.name }}</v-list-item-title>
+                        </v-list-item>
+                    </v-list>
+                </v-card-text>
             </v-card>
         </div>
 

@@ -65,8 +65,13 @@ export const useQuizStore = defineStore("quiz", {
                 return false;
             }
             try {
+                
+                let filter = '';
+                if (this.search != '') {
+                    filter = 'name~"' + this.search + '"';
+                }
                 const record = await useUserstore().pb!.collection('quizzes').getList<Quiz>(1, 10, {
-                    filter: 'name="' + this.search + '"',
+                    filter: filter,
                 });
                 console.log("RECORD:", record);
                 record.items.forEach((quiz) => {

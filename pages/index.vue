@@ -4,6 +4,7 @@ import { useQuizStore } from '~/stores/quiz';
 
 const user = useUserstore();
 const quizStore = useQuizStore();
+
 onMounted(async () => {
     console.log('quizStore', quizStore);
 });
