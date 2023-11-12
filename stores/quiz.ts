@@ -52,14 +52,63 @@ export const useQuizStore = defineStore("quiz", {
             questions: [] as question[],
             public: false,
         } as Quiz,
+
+        // search
+        search: "",
+        search_results: [] as Quiz[],
     }),
     actions: {
+        // search
+        async searchQuizzes() {
+            if (useUserstore().pb == null) {
+                useMessagestore().throwError("PocketBase not initialized");
+                return false;
+            }
+            try {
+                const record = await useUserstore().pb!.collection('quizzes').getList<Quiz>(1, 10, {
+                    filter: 'name="' + this.search + '"',
+                });
+                console.log("RECORD:", record);
+                record.items.forEach((quiz) => {
+                    quiz.pushed = true;
+                });
+                this.search_results = record.items;
+                if (this.search_results.length >= 10) {
+                    return this.search_results.slice(0, 10);
+                } else {
+                    let filter = 'name~"' + this.search + '"';
+                    for (let i = 0; i < this.search_results.length; i++) {
+                        filter += ' && quiz!="' + this.search_results[i].id + '"';
+                    }
+                    const record_questions = await useUserstore().pb!.collection('questions').getList<Quiz>(1, 10 - this.search_results.length, {
+                        filter: filter,
+                    });
+                    this.search_results.push(...record_questions.items);
+                    if (this.search_results.length >= 10) {
+                        return this.search_results.slice(0, 10);
+                    } else {
+                        let filter2 = 'name~"' + this.search + '" || question~"' + this.search + '"';
+                        for (let i = 0; i < this.search_results.length; i++) {
+                            filter2 += ' && quiz!="' + this.search_results[i].id + '"';
+                        }
+                        const record_questions_2 = await useUserstore().pb!.collection('questions').getList<Quiz>(1, 10 - this.search_results.length, {
+                            filter: filter,
+                        });
+                        this.search_results.push(...record_questions_2.items);
+                        return this.search_results.slice(0, 10);
+                    }
+                }
+            } catch (e) {
+                useMessagestore().throwError("Quizzes could not be loaded");
+                return false;
+            }
+        },
         async loadOwnQuizzes() {
             if (useUserstore().pb == null) {
                 useMessagestore().throwError("PocketBase not initialized");
                 return false;
             }
-            try {               
+            try {
                 const record = await useUserstore().pb!.collection('quizzes').getFullList<Quiz>({
                     filter: 'creator="' + useUserstore().userId + '"',
                 });
@@ -85,7 +134,7 @@ export const useQuizStore = defineStore("quiz", {
                     "name": this.current_quiz?.name,
                     "description": this.current_quiz?.description,
                     "public": this.current_quiz?.public,
-                    "creator": useUserstore().userId
+                    "creator": useUserstore().userId,
                 };
                 const record = await useUserstore().pb!.collection('quizzes').create(data);
                 console.log(record);
@@ -176,11 +225,11 @@ export const useQuizStore = defineStore("quiz", {
             this.current_quiz!.questions.push({
                 id: "",
                 question: get_random_element(BSP_QUESTIONS),
-                    quizId: quiz.id,
-                    possible_answers: 1,
-                    // chosenAnswer: -1,
-                    answers: [],
-                    pushed: false,
+                quizId: quiz.id,
+                possible_answers: 1,
+                // chosenAnswer: -1,
+                answers: [],
+                pushed: false,
             });
         },
         addAnswer(question: question) {
@@ -327,6 +376,7 @@ export const useQuizStore = defineStore("quiz", {
                         const data = {
                             "question": question.question,
                             "quiz": question.quizId,
+                            "possible_answers": question.possible_answers,
                         };
                         const record = await useUserstore().pb!.collection('questions').create(data);
                         console.log(record);
@@ -337,6 +387,7 @@ export const useQuizStore = defineStore("quiz", {
                         const data = {
                             "question": question.question,
                             "quiz": question.quizId,
+                            "possible_answers": question.possible_answers,
                         };
                         const record = await useUserstore().pb!.collection('questions').update(question.id, data);
                         console.log(record);

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useUserstore } from '~/stores/user';
+import { useUserstore, uploadFile } from '~/stores/user';
 import { useQuizStore } from '~/stores/quiz';
 
 const user = useUserstore();
@@ -7,22 +7,6 @@ const quizStore = useQuizStore();
 onMounted(async () => {
     console.log('quizStore', quizStore);
 });
-
-const uploadFile = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.onchange = async () => {
-        const file = input.files?.[0];
-        if (!file) {
-            return;
-        }
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('title', file.name);
-        user.uploadFile(formData);
-    };
-    input.click();
-};
 
 </script>
 
@@ -42,10 +26,10 @@ const uploadFile = () => {
             </v-card-title> -->
             <v-card-item class="flex justify-center items-center">
                 <v-btn class="w-full m-2 sm:w-fit" color="primary" @click="$router.push('/quiz/')">
-                    View Quizzes
+                    View own Quizzes
                 </v-btn>
-                <v-btn class="w-full m-2 sm:w-fit" color="secondary" @click="$router.push('/user')">
-                    Profile and Groups
+                <v-btn class="w-full m-2 sm:w-fit" color="secondary" @click="$router.push('/lobby')">
+                    Groups and Lobby
                 </v-btn>
             </v-card-item>
         </v-card>

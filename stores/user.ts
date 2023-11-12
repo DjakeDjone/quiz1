@@ -5,14 +5,40 @@ import type { RecordModel } from 'pocketbase';
 import { useMessagestore } from "./msg";
 import type { Quiz } from "./quiz";
 
+export type Group = {
+    id: string;
+    created: string;
+    updated: string;
+    name: string;
+    description: string;
+    quizzes: Quiz[];
+    users: string[];
+    files: string[];
+};
+
+export const uploadFile = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.onchange = async () => {
+        const file = input.files?.[0];
+        if (!file) {
+            return;
+        }
+        useUserstore().uploadFile(file)
+    };
+    input.click();
+};
+
 export const useUserstore = defineStore("user", {
     state: () => ({
         loggedIn: false,
         username: Cookies.get("username") || "",
         password: Cookies.get("password") || "",
         email: Cookies.get("email") || "",
-        groups: [] as string[],
+        groups: [] as Group[],
+        current_group: {} as Group,
         files: [] as string[],
+        friends: [] as string[],
         points: 0,
         token: "",
         userId: "",
@@ -69,14 +95,34 @@ export const useUserstore = defineStore("user", {
                 this.token = this.pb!.authStore.token;
                 this.userId = authData.record.id;
                 this.points = authData.record.points;
+                this.email = authData.record.email;
+                this.friends = authData.record.friends;
                 console.log("user", authData.record);
                 for (let i = 0; i < authData.record.files.length; i++) {
                     const file = useRuntimeConfig().public.apiBase + 'api/files/_pb_users_auth_/' + this.userId + '/' + authData.record.files[i];
                     this.files[i] = file;
                 }
+                this.loadGroups();
                 this.setCookies();
             } catch (e) {
                 useMessagestore().throwError("User could not be logged in");
+            }
+        },
+        async loadGroups() {
+            if (this.pb == null) {
+                useMessagestore().throwError("PocketBase not initialized");
+            }
+            try {
+                const record = await this.pb!.collection('groups').getFullList<Group>({
+                    filter: 'users.id="' + this.userId + '"',
+                    sort: '-created',
+                });
+                this.groups = record;
+                return record;
+                console.log(record);
+            } catch (e) {
+                console.error(e);
+                useMessagestore().throwError("Groups could not be loaded");
             }
         },
         logout() {
@@ -117,11 +163,77 @@ export const useUserstore = defineStore("user", {
                 }
             } return "";
         },
-        uploadFile(file: FormData) {
+        async uploadFile(file: File) {
             if (this.pb == null) {
                 useMessagestore().throwError("PocketBase not initialized");
             }
-            this.pb!.collection('users').create(file);
+            try {
+                const record = await this.pb!.collection('users').update(this.userId, {
+                    files: this.files.push(file.name),
+                });
+                console.log(record);
+                return true;
+            } catch (e) {
+                console.error(e);
+                useMessagestore().throwError("File could not be uploaded");
+                return false;
+            }
+        },
+        async createGroup(group: Group) {
+            if (this.pb == null) {
+                useMessagestore().throwError("PocketBase not initialized");
+            }
+            try {
+                const record = await this.pb!.collection('groups').create<Group>(group);
+                console.log(record);
+                return true;
+            } catch (e) {
+                console.error(e);
+                useMessagestore().throwError("Group could not be created");
+                return false;
+            }
+        },
+        async updateGroup(group: Group) {
+            if (this.pb == null) {
+                useMessagestore().throwError("PocketBase not initialized");
+            }
+            try {
+                const record = await this.pb!.collection('groups').update<Group>(group.id, group);
+                console.log(record);
+                return true;
+            } catch (e) {
+                console.error(e);
+                useMessagestore().throwError("Group could not be updated");
+                return false;
+            }
+        },
+        async deleteGroup(group: Group) {
+            if (this.pb == null) {
+                useMessagestore().throwError("PocketBase not initialized");
+            }
+            try {
+                const record = await this.pb!.collection('groups').delete(group.id);
+                console.log(record);
+                return true;
+            } catch (e) {
+                console.error(e);
+                useMessagestore().throwError("Group could not be deleted");
+                return false;
+            }
+        },
+        async getGroup(id: string) {
+            if (this.pb == null) {
+                useMessagestore().throwError("PocketBase not initialized");
+            }
+            try {
+                const record = await this.pb!.collection('groups').getOne<Group>(id);
+                console.log(record);
+                return record;
+            } catch (e) {
+                console.error(e);
+                useMessagestore().throwError("Group could not be loaded");
+                return false;
+            }
         },
     },
 });
