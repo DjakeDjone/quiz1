@@ -33,7 +33,7 @@ const register = async () => {
 <template>
     <main>
         <v-sheet width="400" max-width="100%" class="mx-auto mt-20">
-            <v-form @submit.prevent>
+            <v-form @submit.prevent="register()">
                 <v-card>
                     <v-card-title>Register</v-card-title>
                     <v-card-text>
@@ -46,9 +46,11 @@ const register = async () => {
                             :rules="rulesPassword" :type="passwordVisible ? 'text' : 'password'"
                             :append-inner-icon="passwordVisible ? 'mdi-eye' : 'mdi-eye-off'"
                             @click:append-inner="passwordVisible = !passwordVisible" />
+                        <v-checkbox v-model="userstore.cookieAllowed" :rules="[v => !!v || 'You must agree to continue!']"
+                            label="Do you agree?" required true-icon="mdi-check" false-icon="mdi-close" color="primary"></v-checkbox>
                     </v-card-text>
                     <v-card-actions>
-                        <v-btn :loading="loading" :disabled="loading" color="primary" class="w-full" @click="register()">
+                        <v-btn :loading="loading" :disabled="loading" color="primary" class="w-full" type="submit">
                             Register
                         </v-btn>
                     </v-card-actions>

@@ -17,7 +17,7 @@ if (user.loggedIn) {
 onMounted(async () => {
     console.log('quizStore', useQuizStore());
     // load quizzes
-    await useQuizStore().searchQuizzes();
+    // await useQuizStore().searchQuizzes();
 });
 
 const show_dialog = ref(false);
@@ -72,26 +72,36 @@ const createGroup = async () => {
     }
     show_dialog.value = true;
 }
-const takeQuiz = async (quizId: string) => {
-    const quiz = await useQuizStore().loadQuiz(quizId);
-    if (quiz) {
-        router.push('/quiz/' + quizId);
-    }
+
+const rulesUsername = [
+    (v: string) => !!v || 'Username is required',
+    (v: string) => v.length <= 20 || 'Username must be less than 20 characters',
+];
+const rulesPassword = [
+    (v: string) => !!v || 'Password is required',
+    (v: string) => v.length >= 8 || 'Password must be at least 8 characters',
+];
+const passwordVisible = ref(false);
+
+const logout = async () => {
+    await user.logout();
+    router.push('/login');
 }
+
 </script>
 
 <template>
     <main class="p-4 max-w-3xl mx-auto">
         <nav class="p-4">
             <div class="flex items-center justify-between">
-                <h2 class="text-4xl">Lobby</h2>
+                <h2 class="text-2xl">Profile</h2>
                 <div class="inline">
-                    <v-btn class="ml-auto w w-fit relative" color="primary" @click="router.push('/profile')">
+                    <!-- <v-btn class="ml-auto w w-fit relative" color="primary" @click="router.push('/profile')">
                         <v-icon>mdi-account</v-icon>
                         <v-tooltip location="bottom" activator="parent">
                             <span>Profile</span>
                         </v-tooltip>
-                    </v-btn>
+                    </v-btn> -->
                     <v-btn class="ml-4 w w-fit relative" color="primary" @click="router.push('/')">
                         <v-icon>mdi-home</v-icon>
                         <v-tooltip location="bottom" activator="parent">
@@ -100,16 +110,54 @@ const takeQuiz = async (quizId: string) => {
                     </v-btn>
                 </div>
             </div>
+            <h1 class="ml-8 text-4xl">{{ user.username }}</h1>
         </nav>
-        <v-card class="m-4" variant="tonal">
+        <v-card class="my-2" variant="tonal">
             <v-card-title>
-                Group:
+                Settings:
+            </v-card-title>
+            <v-card-item>
+                <v-form>
+                    <v-text-field v-model="user.username" :rules="rulesUsername" label="Username" required
+                        prepend-inner-icon="mdi-account" />
+                    <v-text-field v-model="user.password" label="Password" required
+                        hint="Enter your password to access this website" prepend-inner-icon="mdi-lock"
+                        :rules="rulesPassword" :type="passwordVisible ? 'text' : 'password'" 
+                        :append-inner-icon="passwordVisible ? 'mdi-eye' : 'mdi-eye-off'"
+                        @click:append-inner="passwordVisible = !passwordVisible" />
+                    <v-checkbox v-model="user.cookieAllowed" :rules="[v => !!v || 'You must agree to continue!']"
+                        label="Do you agree our terms of service and privacy policy?" required true-icon="mdi-check"
+                        false-icon="mdi-close" color="primary"></v-checkbox>
+                    <div class="w-full flex">
+                        <v-btn class="w-1/2" color="primary" @click="user.saveUser()">
+                            Submit
+                        </v-btn>
+                        <v-btn class="w-1/2" color="secondary" @click="logout()">
+                            Logout
+                        </v-btn>
+                    </div>
+                </v-form>
+            </v-card-item>
+        </v-card>
+        <v-card class="my-2" variant="tonal">
+            <v-card-title>
+                Groups:
             </v-card-title>
             <v-card-item>
                 <v-list v-if="user.groups.length > 0">
-                    <v-list-item v-for="group in user.groups" class="flex items-center text-lg">
-                        <v-icon class="m-3">mdi-account-group</v-icon>
-                        <span>{{ group.name }}</span>
+                    <v-list-item v-for="group in user.groups"
+                        class="transition-all flex items-center text-lg hover:bg-[#ffffff09]">
+                        <v-list-item-title class="cursor-pointer text-lg flex items-center"
+                            @click="router.push('/group/' + group.id)">
+                            <span>
+                                <v-icon v-if="group.users.length > 1" class="m-3">mdi-account-multiple</v-icon>
+                                <v-icon v-else class="m-3">mdi-account</v-icon>
+                            </span>
+                            {{ group.name }}
+                            <p class="text-sm ml-4 text-gray-400">
+                                <span v-html="group.description" />
+                            </p>
+                        </v-list-item-title>
                     </v-list-item>
                 </v-list>
                 <v-list v-else>
@@ -122,23 +170,6 @@ const takeQuiz = async (quizId: string) => {
                 </v-btn>
             </v-card-item>
         </v-card>
-        <div>
-            <v-card>
-                <v-card-title>
-                    <v-text-field label="Search" variant="outlined" v-model="useQuizStore().search"
-                        @keyup.enter="useQuizStore().searchQuizzes()" />
-                </v-card-title>
-                <v-card-text>
-                    <v-list>
-                        <v-list-item v-for="quiz in useQuizStore().search_results" :key="quiz.id"
-                            @click="router.push('/quiz/' + quiz.id)">
-                            <v-list-item-title @click="takeQuiz(quiz.id)">{{ quiz.name }}</v-list-item-title>
-                        </v-list-item>
-                    </v-list>
-                </v-card-text>
-            </v-card>
-        </div>
-
         <!-- dialog -->
         <v-dialog v-model="show_dialog">
             <v-card>

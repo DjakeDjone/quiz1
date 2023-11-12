@@ -43,7 +43,7 @@ export const useUserstore = defineStore("user", {
         token: "",
         userId: "",
         pb: null as PocketBase | null,
-        cookieAllowed: true as boolean,
+        cookieAllowed: false as boolean,
     }),
     actions: {
         async init() {
@@ -235,5 +235,24 @@ export const useUserstore = defineStore("user", {
                 return false;
             }
         },
+        async saveUser() {
+            // update user
+            if (this.pb == null) {
+                useMessagestore().throwError("PocketBase not initialized");
+            }
+            try {
+                const record = await this.pb!.collection('users').update(this.userId, {
+                    username: this.username,
+                    email: this.email,
+                    password: this.password,
+                });
+                console.log(record);
+                return true;
+            } catch (e) {
+                console.error(e);
+                useMessagestore().throwError("User could not be updated");
+                return false;
+            }
+        }
     },
 });
