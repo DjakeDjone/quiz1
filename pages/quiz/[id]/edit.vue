@@ -124,8 +124,13 @@ const confirmDeleteAnswer = (question: question, answer_idx: number) => {
         </h1>
         <v-card>
             <v-card-title v-if="quizStore.current_quiz">
-                <v-text-field label="Title" variant="outlined" v-model="quizStore.current_quiz.name"
-                    v-on:update:model-value="quizStore.current_quiz.pushed = false"></v-text-field>
+                <div class="flex">
+                    <v-text-field label="Title" variant="outlined" v-model="quizStore.current_quiz.name"
+                        v-on:update:model-value="quizStore.current_quiz.pushed = false"></v-text-field>
+                    <div class="px-4">
+                        <v-switch color="primary" v-model="quizStore.current_quiz.public" label="Public"></v-switch>
+                    </div>
+                </div>
                 <v-textarea label="Description" variant="outlined" counter v-model="quizStore.current_quiz.description"
                     v-on:update:model-value="quizStore.current_quiz.pushed = false" clearable
                     clear-icon="mdi-close-circle-outline" rows="1"></v-textarea>
@@ -181,7 +186,8 @@ const confirmDeleteAnswer = (question: question, answer_idx: number) => {
                     <v-btn class="m-1" @click="quizStore.loadQuiz(quizStore.current_quiz!.id)" color="primary">
                         <v-icon>mdi-refresh</v-icon>
                         Abbrechen</v-btn>
-                    <v-btn class="m-1" @click="$router.push('/quiz/' + quizStore.current_quiz?.id + '/')">Quiz starten</v-btn>
+                    <v-btn class="m-1" @click="$router.push('/quiz/' + quizStore.current_quiz?.id + '/')">Quiz
+                        starten</v-btn>
                 </div>
             </v-card-item>
         </v-card>
