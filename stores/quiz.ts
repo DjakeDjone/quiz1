@@ -474,5 +474,11 @@ export const useQuizStore = defineStore("quiz", {
                 return false;
             }
         },
+        async saveQuizLocal() {
+            localStorage.setItem("quiz", JSON.stringify(this.current_quiz));
+        },
+        async loadQuizLocal() {
+            this.current_quiz = JSON.parse(localStorage.getItem("quiz") || "{}");
+        },
     },
 });

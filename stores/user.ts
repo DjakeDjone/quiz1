@@ -16,6 +16,17 @@ export type Group = {
     files: string[];
 };
 
+export type User = {
+    id: string;
+    created: string;
+    updated: string;
+    username: string;
+    email: string;
+    points: number;
+    friends: string[];
+    files: string[];
+}
+
 export const uploadFile = () => {
     const input = document.createElement('input');
     input.type = 'file';
