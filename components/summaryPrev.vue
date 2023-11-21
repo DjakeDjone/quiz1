@@ -10,6 +10,10 @@ const props = defineProps({
         type: String,
         required: true,
     },
+    create: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const summary = computed(() => {
@@ -25,7 +29,7 @@ const summary = computed(() => {
 <template>
     <v-card width="200" height="200" v-if="summary" variant="outlined"
         class="transition-all hover:scale-[.99] cursor-pointer">
-        <v-card-actions>
+        <v-card-actions v-if="!create">
             <div class="border-b-2">
                 <p>
                     {{ summary.writer_obj?.username }} - {{ (new Date(summary.created)).toLocaleDateString() }},
@@ -35,8 +39,13 @@ const summary = computed(() => {
                 </p>
             </div>
         </v-card-actions>
-        <v-card-text class="break-words !pt-0 !px-2">
+        <v-card-text class="break-words !pt-0 !px-2" v-if="!create">
             <p v-html="summary.data"></p>
         </v-card-text>
+        <v-card-title v-if="create">
+            <v-icon>
+                mdi-plus
+            </v-icon>
+        </v-card-title>
     </v-card>
 </template>

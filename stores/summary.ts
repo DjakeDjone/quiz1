@@ -26,12 +26,15 @@ export type Comment = {
     content: string;
     writer: string;
     summary: string;
+    comments: string[] | null;
     // for the frontend
     writer_obj: User | null;
+    comments_objs: Comment[] | null;
 }
 export const useSummaryStore = defineStore("summary", {
     state: () => ({
         summaries: [] as Summary[],
+        own_summaries: [] as Summary[],
         loading: false,
         curr_summary: null as Summary | null,
     }),
@@ -62,12 +65,12 @@ export const useSummaryStore = defineStore("summary", {
             try {
                 const records = await useUserstore().pb?.collection("summaries").getFullList({
                     sort: "-created",
-                    filter: filterword.length>0 ? `data ~ '${filterword}'` : '',
+                    filter: filterword.length > 0 ? `data ~ '${filterword}'` : '',
                     expand: 'writer,comments,comments.writer'
                 });
                 if (records) {
-                    this.summaries = records as unknown as Summary[];
-                    this.summaries.forEach((summary, i) => {
+                    this.own_summaries = records as unknown as Summary[];
+                    this.own_summaries.forEach((summary, i) => {
                         summary.quiz_obj = records[i].expand?.quiz as Quiz;
                         summary.comments_objs = records[i].expand?.comments as Comment[] | null;
                         if (summary.comments_objs) {
@@ -83,10 +86,41 @@ export const useSummaryStore = defineStore("summary", {
             }
             this.loading = false;
         },
+        async loadOwnSummaries() {
+            watch(() => useUserstore().loggedIn, async() => {
+                if (this.loading) {
+                    return;
+                }
+                this.loading = true;
+                try {
+                    const records = await useUserstore().pb?.collection("summaries").getFullList({
+                        sort: "-created",
+                        filter: `writer='${useUserstore().userId}'`,
+                        expand: 'writer,comments,comments.writer'
+                    });
+                    if (records) {
+                        this.summaries = records as unknown as Summary[];
+                        this.summaries.forEach((summary, i) => {
+                            summary.quiz_obj = records[i].expand?.quiz as Quiz;
+                            summary.comments_objs = records[i].expand?.comments as Comment[] | null;
+                            if (summary.comments_objs) {
+                                summary.comments_objs.forEach((comment, j) => {
+                                    comment.writer_obj = records[i].expand?.comments[j].expand?.writer as User;
+                                });
+                            }
+                            summary.writer_obj = records[i].expand?.writer as User;
+                        });
+                    }
+                } catch (e) {
+                    useMessagestore().throwError(e as string);
+                }
+                this.loading = false;
+            });
+        },
         async loadSummary(id: string) {
             try {
                 const record = await useUserstore().pb?.collection("summaries").getOne(id, {
-                    expand: 'comments,writer'
+                    expand: 'writer,comments.writer'
                 });
                 console.log(record);
                 if (record) {
@@ -107,12 +141,61 @@ export const useSummaryStore = defineStore("summary", {
                             comment.writer_obj = record.expand?.comments[j].expand?.writer as User;
                         });
                     }
+                    this.loadComments(id);
                     return this.curr_summary;
                 }
 
             } catch (e) {
                 useMessagestore().throwError(e as string);
             }
-        }
+        },
+        async loadComments(id: string) {
+            if (!this.curr_summary) {
+                return;
+            }
+            try {
+                const record = await useUserstore().pb?.collection("comments").getFullList({
+                    filter: `summary='${id}'`,
+                    expand: 'writer,comments.writer',
+                    sort: '-created'
+                });
+                if (record) {
+                    this.curr_summary.comments_objs = record as unknown as Comment[];
+                    this.curr_summary.comments_objs.forEach((comment, j) => {
+                        comment.writer_obj = record[j].expand?.writer as User;
+                        comment.comments_objs = record[j].expand?.comments as Comment[] | null;
+                        if (comment.comments_objs) {
+                            comment.comments_objs.forEach((comment2, k) => {
+                                comment2.writer_obj = record[j].expand?.comments[k].expand?.writer as User;
+                            });
+                        }
+                    });
+                }
+            } catch (e) {
+                useMessagestore().throwError(e as string);
+            }
+        },
+        async createComment(content: string) {
+            if (!useUserstore().loggedIn) {
+                useMessagestore().throwError("You must be logged in to create a comment");
+                return;
+            }
+            if (!this.curr_summary) {
+                useMessagestore().throwError("No summary selected");
+                return;
+            }
+            try {
+                const record = await useUserstore().pb?.collection("comments").create<Comment>({
+                    content,
+                    writer: useUserstore().userId,
+                    summary: this.curr_summary.id,
+                });
+                if (record) {
+                    this.curr_summary.comments_objs?.push(record);
+                }
+            } catch (e) {
+                useMessagestore().throwError(e as string);
+            }
+        },
     }
 });
