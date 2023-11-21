@@ -13,6 +13,12 @@ watch(searchword, (newVal) => {
     summaryStore.loadSummaries(newVal);
 });
 
+const createSummary = async() => {
+    // useRouter().push('/summaries');
+    await summaryStore.createSummary("New Summary");
+    useRouter().push(`/summaries/${summaryStore.curr_summary?.id}`);
+};
+
 </script>
 
 <template>
@@ -23,10 +29,12 @@ watch(searchword, (newVal) => {
         <h2 class="text-2xl">
             <u>Own Summaries:</u>
         </h2>
-        <div class="my-4 border-b-2" v-if="summaryStore.own_summaries">
-            <SummaryPrev :create="true"/>
-            <SummaryPrev v-for="summary in summaryStore.own_summaries" :key="summary.id" :id="summary.id" class="m-4"
+        <div class="my-4 border-b-2 flex" >
+            <SummaryPrev :create="true" class="m-4 ml-0" @click="createSummary()" />
+            <div v-if="summaryStore.own_summaries" class="inline-flex">
+                <SummaryPrev v-for="summary in summaryStore.own_summaries" :key="summary.id" :id="summary.id" class="m-4"
                 @click="useRouter().push(`/summaries/${summary.id}`)" />
+            </div>
         </div>
         <h2 class="text-2xl">
             <u>Public Summaries:</u>

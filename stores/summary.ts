@@ -51,7 +51,8 @@ export const useSummaryStore = defineStore("summary", {
                     quiz: this.curr_summary?.quiz || null,
                 });
                 if (record) {
-                    this.summaries.push(record);
+                    // this.summaries.push(record);
+                    this.curr_summary = record;
                 }
             } catch (e) {
                 useMessagestore().throwError(e as string);
@@ -191,7 +192,10 @@ export const useSummaryStore = defineStore("summary", {
                     summary: this.curr_summary.id,
                 });
                 if (record) {
-                    this.curr_summary.comments_objs?.push(record);
+                    if (!this.curr_summary.comments_objs) {
+                        this.curr_summary.comments_objs = [];
+                    }
+                    this.curr_summary.comments_objs.push(record);
                 }
             } catch (e) {
                 useMessagestore().throwError(e as string);

@@ -8,7 +8,7 @@ const summaryStore = useSummaryStore();
 const props = defineProps({
     id: {
         type: String,
-        required: true,
+        required: false,
     },
     create: {
         type: Boolean,
@@ -27,9 +27,8 @@ const summary = computed(() => {
 </script>
 
 <template>
-    <v-card width="200" height="200" v-if="summary" variant="outlined"
-        class="transition-all hover:scale-[.99] cursor-pointer">
-        <v-card-actions v-if="!create">
+    <v-card width="200" height="200" variant="outlined" class="transition-all hover:scale-[.99] cursor-pointer">
+        <v-card-actions v-if="!create && summary">
             <div class="border-b-2">
                 <p>
                     {{ summary.writer_obj?.username }} - {{ (new Date(summary.created)).toLocaleDateString() }},
@@ -39,13 +38,18 @@ const summary = computed(() => {
                 </p>
             </div>
         </v-card-actions>
-        <v-card-text class="break-words !pt-0 !px-2" v-if="!create">
+        <v-card-text class="break-words !pt-0 !px-2" v-if="summary">
             <p v-html="summary.data"></p>
         </v-card-text>
-        <v-card-title v-if="create">
-            <v-icon>
-                mdi-plus
-            </v-icon>
+        <v-card-title v-if="create" class="w-full h-full !flex justify-center items-center">
+            <div>
+                <v-icon class="hover:!scale-105 transition-all" size="80">
+                    mdi-plus
+                </v-icon>
+                <v-tooltip activator="parent" color="primary" location="bottom">
+                    <span>Create Summary</span>
+                </v-tooltip>
+            </div>
         </v-card-title>
     </v-card>
 </template>
