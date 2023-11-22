@@ -6,7 +6,6 @@ import { VSkeletonLoader, VBottomSheet, VInfiniteScroll } from 'vuetify/lib/labs
 import { aliases, fa } from 'vuetify/iconsets/fa'
 import { mdi } from 'vuetify/iconsets/mdi'
 import { client } from 'process'
-import { useContentHandler } from '~/stores/contentHandler'
 
 export default defineNuxtPlugin(nuxtApp => {
     const vuetify = createVuetify({
@@ -51,6 +50,7 @@ export default defineNuxtPlugin(nuxtApp => {
                         success: '#4caf50',
                         warning: '#ff9800',
                     },
+                    
                 },
                 dark: {
                     dark: true,
@@ -59,6 +59,16 @@ export default defineNuxtPlugin(nuxtApp => {
                         secondary: '#291f00',
                         accent: '#f86c30',
                         background: '#140f00',
+                        surface: '#1f1800',
+                        "on-background": '#fefaf6',
+                        "on-code": '#fefaf6',
+                        "on-primary": '#fefaf6',
+                        "on-secondary": '#fefaf6',
+                        "on-surface": '#fefaf6',
+                        error: '#b00020',
+                        info: '#2196f3',
+                        success: '#4caf50',
+                        warning: '#ff9800',
                     },
                 },
             }

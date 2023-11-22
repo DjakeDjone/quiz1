@@ -70,8 +70,8 @@ export const useSummaryStore = defineStore("summary", {
                     expand: 'writer,comments,comments.writer'
                 });
                 if (records) {
-                    this.own_summaries = records as unknown as Summary[];
-                    this.own_summaries.forEach((summary, i) => {
+                    this.summaries = records as unknown as Summary[];
+                    this.summaries.forEach((summary, i) => {
                         summary.quiz_obj = records[i].expand?.quiz as Quiz;
                         summary.comments_objs = records[i].expand?.comments as Comment[] | null;
                         if (summary.comments_objs) {
@@ -100,8 +100,8 @@ export const useSummaryStore = defineStore("summary", {
                         expand: 'writer,comments,comments.writer'
                     });
                     if (records) {
-                        this.summaries = records as unknown as Summary[];
-                        this.summaries.forEach((summary, i) => {
+                        this.own_summaries = records as unknown as Summary[];
+                        this.own_summaries.forEach((summary, i) => {
                             summary.quiz_obj = records[i].expand?.quiz as Quiz;
                             summary.comments_objs = records[i].expand?.comments as Comment[] | null;
                             if (summary.comments_objs) {
@@ -197,6 +197,20 @@ export const useSummaryStore = defineStore("summary", {
                     }
                     this.curr_summary.comments_objs.push(record);
                 }
+            } catch (e) {
+                useMessagestore().throwError(e as string);
+            }
+        },
+        async updateSummary(data: string) {},
+        async deleteSummary() {
+            if (!this.curr_summary) {
+                useMessagestore().throwError("No summary selected");
+                return;
+            }
+            try {
+                await useUserstore().pb?.collection("summaries").delete(this.curr_summary.id);
+                this.curr_summary = null;
+                useRouter().push("/summaries");
             } catch (e) {
                 useMessagestore().throwError(e as string);
             }

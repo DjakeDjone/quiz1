@@ -26,17 +26,17 @@ onMounted(async () => {
                 Actions
             </v-card-title> -->
             <v-card-item>
-                <div class="flex justify-between items-center">
+                <div class="flex flex-col sm:flex-row justify-between items-center">
                     <v-btn class="w-full m-2 sm:w-fit" color="primary" @click="$router.push('/quiz/')">
                         View own Quizzes
                     </v-btn>
                     <v-btn class="w-full m-2 sm:w-fit" color="secondary" @click="$router.push('/lobby')">
-                    Groups and Lobby
-                </v-btn>
-                <v-btn class="w-full m-2 sm:w-fit" color="primary" @click="$router.push('/summaries')">
-                    Summaries
-                </v-btn>
-            </div>
+                        Groups and Lobby
+                    </v-btn>
+                    <v-btn class="w-full m-2 sm:w-fit" color="primary" @click="$router.push('/summaries')">
+                        Summaries
+                    </v-btn>
+                </div>
             </v-card-item>
         </v-card>
         <div class="p-4">
