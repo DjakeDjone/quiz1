@@ -69,6 +69,11 @@ const data = ref('');
             </div>
         </div>
     </main>
+    <!-- <main class="md:p-4 md:flex p-4 max-w-7xl mx-auto">
+        <h2>
+            <u>Quiz:</u>
+        </h2>
+    </main> -->
 </template>
 
 <style scoped>

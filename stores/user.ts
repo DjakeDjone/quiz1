@@ -155,17 +155,20 @@ export const useUserstore = defineStore("user", {
             }
         },
         async loadCookies() {
-            this.username = Cookies.get("username") || "";
-            this.password = Cookies.get("password") || "";
-            this.email = Cookies.get("email") || "";
+            // this.username = Cookies.get("username") || "";
+            // this.password = Cookies.get("password") || "";
+            // this.email = Cookies.get("email") || "";
+            this.username = localStorage.getItem("username") || "";
+            this.password = localStorage.getItem("password") || "";
+            this.email = localStorage.getItem("email") || "";
         },
         setCookies() {
-            if (this.cookieAllowed == false) {
-                return;
-            }
-            Cookies.set("username", this.username);
-            Cookies.set("password", this.password);
-            Cookies.set("email", this.email);
+            // if (this.cookieAllowed == false) {
+            //     return;
+            // }
+            localStorage.setItem("username", this.username);
+            localStorage.setItem("password", this.password);
+            localStorage.setItem("email", this.email);
         },
         getFile(file: string) {
             for (let i = 0; i < this.files.length; i++) {
