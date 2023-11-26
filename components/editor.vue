@@ -20,7 +20,6 @@ onMounted(() => {
 
 <template>
     <main>
-        {{ editor }}
         <Editor tinymce-script-src="/cdn/tinymce/tinymce.min.js" :init="{
             menubar: false,
         }" @update:modelValue="(html) => $emit('update:modelValue', html)" v-model="editor"/>

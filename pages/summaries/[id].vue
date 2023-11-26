@@ -50,12 +50,12 @@ const data = ref('');
     </nav>
     <main class="md:p-4 md:flex p-4 max-w-7xl mx-auto min-h-[calc(100vh-5rem)]">
         <div class="w-full max-w-4xl bg-[rgb(var(--v-theme-surface))] dark:bg-[#cccccc] p-4 text-black rounded-md"
-            v-if="summaryStore.curr_summary && summaryStore.curr_summary.data">
+            v-if="summaryStore.curr_summary && summaryStore.curr_summary.data && summaryStore.curr_summary.writer !== userStore.userId">
             <p v-html="summaryStore.curr_summary?.data" class="text-[rgb(var(--v-theme-))]"></p>
         </div>
-        <!-- <div v-else-if="summaryStore.curr_summary && summaryStore.curr_summary.data" class="flex flex-col">
+        <div v-else-if="summaryStore.curr_summary && summaryStore.curr_summary.data" class="flex flex-col">
             <Editor v-if="summaryStore.curr_summary.data.length > 0" v-model="data" />
-        </div> -->
+        </div>
         <div class="flex flex-col ml-4">
             <h2 class="text-2xl"><u>Comments:</u></h2>
             <div class="max-h-[calc(100vh-10rem)] overflow-x-auto">

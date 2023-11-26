@@ -1,0 +1,33 @@
+nQuizTitle
+dQuizDescription
+tQuizType 
+#Question1
+*Answer1
+*Answer2
+*AnswerX
+#Question2
+*Answer1
+*Answer2
+*AnswerX
+#QuestionX
+*Answer1
+*Answer2
+*AnswerX
+```
+ChatGPT Anleitung:
+Please generate a quiz with the following format:
+```
+nQuizTitle
+dQuizDescription
+tQuizType
+#Question1
+*Answer1
+*Answer2
+*AnswerX
+#Question2
+*Answer1
+*Answer2
+#QuestionX
+``` for this summary: '''
+
+'''
