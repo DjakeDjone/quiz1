@@ -36,7 +36,7 @@ onBeforeMount(async () => {
 </template>
 
 <style>
-#mainMain {
+body {
   background-image: url('/bg.png');
   background-size: 100% 100%;
   background-position: center;

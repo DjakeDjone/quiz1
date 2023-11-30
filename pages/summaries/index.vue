@@ -30,7 +30,7 @@ const createSummary = async () => {
             </v-tooltip>
         </v-btn>
     </nav>
-    <main class="p-4 ml-4 min-h-[calc(100vh-5rem)]">
+    <main class="p-4 pl-8 min-h-[calc(100vh-4.3rem)]" id="mainSummaries">
         <h1 class="text-4xl">
             Summaries
         </h1>
@@ -45,8 +45,8 @@ const createSummary = async () => {
         <h2 class="text-2xl">
             <u>Public Summaries:</u>
         </h2>
-        <v-text-field v-model="searchword" label="Search" class="m-4 backdrop-blur-sm bg-[var(--contrast)]" variant="outlined" append-inner-icon="mdi-magnify"
-            @click:append-inner="searchword = ''" color="primary" />
+        <v-text-field v-model="searchword" label="Search" class="m-4 backdrop-blur-sm !bg-[#ffffff96] dark:!bg-[#ffffff1f]" variant="outlined" append-inner-icon="mdi-magnify"
+            @click:append-inner="searchword = ''" color="primary" hide-details />
             <!-- center -->
         <div v-if="summaryStore.summaries" class="py-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             <SummaryPrev v-for="summary in summaryStore.summaries" :key="summary.id" :id="summary.id" class="m-auto"
@@ -54,3 +54,14 @@ const createSummary = async () => {
         </div>
     </main>
 </template>
+
+<style scoped>
+#mainSummaries {
+    background-image: url('/bg_footer.png');
+    background-size: 20rem;
+    background-position: left bottom;
+    background-repeat: no-repeat;
+    /* move the background 1rem to the bottom */
+}
+
+</style>

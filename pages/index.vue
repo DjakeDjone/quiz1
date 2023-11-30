@@ -19,9 +19,9 @@ const logout = async () => {
 
 <template>
     <nav
-        class="flex flex-col sm:flex-row flex-wrap items-cente p-4 bg-gradient-to-tl bg-[#0651ff2c] dark:bg-[#ffffff7a] backdrop-blur-md">
+        class="flex flex-col sm:flex-row flex-wrap items-cente p-4 bg-gradient-to-tl bg-[#ffffff7a] backdrop-blur-md border-b-2">
         <div id="logo"
-            class="cursor-pointer m-2 mx-8 min-w-fit w-16 flex items-center scale-150 text-blue-600 dark:text-green-300"
+            class="cursor-pointer m-2 mx-8 min-w-fit w-16 flex items-center scale-150 text-blue-600"
             @click="$router.push('/')">
             <img src="/Logo.svg" class="h-8 md:-ml-2 md:-mr-1" />uiz-App
         </div>

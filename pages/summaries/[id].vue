@@ -62,15 +62,15 @@ onMounted(async () => {
             </v-btn>
         </div>
     </nav>
-    <main class="md:p-4 md:flex p-4 w-full min-h-[calc(100vh-5rem)]">
-        <div class="w-full bg-[rgb(var(--v-theme-surface))] dark:bg-[#cccccc] p-4 text-black rounded-md"
+    <main class="md:p-4 md:flex p-4 w-full h-[calc(100vh-5rem)]">
+        <div class="w-full overflow-auto bg-[rgb(var(--v-theme-surface))] dark:bg-[#cccccc] p-4 text-black rounded-md"
             v-if="summaryStore.curr_summary && summaryStore.curr_summary.data && (summaryStore.curr_summary.writer !== userStore.userId || !owner_mode)">
             <p v-html="summaryStore.curr_summary?.data" class="text-[rgb(var(--v-theme-))]"></p>
         </div>
         <div v-else-if="data && data != 'empty'" class="flex flex-col w-full h-full">
             <Editor v-model="data" />
         </div>
-        <div class="flex flex-col ml-4">
+        <div class="flex flex-col pl-4 backdrop-blur-sm bg-[#ffffff49] rounded-r-lg">
             <h2 class="text-2xl"><u>Comments:</u></h2>
             <div class="max-h-[calc(100vh-10rem)] overflow-x-auto">
                 <div v-if="summaryStore.curr_summary?.comments_objs">

@@ -27,10 +27,10 @@ const login = async () => {
 </script>
 
 <template>
-    <main>
-        <v-sheet width="400" max-width="100%" class="mx-auto mt-20 backdrop-blur-md">
+    <main class="py-40">
+        <div class="mx-auto backdrop-blur-md sm:max-w-md rounded-md shadow-lg sm:border-2">
             <v-form @submit.prevent="login()">
-                <v-card>
+                <v-card variant="text" class="!bg-[#ffffff05]">
                     <v-card-title>Login</v-card-title>
                     <v-card-text>
                         <v-text-field v-model="userstore.username" :rules="rulesUsername" label="Username" required
@@ -54,6 +54,6 @@ const login = async () => {
                     </v-btn>
                 </v-card>
             </v-form>
-        </v-sheet>
+        </div>
     </main>
 </template>
