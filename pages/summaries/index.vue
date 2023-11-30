@@ -5,8 +5,8 @@ const summaryStore = useSummaryStore();
 
 const searchword = ref('');
 onMounted(async() => {
-    summaryStore.loadSummaries();
     summaryStore.loadOwnSummaries();
+    summaryStore.loadSummaries();
 });
 
 watch(searchword, (newVal) => {
@@ -30,14 +30,14 @@ const createSummary = async () => {
             </v-tooltip>
         </v-btn>
     </nav>
-    <main class="p-4 max-w-7xl mx-auto min-h-[calc(100vh-5rem)]">
+    <main class="p-4 ml-4 min-h-[calc(100vh-5rem)]">
         <h1 class="text-4xl">
             Summaries
         </h1>
         <h2 class="text-2xl">
             <u>Own Summaries:</u>
         </h2>
-        <div class="py-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        <div class="py-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4" v-if="summaryStore.own_summaries">
             <SummaryPrev :create="true" @click="createSummary()" class="w-full" />
             <SummaryPrev v-for="summary in summaryStore.own_summaries" :key="summary.id" :id="summary.id" class="w-full"
                 @click="useRouter().push(`/summaries/${summary.id}`)" />
@@ -45,7 +45,7 @@ const createSummary = async () => {
         <h2 class="text-2xl">
             <u>Public Summaries:</u>
         </h2>
-        <v-text-field v-model="searchword" label="Search" class="m-4" variant="outlined" append-inner-icon="mdi-magnify"
+        <v-text-field v-model="searchword" label="Search" class="m-4 backdrop-blur-sm bg-[var(--contrast)]" variant="outlined" append-inner-icon="mdi-magnify"
             @click:append-inner="searchword = ''" color="primary" />
             <!-- center -->
         <div v-if="summaryStore.summaries" class="py-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">

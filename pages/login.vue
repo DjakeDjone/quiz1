@@ -28,7 +28,7 @@ const login = async () => {
 
 <template>
     <main>
-        <v-sheet width="400" max-width="100%" class="mx-auto mt-20">
+        <v-sheet width="400" max-width="100%" class="mx-auto mt-20 backdrop-blur-md">
             <v-form @submit.prevent="login()">
                 <v-card>
                     <v-card-title>Login</v-card-title>

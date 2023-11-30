@@ -13,6 +13,7 @@ export type Summary = {
     writer: string;
     comments: string[] | null;
     quiz: string | null;
+    stars: number;
     // for the frontend
     quiz_obj: Quiz | null;
     writer_obj: User | null;
@@ -27,6 +28,7 @@ export type Comment = {
     writer: string;
     summary: string;
     comments: string[] | null;
+    stars: number;
     // for the frontend
     writer_obj: User | null;
     comments_objs: Comment[] | null;
@@ -99,6 +101,7 @@ export const useSummaryStore = defineStore("summary", {
                         filter: `writer='${useUserstore().userId}'`,
                         expand: 'writer,comments,comments.writer'
                     });
+                    console.log("own summaries", records);
                     if (records) {
                         this.own_summaries = records as unknown as Summary[];
                         this.own_summaries.forEach((summary, i) => {
@@ -127,6 +130,7 @@ export const useSummaryStore = defineStore("summary", {
                 if (record) {
                     this.curr_summary = {
                         id: record.id,
+                        stars: record.stars,
                         created: record.created,
                         updated: record.updated,
                         data: record.data,
@@ -159,24 +163,27 @@ export const useSummaryStore = defineStore("summary", {
                     filter: `summary='${id}'`,
                     expand: 'writer,comments.writer',
                     sort: '-created'
-                });
+                });    
                 if (record) {
                     this.curr_summary.comments_objs = record as unknown as Comment[];
                     this.curr_summary.comments_objs.forEach((comment, j) => {
                         comment.writer_obj = record[j].expand?.writer as User;
                         comment.comments_objs = record[j].expand?.comments as Comment[] | null;
+                        // comment.stars = record[j].stars;
                         if (comment.comments_objs) {
                             comment.comments_objs.forEach((comment2, k) => {
                                 comment2.writer_obj = record[j].expand?.comments[k].expand?.writer as User;
                             });
                         }
                     });
+                    console.log("comments:",this.curr_summary.comments_objs);
                 }
             } catch (e) {
                 useMessagestore().throwError(e as string);
             }
         },
-        async createComment(content: string) {
+        async createComment(content: string, stars: number) {
+            console.log("create comment", content, stars);
             if (!useUserstore().loggedIn) {
                 useMessagestore().throwError("You must be logged in to create a comment");
                 return;
@@ -190,6 +197,7 @@ export const useSummaryStore = defineStore("summary", {
                     content,
                     writer: useUserstore().userId,
                     summary: this.curr_summary.id,
+                    stars,
                 });
                 if (record) {
                     if (!this.curr_summary.comments_objs) {
@@ -201,7 +209,22 @@ export const useSummaryStore = defineStore("summary", {
                 useMessagestore().throwError(e as string);
             }
         },
-        async updateSummary(data: string) {},
+        async updateSummary(data: string) {
+            if (!this.curr_summary) {
+                useMessagestore().throwError("No summary selected");
+                return;
+            }
+            try {
+                const record = await useUserstore().pb?.collection<Summary>("summaries").update(this.curr_summary.id, {
+                    data,
+                });
+                if (record) {
+                    this.curr_summary.data = record.data;   
+                }
+            } catch (e) {
+                useMessagestore().throwError(e as string);
+            }
+        },
         async deleteSummary() {
             if (!this.curr_summary) {
                 useMessagestore().throwError("No summary selected");

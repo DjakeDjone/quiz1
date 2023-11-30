@@ -20,7 +20,7 @@ onBeforeMount(async () => {
 
 <template>
   <main id="mainMain">
-    <div class="page">
+    <div class="page min-h-screen">
       <NuxtPage />
     </div>
     <div id="errorFeld">
@@ -34,3 +34,14 @@ onBeforeMount(async () => {
     </div>
   </main>
 </template>
+
+<style>
+#mainMain {
+  background-image: url('/bg.png');
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  height: 100vh;
+}
+</style>

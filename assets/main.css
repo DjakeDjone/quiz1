@@ -5,6 +5,8 @@
         --primary: #ff8c00;
         --secondary: #e5cef8;
         --accent: #856f82;
+        --shadow: 0 0 0 0.25rem rgba(255, 140, 0, 0.25);
+        --contrast: rgba(1, 1, 1, 0.314);
     }
 
     .dark {
@@ -13,5 +15,7 @@
         --primary: #ff8c00;
         --secondary: #1e0731;
         --accent: #907a8d;
+        --shadow: 0 0 0 0.25rem rgba(255, 140, 0, 0.25);
+        --contrast: rgba(255, 255, 255, 0.314);
     }
 }

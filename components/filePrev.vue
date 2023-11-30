@@ -34,7 +34,7 @@ const type = computed(() => {
 <template>
     <div class="filePrev">
         <div
-            class="h-[4rem] bg-[#ffffff12] p-4 rounded-md flex items-center border-2 border-transparent hover:border-green-300 transition-all">
+            class="h-[4rem] bg-[#00000012] dark:bg-[#ffffff12] p-4 rounded-md flex items-center border-2 border-transparent hover:border-green-300 transition-all">
             <div class="">
                 <v-icon v-if="type == 'image'">mdi-image</v-icon>
                 <v-icon v-if="type == 'video'">mdi-video</v-icon>

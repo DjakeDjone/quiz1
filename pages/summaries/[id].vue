@@ -9,13 +9,16 @@ const userStore = useUserstore();
 const id: string = useRoute().params.id as string;
 const owner = computed(() => summaryStore.curr_summary?.writer === userStore.userId);
 
+let owner_mode = ref(true);
+const data = ref("empty");
+const stars = ref(0);
+
 // load the summary
 onMounted(async () => {
     await summaryStore.loadSummary(id);
     // summaryStore.loadSummaries();
     data.value = summaryStore.curr_summary?.data ?? '';
 });
-const data = ref('');
 
 </script>
 
@@ -33,47 +36,54 @@ const data = ref('');
                 <span>Back</span>
             </v-tooltip>
         </v-btn>
-        <div v-if="owner" class="inline ml-auto mr-0">
-            <v-btn class="m-4 w-fit relative" color="primary" @click="summaryStore.updateSummary(data)">
-                <v-icon>mdi-content-save</v-icon>
+        <div v-if="owner" class="inline-flex ml-auto mr-0">
+            <!-- only if owner_mode -->
+            <div class="inline-flex actions" :class="owner_mode ? 'showActions' : ''">
+                <v-btn class="m-4 w-fit relative" color="primary" @click="summaryStore.updateSummary(data)">
+                    <v-icon>mdi-content-save</v-icon>
+                    <v-tooltip location="bottom" activator="parent">
+                        <span>Save</span>
+                    </v-tooltip>
+                </v-btn>
+                <v-btn class="m-4 w-fit relative" color="primary" @click="summaryStore.deleteSummary()">
+                    <v-icon>mdi-delete</v-icon>
+                    <v-tooltip location="bottom" activator="parent">
+                        <span>Delete</span>
+                    </v-tooltip>
+                </v-btn>
+            </div>
+            <v-btn class="m-4 w-fit relative" color="primary" @click="owner_mode = !owner_mode">
+                <v-icon v-if="!owner_mode">mdi-pencil</v-icon>
+                <v-icon v-else>mdi-pencil-off</v-icon>
                 <v-tooltip location="bottom" activator="parent">
-                    <span>Save</span>
-                </v-tooltip>
-            </v-btn>
-            <v-btn class="m-4 w-fit relative" color="primary" @click="summaryStore.deleteSummary()">
-                <v-icon>mdi-delete</v-icon>
-                <v-tooltip location="bottom" activator="parent">
-                    <span>Delete</span>
+                    <span v-if="!owner_mode">Edit</span>
+                    <span v-else>Stop Editing</span>
                 </v-tooltip>
             </v-btn>
         </div>
     </nav>
-    <main class="md:p-4 md:flex p-4 max-w-7xl mx-auto min-h-[calc(100vh-5rem)]">
-        <div class="w-full max-w-4xl bg-[rgb(var(--v-theme-surface))] dark:bg-[#cccccc] p-4 text-black rounded-md"
-            v-if="summaryStore.curr_summary && summaryStore.curr_summary.data && summaryStore.curr_summary.writer !== userStore.userId">
+    <main class="md:p-4 md:flex p-4 w-full min-h-[calc(100vh-5rem)]">
+        <div class="w-full bg-[rgb(var(--v-theme-surface))] dark:bg-[#cccccc] p-4 text-black rounded-md"
+            v-if="summaryStore.curr_summary && summaryStore.curr_summary.data && (summaryStore.curr_summary.writer !== userStore.userId || !owner_mode)">
             <p v-html="summaryStore.curr_summary?.data" class="text-[rgb(var(--v-theme-))]"></p>
         </div>
-        <div v-else-if="summaryStore.curr_summary && summaryStore.curr_summary.data" class="flex flex-col">
-            <Editor v-if="summaryStore.curr_summary.data.length > 0" v-model="data" />
+        <div v-else-if="data && data != 'empty'" class="flex flex-col w-full h-full">
+            <Editor v-model="data" />
         </div>
         <div class="flex flex-col ml-4">
             <h2 class="text-2xl"><u>Comments:</u></h2>
             <div class="max-h-[calc(100vh-10rem)] overflow-x-auto">
                 <div v-if="summaryStore.curr_summary?.comments_objs">
                     <div v-for="comment, i in summaryStore.curr_summary?.comments_objs" class="b-2">
+                        <!-- {{ comment }} -->
                         <Comment :content="comment.content" :writer="comment.writer_obj?.username"
-                            :updated="comment.updated" />
+                            :updated="comment.updated" :stars="comment.stars"/>
                     </div>
                 </div>
-                <WriteComment :id="id" @sendComment="summaryStore.createComment($event)" />
+                <WriteComment :id="id" @sendComment="summaryStore.createComment($event.txt, $event.stars)" />
             </div>
         </div>
     </main>
-    <!-- <main class="md:p-4 md:flex p-4 max-w-7xl mx-auto">
-        <h2>
-            <u>Quiz:</u>
-        </h2>
-    </main> -->
 </template>
 
 <style scoped>
@@ -83,5 +93,15 @@ sup {
 
 p {
     font-size: 1.5rem !important;
+}
+
+.actions {
+    transition: all .8s ease-in-out;
+    max-width: 0rem !important;
+    overflow: hidden !important;
+}
+
+.showActions {
+    max-width: 15rem !important;
 }
 </style>

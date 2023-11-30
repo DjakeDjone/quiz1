@@ -31,7 +31,7 @@ const summary = computed(() => {
 </script>
 
 <template>
-    <v-card width="100%" height="240" variant="outlined" class="transition-all hover:scale-[.99] cursor-pointer">
+    <v-card width="100%" height="240" variant="outlined" class="transition-all hover:scale-[.99] cursor-pointer hover:backdrop-blur-sm">
         <v-card-actions v-if="!create && summary">
             <div class="border-b-2">
                 <p>

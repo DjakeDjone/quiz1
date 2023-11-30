@@ -8,6 +8,10 @@ const props = defineProps({
     },
     id: String,
     comments: Array,
+    stars: {
+        type: Number,
+        default: 0,
+    }
 })
 
 const comments_objs = ref(props.comments || []);
@@ -17,17 +21,25 @@ const comments_objs = ref(props.comments || []);
 <template>
     <div class="py-2">
         <v-card variant="outlined" class="mx-2">
-            <v-card-title>
-                {{ content }}
+            <v-card-title class="!flex flex-col justify-end">
+                <!-- Stars: {{ stars }} -->
+                <v-rating color="primary" empty-icon="mdi-star-outline" half-increments :model-value="stars" disabled
+                    half-icon="mdi-star-half" full-icon="mdi-star" />
+                <p class="text-right">
+                    {{ content }}
+                </p>
             </v-card-title>
             <v-card-subtitle class="!flex !justify-end">
-                - last updated:
-                {{ (new Date(updated)).toLocaleTimeString() }}
+                <p>
+                    - last updated:
+                    {{ (new Date(updated)).toLocaleTimeString() }}
+                </p>
+                   <p v-if="writer">
+                    - by {{ writer }}
+                   </p> 
             </v-card-subtitle>
         </v-card>
         <div class="ml-4" v-if="comments_objs">
-            <!-- <Comment v-for="comment in comments" :content="comments_objs.content" :writer="comment.writer_obj?.username"
-                :updated="comment.updated" /> -->
         </div>
     </div>
 </template>
