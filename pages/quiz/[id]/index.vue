@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useUserstore } from '~/stores/user';
-import { useQuizStore, type answer } from '~/stores/quiz';
+import { useQuizStore, type Answer, type Question } from '~/stores/quiz';
 import { useMessagestore } from '~/stores/msg';
 
 const user = useUserstore();
@@ -22,7 +22,7 @@ onMounted(async () => {
     }
 });
 
-const choseAnswer = (answer: answer) => {
+const choseAnswer = (answer: Answer) => {
     answer.chosen = !answer.chosen;
     if (quizStore.current_quiz?.questions) {
         const question = quizStore.current_quiz.questions.find(q => q.id === answer.question);
@@ -58,7 +58,7 @@ const next = async () => {
     <main v-if="loaded" class="p-4 max-w-3xl mx-auto">
         <nav class="flex justify-between">
             <h1 class="text-3xl">
-                {{ quizStore.current_quiz?.name }}
+                {{ quizStore.current_quiz?.title }}
             </h1>
             <v-btn @click="$router.back()" color="primary">
                 <!-- X -->

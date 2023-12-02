@@ -4,19 +4,24 @@ import { useQuizStore } from '~/stores/quiz';
 
 const user = useUserstore();
 const quizStore = useQuizStore();
+
 onMounted(async () => {
     // load quizzes
-    quizStore.loadOwnQuizzes();
-    watch(() => user.loggedIn, async (loggedIn) => {
-        if (loggedIn) {
-            await quizStore.loadOwnQuizzes();
-        }
-    });
+    console.log('Loading quizzes');
+    if (user.loggedIn) {
+        quizStore.loadOwnQuizzes();
+    } else {
+        watch(() => useUserstore().loggedIn == true, async () => {
+            if (user.loggedIn) {
+                quizStore.loadOwnQuizzes();
+            }
+        });
+    }
 });
 
 const createQuiz = async () => {
     const created = await quizStore.createQuiz();
-    if (created) {
+    if (created && quizStore.current_quiz.id) {
         // load quizz
         const quizz = await quizStore.loadQuiz(quizStore.current_quiz.id);
         if (quizz) {
@@ -58,10 +63,10 @@ const createQuiz = async () => {
             </div>
         </div>
         <div id="quizzesPrev" v-if="quizStore.own_quizzes">
-            <v-card v-for="quiz in quizStore.own_quizzes" :key="quiz.id" class="m-2">
+            <v-card v-for="quiz in quizStore.own_quizzes" :key="quiz.id!" class="m-2">
                 <v-card-title>
                     <div class="flex justify-between w-full">
-                        <span>{{ quiz.name }}</span>
+                        <span>{{ quiz.title }}</span>
                         <!-- <v-btn @click="quizStore.removeQuiz(quiz)"><v-icon>mdi-delete</v-icon>
                             <v-tooltip location="bottom" activator="parent">
                                 <span>Delete</span>
