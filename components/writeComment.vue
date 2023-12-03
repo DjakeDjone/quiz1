@@ -23,7 +23,7 @@ const sendComment = () => {
 
 <template>
     <div>
-        <v-card variant="outlined" class="m-2 !p-0 h-fit">
+        <v-card variant="outlined" class="m-2 !p-0 h-fit !bg-[#000000b7] text-white">
             <v-card-title class="!p-0">
                 <!-- {{ content }} -->
                 <v-textarea v-model="content_ref" placeholder="Thank you for your summary!" name="Write a comment"
