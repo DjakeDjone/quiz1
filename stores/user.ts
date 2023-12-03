@@ -184,12 +184,22 @@ export const useUserstore = defineStore("user", {
                 useMessagestore().throwError("PocketBase not initialized");
             }
             try {
+                if (this.files.length == 0) {
+                    return false;
+                }
+                let files_ = this.files as string[];
+                // remove url and get filename
+                for (let i = 0; i < files_.length; i++) {
+                    files_[i] = files_[i].split('/').pop()??'';
+                }
+                // remove file from list
+                files_.splice(files_.indexOf(file), 1);
                 const record = await this.pb!.collection('users').update(this.userId, {
-                    files: this.files.filter((f) => f != file),
+                    files: files_.length == 0 ? null : files_,
                 });
-                // update user
-                let fileUrl = useRuntimeConfig().public.apiBase + 'api/files/_pb_users_auth_/' + this.userId + '/' + re
-                this.files.push(fileUrl);
+                if (record.files.length == 0) {
+                    this.files = [];
+                } else { this.files = files_; }
                 console.log(record);
                 return true;
             } catch (e) {
@@ -207,7 +217,7 @@ export const useUserstore = defineStore("user", {
                     files: file,
                 });
                 // update user
-                let fileUrl = useRuntimeConfig().public.apiBase + 'api/files/_pb_users_auth_/' + this.userId + '/' + re
+                let fileUrl = useRuntimeConfig().public.apiBase + 'api/files/_pb_users_auth_/' + this.userId + '/' + record.files[record.files.length - 1];
                 this.files.push(fileUrl);
                 console.log(record);
                 return true;

@@ -62,7 +62,9 @@ export const useSummaryStore = defineStore("summary", {
         },
         async loadSummaries(filterword: string = "") {
             if (this.loading) {
-                return;
+                while (this.loading) {
+                    await new Promise(r => setTimeout(r, 100));
+                }
             }
             this.loading = true;
             try {
@@ -90,9 +92,14 @@ export const useSummaryStore = defineStore("summary", {
             this.loading = false;
         },
         async loadOwnSummaries() {
-            watch(() => useUserstore().loggedIn, async() => {
-                if (this.loading) {
+                if (!useUserstore().loggedIn) {
+                    useMessagestore().throwError("You must be logged in to see your summaries");
                     return;
+                }
+                if (this.loading) {
+                    while (this.loading) {
+                        await new Promise(r => setTimeout(r, 100));
+                    }
                 }
                 this.loading = true;
                 try {
@@ -119,7 +126,6 @@ export const useSummaryStore = defineStore("summary", {
                     useMessagestore().throwError(e as string);
                 }
                 this.loading = false;
-            });
         },
         async loadSummary(id: string) {
             try {

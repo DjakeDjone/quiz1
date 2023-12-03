@@ -32,10 +32,12 @@ const summary = computed(() => {
 
 <template>
     <v-card width="100%" height="240" variant="outlined" class="transition-all hover:scale-[.99] cursor-pointer hover:backdrop-blur-sm !bg-[#ffffff96] dark:!bg-[#ffffff1f]">
-        <v-card-actions v-if="!create && summary">
+        <v-card-actions v-if="!create && summary" class="!bg-[#00000030]">
             <div class="border-b-2">
                 <p>
-                    {{ summary.writer_obj?.username }} - {{ (new Date(summary.created)).toLocaleDateString() }},
+                    <span class="text-green">
+                        {{ summary.writer_obj?.username }} - {{ (new Date(summary.created)).toLocaleDateString() }},
+                    </span>
                     <br>
                     last updated:
                     {{ (new Date(summary.updated)).toLocaleTimeString() }}

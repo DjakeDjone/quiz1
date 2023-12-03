@@ -1,17 +1,23 @@
 <script setup lang="ts">
 import { useSummaryStore } from '~/stores/summary';
+import { useUserstore } from '~/stores/user';
 
 const summaryStore = useSummaryStore();
 
 const searchword = ref('');
-onMounted(async() => {
+onMounted(async () => {
+    console.log('summary page mounted');
     summaryStore.loadOwnSummaries();
     summaryStore.loadSummaries();
+    watch(() => useUserstore().loggedIn, async () => {
+        await summaryStore.loadOwnSummaries();
+        // await summaryStore.loadSummaries();
+    });
 });
 
-watch(searchword, (newVal) => {
-    summaryStore.loadSummaries(newVal);
-});
+// watch(searchword, (newVal) => {
+//     summaryStore.loadSummaries(newVal);
+// });
 
 const createSummary = async () => {
     // useRouter().push('/summaries');
@@ -37,18 +43,23 @@ const createSummary = async () => {
         <h2 class="text-2xl">
             <u>Own Summaries:</u>
         </h2>
-        <div class="py-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4" v-if="summaryStore.own_summaries">
+        <!-- {{ summaryStore.own_summaries }} -->
+        <div class="py-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
+            v-if="summaryStore.own_summaries">
             <SummaryPrev :create="true" @click="createSummary()" class="w-full" />
+
             <SummaryPrev v-for="summary in summaryStore.own_summaries" :key="summary.id" :id="summary.id" class="w-full"
                 @click="useRouter().push(`/summaries/${summary.id}`)" />
         </div>
-        <h2 class="text-2xl">
+        <h2 class="text-2xl mt-28">
             <u>Public Summaries:</u>
         </h2>
-        <v-text-field v-model="searchword" label="Search" class="m-4 backdrop-blur-sm !bg-[#ffffff96] dark:!bg-[#ffffff1f]" variant="outlined" append-inner-icon="mdi-magnify"
-            @click:append-inner="searchword = ''" color="primary" hide-details />
-            <!-- center -->
-        <div v-if="summaryStore.summaries" class="py-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        <v-text-field v-model="searchword" label="Search" class="my-4 backdrop-blur-sm !bg-[#ffffff96] dark:!bg-[#ffffff1f] max-w-md"
+            variant="outlined" append-inner-icon="mdi-magnify" @click:append-inner="searchword = ''" color="primary"
+            hide-details />
+        <!-- center -->
+        <div v-if="summaryStore.summaries"
+            class="py-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             <SummaryPrev v-for="summary in summaryStore.summaries" :key="summary.id" :id="summary.id" class="m-auto"
                 @click="useRouter().push(`/summaries/${summary.id}`)" />
         </div>
@@ -63,5 +74,4 @@ const createSummary = async () => {
     background-repeat: no-repeat;
     /* move the background 1rem to the bottom */
 }
-
 </style>
