@@ -20,7 +20,7 @@ const comments_objs = ref(props.comments || []);
 
 <template>
     <div class="py-2">
-        <v-card variant="outlined" class="mx-2">
+        <v-card variant="outlined" class="mx-2 bg-[#ffffff46]">
             <v-card-title class="!flex flex-col justify-end">
                 <!-- Stars: {{ stars }} -->
                 <v-rating color="primary" empty-icon="mdi-star-outline" half-increments :model-value="stars" disabled

@@ -168,11 +168,12 @@ export const useSummaryStore = defineStore("summary", {
                 const record = await useUserstore().pb?.collection("comments").getFullList({
                     filter: `summary='${id}'`,
                     expand: 'writer,comments.writer',
-                    sort: '-created'
+                    sort: '+created'
                 });    
                 if (record) {
                     this.curr_summary.comments_objs = record as unknown as Comment[];
                     this.curr_summary.comments_objs.forEach((comment, j) => {
+                    
                         comment.writer_obj = record[j].expand?.writer as User;
                         comment.comments_objs = record[j].expand?.comments as Comment[] | null;
                         // comment.stars = record[j].stars;
