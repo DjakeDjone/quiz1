@@ -15,9 +15,9 @@ onMounted(async () => {
     });
 });
 
-// watch(searchword, (newVal) => {
-//     summaryStore.loadSummaries(newVal);
-// });
+watch(searchword, (newVal) => {
+    summaryStore.loadSummaries(newVal);
+});
 
 const createSummary = async () => {
     // useRouter().push('/summaries');

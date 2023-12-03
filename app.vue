@@ -12,7 +12,8 @@ onBeforeMount(async () => {
   await userstore.session();
   const router = useRouter();
   if (!userstore.loggedIn) {
-    router.push('/login');
+    // router.push('/login');
+    router.push('/info');
   }
 });
 
