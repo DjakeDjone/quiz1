@@ -67,7 +67,7 @@ onMounted(async () => {
             v-if="summaryStore.curr_summary && summaryStore.curr_summary.data && (summaryStore.curr_summary.writer !== userStore.userId || !owner_mode)">
             <p v-html="summaryStore.curr_summary?.data" class="text-[rgb(var(--v-theme-))]"></p>
         </div>
-        <div v-else-if="data && data != 'empty'" class="flex flex-col w-full h-full">
+        <div v-else-if="data != 'empty'" class="flex flex-col w-full h-full">
             <Editor v-model="data" />
         </div>
         <div class="flex flex-col pl-4 backdrop-blur-sm bg-[#ffffff49] rounded-r-lg md:max-w-sm w-full">
