@@ -70,7 +70,7 @@ onMounted(async () => {
         <div v-else-if="data && data != 'empty'" class="flex flex-col w-full h-full">
             <Editor v-model="data" />
         </div>
-        <div class="flex flex-col pl-4 backdrop-blur-sm bg-[#ffffff49] rounded-r-lg">
+        <div class="flex flex-col pl-4 backdrop-blur-sm bg-[#ffffff49] rounded-r-lg md:max-w-sm w-full">
             <h2 class="text-2xl"><u>Comments:</u></h2>
             <div class="max-h-[calc(100vh-10rem)] overflow-x-auto">
                 <div v-if="summaryStore.curr_summary?.comments_objs">

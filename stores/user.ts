@@ -30,11 +30,13 @@ export type User = {
 export const uploadFile = () => {
     const input = document.createElement('input');
     input.type = 'file';
+    const formData = new FormData();
     input.onchange = async () => {
         const file = input.files?.[0];
         if (!file) {
             return;
         }
+        formData.append('file', file);
         useUserstore().uploadFile(file)
     };
     input.click();
@@ -177,14 +179,36 @@ export const useUserstore = defineStore("user", {
                 }
             } return "";
         },
+        async deleteFile(file: string) {
+            if (this.pb == null) {
+                useMessagestore().throwError("PocketBase not initialized");
+            }
+            try {
+                const record = await this.pb!.collection('users').update(this.userId, {
+                    files: this.files.filter((f) => f != file),
+                });
+                // update user
+                let fileUrl = useRuntimeConfig().public.apiBase + 'api/files/_pb_users_auth_/' + this.userId + '/' + re
+                this.files.push(fileUrl);
+                console.log(record);
+                return true;
+            } catch (e) {
+                console.error(e);
+                useMessagestore().throwError("File could not be uploaded");
+                return false;
+            }
+        },
         async uploadFile(file: File) {
             if (this.pb == null) {
                 useMessagestore().throwError("PocketBase not initialized");
             }
             try {
                 const record = await this.pb!.collection('users').update(this.userId, {
-                    files: this.files.push(file.name),
+                    files: file,
                 });
+                // update user
+                let fileUrl = useRuntimeConfig().public.apiBase + 'api/files/_pb_users_auth_/' + this.userId + '/' + re
+                this.files.push(fileUrl);
                 console.log(record);
                 return true;
             } catch (e) {

@@ -25,7 +25,7 @@ const comments_objs = ref(props.comments || []);
                 <!-- Stars: {{ stars }} -->
                 <v-rating color="primary" empty-icon="mdi-star-outline" half-increments :model-value="stars" disabled
                     half-icon="mdi-star-half" full-icon="mdi-star" />
-                <p class="text-right">
+                <p class="text-right flex-wrap">
                     {{ content }}
                 </p>
             </v-card-title>

@@ -9,6 +9,12 @@ const props = defineProps({
         type: String,
         required: true,
     },
+    format: {
+        type: String,
+        required: false,
+        default: 'auto',
+        validator: (value: string) => ['auto', 'small', 'medium', 'large'].includes(value),
+    },
 })
 
 const type = computed(() => {
@@ -32,9 +38,9 @@ const type = computed(() => {
 </script>
 
 <template>
-    <div class="filePrev">
+    <div class="filePrev p-2 h-fit bg-[#00000012] dark:bg-[#ffffff12] rounded-md border-2 border-transparent hover:border-green-300 transition-all">
         <div
-            class="h-[4rem] bg-[#00000012] dark:bg-[#ffffff12] p-4 rounded-md flex items-center border-2 border-transparent hover:border-green-300 transition-all">
+            class="flex items-center h-[4rem]">
             <div class="">
                 <v-icon v-if="type == 'image'">mdi-image</v-icon>
                 <v-icon v-if="type == 'video'">mdi-video</v-icon>
@@ -49,6 +55,10 @@ const type = computed(() => {
             <v-tooltip activator="parent" location="bottom">
                 <span>{{ name }}</span>
             </v-tooltip>
+        </div>
+        <div v-if="format == 'large'">
+            <!-- actions -->
+            
         </div>
     </div>
 </template>
