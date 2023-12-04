@@ -17,6 +17,14 @@ onBeforeMount(async () => {
   }
 });
 
+onMounted(() => {
+  // push messages
+  // messagestore.throwInfo("This is a test message!", 3000);
+  // setInterval(() => {
+  //   messagestore.throwInfo("This is a test message!", 3000);
+  // }, 1000);
+});
+
 </script>
 
 <template>
@@ -25,7 +33,7 @@ onBeforeMount(async () => {
       <NuxtPage />
     </div>
     <div id="errorFeld">
-      <TransitionGroup name="list" tag="ul">
+      <TransitionGroup name="list" tag="ul" class="fixed bottom-0 left-0 z-50">
         <li v-for="msg in messagestore.messages" :key="msg.id">
           <Message>
             {{ msg.content }}
