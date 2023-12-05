@@ -11,3 +11,12 @@ export const theme = {
   },
 };
 export const plugins = [];
+
+// module.exports = {
+//   theme: {
+//     colors: {
+//       primary: 'var(--color-primary) / <alpha-value>',
+//       secondary: 'var(--color-secondary) / <alpha-value>',
+//     }
+//   }
+// }

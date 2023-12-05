@@ -42,7 +42,7 @@ const logout = async () => {
         </div>
     </nav>
     <main class="p-4 pl-2 sm:m-4 rounded-md" v-if="user" v-cloak>
-        <Gradibtn class="ml-4 inline-block">
+        <b-gradibtn class="ml-4 inline-block">
         <v-card variant="elevated" width="fit-content">
             <v-card-title class="flex justify-between items-start p-4">
                 <h1 class="text-2xl inline-block mb-auto">
@@ -54,7 +54,7 @@ const logout = async () => {
                     <p class="text-lg">You have {{ user.points }} points.</p>
                 </v-card-text>
             </v-card>
-        </Gradibtn>
+        </b-gradibtn>
         
         <div class="p-4">
             <h2 class="text-2xl">Your Files</h2>

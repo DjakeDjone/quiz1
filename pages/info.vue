@@ -44,7 +44,7 @@ onMounted(() => {
         },
         fontSize: "2rem",
         x: (i, target) => {
-            return (target.offsetWidth - window.innerWidth) / 2
+            return ((target.offsetWidth - window.innerWidth) / 2) + 15;
         },
     });
 });
@@ -57,65 +57,123 @@ onMounted(() => {
         <div class="h-[calc(50vh-10rem)]" id="placeholder">
 
         </div>
-        <div class="btn sticky top-0 z-10" id="headline">
-            <span class="textGradient text-7xl">
+        <b-button id="headline" class="text-center text-7xl btn sticky top-3 z-10 p-3" disabled color="#ffffff50"
+            :shadow="false">
+            <span class="text-7xl text-[#000000d5] dark:!text-white">
                 <span v-for="letter, i in 'Learning'" :key="letter" :style="{ animationDelay: `${i * 1}s` }"
                     class="hadlineLetter">
                     {{ letter }}
                 </span>
             </span>
-        </div>
-        <div class="mx-auto inline-block w-fit" id="benefits">
-            <div class="btn benefitWords absolute text-4xl" v-for="benefit, i in benefit_words" :key="benefit"
-                :style="{ animationDelay: `${(3 - i) * 3}s` }">
-                <div>
+        </b-button>
+        <div class="mx-auto inline-block w-fit" id="benefits" color="white">
+            <b-button class="btn benefitWords absolute text-4xl" v-for="benefit, i in benefit_words" :key="benefit"
+                :style="{ animationDelay: `${(3 - i) * 3}s` }" disabled color="#ffffff50" :shadow="false">
+                <div class="text-[#000000d5] dark:!text-white">
                     {{ benefit }}
                 </div>
-            </div>
+            </b-button>
         </div>
         <div id="placeholder2" class="!h-96">
         </div>
-        <!-- <div class="mt-96" id="features">
-            <div class="btn feature">
-                Write summaries and share them
-            </div>
-            <div class="btn feature">
-                Learn from other summaries
-            </div>
-            <div class="btn feature">
-                Create quizzes to test your knowledge
-            </div>
-        </div> -->
-        <div class="h-screen" id="offer">
-            <div class="">
-                <gradibtn bg="#ffffff32">
-                    <div class="p-16">
-                        Register for free
+        <div id="placeholder3" class="!h-96">
+        </div>
+        <div class="h-screen w-full" id="offer">
+            <h1 class="text-4xl text-center">
+                Plans & Pricing
+            </h1>
+            <div class="flex justify-center">
+                <b-card class="mt-8" bg="#ffffff3f" headline="Premium" subheadline="- on request -"
+                    color="var(--v-theme-primary)" width="20rem">
+                    <p class="offerAdvantage">
+                        <v-icon>mdi-check</v-icon> <span>
+                            1GB Storage
+                        </span>
+                    </p>
+                    <p class="offerAdvantage">
+                        <v-icon>mdi-check</v-icon> <span>
+                            All Features
+                        </span>
+                    </p>
+                    <b-button to="/login" animated class="w-full mt-auto">
+                        Request
+                    </b-button>
+                </b-card>
+                <b-card headline="Get started" subheadline="- always free -" width="20rem" bg="#ffffff2f">
+                    <p class="offerAdvantage">
+                        <v-icon>mdi-check</v-icon> <span>
+                            1GB Storage
+                        </span>
+                    </p>
+                    <p class="offerAdvantage">
+                        <v-icon>mdi-check</v-icon> <span>
+                            All Features
+                        </span>
+                    </p>
+                    <div class="h-full flex justify-around items-end">
+                        <b-button to="/login" animated width="7rem">
+                            Sign in
+                        </b-button>
+                        <b-button to="/register" animated width="7rem">
+                            Sign up
+                        </b-button>
                     </div>
-                </gradibtn>
+                </b-card>
+                <b-card class="mt-8" bg="#ffffff4f" headline="Ultra-premium-fette-<u>gönner</u> Paket!"
+                    subheadline="- vip -" color="var(--v-theme-primary)" width="20rem">
+                    <p class="offerAdvantage">
+                        <v-icon>mdi-crown</v-icon>
+                        <span>
+                            Unlimited Storage
+                        </span>
+                    </p>
+                    <p class="offerAdvantage">
+                        <v-icon>mdi-crown</v-icon>
+                        <span>
+                            Customize
+                        </span>
+                    </p>
+                    <p class="offerAdvantage">
+                        <v-icon>mdi-crown</v-icon>
+                        <v-icon>mdi-cash-multiple</v-icon>
+                        <!-- <v-icon>mdi-incognito</v-icon> -->
+                    </p>
+                    <b-button to="/login" animated class="w-full mt-auto">
+                        VIP-Request
+                    </b-button>
+                </b-card>
             </div>
         </div>
     </main>
 </template>
 
 <style scoped>
-.textGradient {
-    background: linear-gradient(45deg, #71F6DD, #FEB9B8);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.btn {
-    font: "Fira Code", monospace;
-    display: inline-block;
-    background-color: #0000009f;
-    background-color: #95959560;
-    color: white;
+.offerAdvantage {
+    font-size: 1.5rem;
+    padding: 0.5rem;
     border-radius: 0.5rem;
-    backdrop-filter: blur(0.5rem);
-    padding: 1rem;
     margin: 0.5rem;
     font-weight: bold;
+    display: flex;
+}
+
+.offerAdvantage>span {
+    margin-left: 1rem;
+    text-align: left;
+}
+
+.offerAdvantage>.v-icon {
+    margin-right: 0.5rem;
+    font-size: 2rem;
+}
+
+.textGradient {
+    background: linear-gradient(100deg,
+            #1a9f8a,
+            #a86265);
+    text-shadow: 0 0 0.5rem 0.5rem rgba(255, 255, 255, 0.1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .benefitWords {
