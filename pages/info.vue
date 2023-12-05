@@ -33,6 +33,20 @@ onMounted(() => {
         ease: "back",
         stagger: 0.5,
     });
+    // animate the headline if the element is on the top of the screen
+    // move the headlline to the left if the element is on the top of the screen
+    gsap.to("#headline", {
+        scrollTrigger: {
+            trigger: "#placeholder2",
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+        },
+        fontSize: "2rem",
+        x: (i, target) => {
+            return (target.offsetWidth - window.innerWidth) / 2
+        },
+    });
 });
 
 </script>
@@ -40,12 +54,13 @@ onMounted(() => {
 <template>
     <!-- <BgWave /> -->
     <main class="p-4 flex justify-center items-center flex-col">
-        <div class="h-[calc(50vh-10rem)]">
+        <div class="h-[calc(50vh-10rem)]" id="placeholder">
 
         </div>
         <div class="btn sticky top-0 z-10" id="headline">
             <span class="textGradient text-7xl">
-                <span v-for="letter, i in 'Learning'" :key="letter" :style="{ animationDelay: `${i * 1}s` }" class="hadlineLetter">
+                <span v-for="letter, i in 'Learning'" :key="letter" :style="{ animationDelay: `${i * 1}s` }"
+                    class="hadlineLetter">
                     {{ letter }}
                 </span>
             </span>
@@ -58,9 +73,27 @@ onMounted(() => {
                 </div>
             </div>
         </div>
-        <div class="h-screen">
+        <div id="placeholder2" class="!h-96">
         </div>
-        <div class="h-screen">
+        <!-- <div class="mt-96" id="features">
+            <div class="btn feature">
+                Write summaries and share them
+            </div>
+            <div class="btn feature">
+                Learn from other summaries
+            </div>
+            <div class="btn feature">
+                Create quizzes to test your knowledge
+            </div>
+        </div> -->
+        <div class="h-screen" id="offer">
+            <div class="">
+                <gradibtn bg="#ffffff32">
+                    <div class="p-16">
+                        Register for free
+                    </div>
+                </gradibtn>
+            </div>
         </div>
     </main>
 </template>
@@ -76,6 +109,7 @@ onMounted(() => {
     font: "Fira Code", monospace;
     display: inline-block;
     background-color: #0000009f;
+    background-color: #95959560;
     color: white;
     border-radius: 0.5rem;
     backdrop-filter: blur(0.5rem);
@@ -131,9 +165,11 @@ onMounted(() => {
     0% {
         transform: translateY(0);
     }
+
     50% {
         transform: translateY(-0.5rem);
     }
+
     100% {
         transform: translateY(0);
     }

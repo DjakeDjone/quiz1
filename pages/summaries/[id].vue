@@ -24,7 +24,7 @@ onMounted(async () => {
 
 <template>
     <nav class="w-full flex">
-        <v-btn class="m-4 w-fit relative" color="primary" @click="useRouter().push('/')">
+        <v-btn class="m-4 w-fit relative hidden sm:block" color="primary" @click="useRouter().push('/')">
             <v-icon>mdi-home</v-icon>
             <v-tooltip location="bottom" activator="parent">
                 <span>Home</span>
