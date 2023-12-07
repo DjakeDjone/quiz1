@@ -82,7 +82,7 @@ onMounted(() => {
             <h1 class="text-4xl text-center">
                 Plans & Pricing
             </h1>
-            <div class="flex justify-center">
+            <div class="flex justify-center flex-col items-center lg:items-stretch lg:flex-row">
                 <b-card class="mt-8" bg="#ffffff3f" headline="Premium" subheadline="- on request -"
                     color="var(--v-theme-primary)" width="20rem">
                     <p class="offerAdvantage">
@@ -99,15 +99,15 @@ onMounted(() => {
                         Request
                     </b-button>
                 </b-card>
-                <b-card headline="Get started" subheadline="- always free -" width="20rem" bg="#ffffff2f">
+                <b-card headline="Get started" subheadline="<span class='text-green'>- always free -</span>" width="20rem" bg="#ffffff2f">
                     <p class="offerAdvantage">
                         <v-icon>mdi-check</v-icon> <span>
-                            1GB Storage
+                            500MB Storage
                         </span>
                     </p>
-                    <p class="offerAdvantage">
+                    <p class="offerAdvantage mb-16">
                         <v-icon>mdi-check</v-icon> <span>
-                            All Features
+                            All necessary Features
                         </span>
                     </p>
                     <div class="h-full flex justify-around items-end">
@@ -119,7 +119,7 @@ onMounted(() => {
                         </b-button>
                     </div>
                 </b-card>
-                <b-card class="mt-8" bg="#ffffff4f" headline="Ultra-premium-fette-<u>gönner</u> Paket!"
+                <b-card class="mt-8" bg="#ffffff4f" headline="Korruptes VIP Paket"
                     subheadline="- vip -" color="var(--v-theme-primary)" width="20rem">
                     <p class="offerAdvantage">
                         <v-icon>mdi-crown</v-icon>
@@ -127,16 +127,11 @@ onMounted(() => {
                             Unlimited Storage
                         </span>
                     </p>
-                    <p class="offerAdvantage">
+                    <p class="offerAdvantage mb-8">
                         <v-icon>mdi-crown</v-icon>
                         <span>
-                            Customize
+                            Others call you King 😎
                         </span>
-                    </p>
-                    <p class="offerAdvantage">
-                        <v-icon>mdi-crown</v-icon>
-                        <v-icon>mdi-cash-multiple</v-icon>
-                        <!-- <v-icon>mdi-incognito</v-icon> -->
                     </p>
                     <b-button to="/login" animated class="w-full mt-auto">
                         VIP-Request
