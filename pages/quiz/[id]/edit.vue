@@ -143,6 +143,7 @@ const resetQuiz = () => {
     }
 }
 
+
 </script>
 
 <template>
@@ -179,7 +180,7 @@ const resetQuiz = () => {
                     rows="1"></v-textarea>
             </v-card-title>
             <v-card-text v-if="quiz_edit.questions.length > 0">
-                <v-expansion-panels v-for="question, i in quiz_edit.questions" :key="question.question + i">
+                <v-expansion-panels v-for="question, i in quiz_edit.questions" :key="i">
                     <v-expansion-panel>
                         <v-expansion-panel-title>
                             <div class="flex justify-between w-full">
@@ -191,16 +192,22 @@ const resetQuiz = () => {
                         <v-expansion-panel-text>
                             <v-card>
                                 <v-card-text>
-                                    <v-text-field v-model="question.question" label="Frage" variant="outlined"
+                                    <div class="flex justify-between">
+                                        <v-text-field v-model="question.question" label="Frage" variant="outlined"
                                         @input="pushed = false"></v-text-field>
+                                        <!-- <span class="block !w-28 ml-2">
+                                            <v-select v-model="question.qz_type" :items="['single', 'multiple']" label="Type"
+                                            variant="outlined" @input="pushed = false"></v-select>
+                                        </span> -->
+                                    </div>
                                     <div v-if="question.answers">
-                                        <v-text-field v-for="answer, j in question.answers" :key="answer.answer + j"
-                                            v-model="answer.answer" label="Antwort" variant="outlined"
-                                            @input="pushed = false"
-                                            :prepend-icon="answer.correct ? 'mdi-check' : 'mdi-close'"
-                                            @click:prepend="answer.correct = true" clearable
+                                        <div v-for="answer, j in question.answers" class="flex justify-between">
+                                            <v-checkbox v-model="answer.correct" true-icon="mdi-check" false-icon="mdi-close" @input="pushed = false"></v-checkbox>
+                                            <v-text-field :key="j" v-model="answer.answer" class="ml-2 w-full"
+                                            label="Antwort" variant="outlined" @input="pushed = false" clearable
                                             clear-icon="mdi-close-circle-outline"
                                             @click:clear="confirmDeleteAnswer(question, j)"></v-text-field>
+                                        </div>
                                         <!-- add answer -->
                                         <v-btn
                                             @click="question.answers.push({ answer: 'False, because ...', correct: false })">Antwort
@@ -222,7 +229,7 @@ const resetQuiz = () => {
                 </v-expansion-panels>
             </v-card-text>
             <v-btn
-                @click="quiz_edit.questions.push({ question: '', answers: [{ answer: 'False, because ...', correct: false }], possible_answers: 1 })">Frage
+                @click="quiz_edit.questions.push({ question: '', qz_type: 'single', answers: [{ answer: 'False, because ...', correct: false }], possible_answers: 1 })">Frage
                 hinzufügen</v-btn>
             <v-card-item class="border-t-2">
                 <div class="w-full flex flex-col sm:flex-row sm:justify-evenly">

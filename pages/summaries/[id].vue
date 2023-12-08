@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useQuizStore } from '~/stores/quiz';
 import { useSummaryStore } from '~/stores/summary';
 import { useUserstore } from '~/stores/user';
 
@@ -11,19 +12,48 @@ const owner = computed(() => summaryStore.curr_summary?.writer === userStore.use
 
 let owner_mode = ref(true);
 const data = ref("empty");
+const linked_quizzes = ref([] as string[])
+const possible_quizzes = ref([] as string[]);
 const stars = ref(0);
+const show_comments = ref(true);
 
 // load the summary
 onMounted(async () => {
     await summaryStore.loadSummary(id);
     // summaryStore.loadSummaries();
     data.value = summaryStore.curr_summary?.data ?? '';
+    linked_quizzes.value = summaryStore.curr_summary?.quiz_objs?.map((q) => q.title!) ?? [] as string[];
+    // load the quizzes
+    // wait untlin the user is loaded
+    watch(() => userStore.userId, async () => {
+        if (userStore.userId) {
+            await useQuizStore().loadOwnQuizzes();
+            console.log('own quizzes', useQuizStore().own_quizzes);
+            possible_quizzes.value = useQuizStore().own_quizzes.map((q) => q.title!) ?? [] as string[];
+        }
+    });
+    if (userStore.userId) {
+        await useQuizStore().loadOwnQuizzes();
+        console.log('own quizzes', useQuizStore().own_quizzes);
+        possible_quizzes.value = useQuizStore().own_quizzes.map((q) => q.title!) ?? [] as string[];
+    }
 });
+
+const requestDelete = () => {
+    if (confirm("Are you sure you want to delete this summary?")) {
+        summaryStore.deleteSummary();
+    }
+}
+
+const addQuiz = () => {
+    // first save the summary
+    summaryStore.updateSummary(data.value, linked_quizzes.value);
+}
 
 </script>
 
 <template>
-    <nav class="w-full flex">
+    <nav class="w-full flex flex-wrap">
         <v-btn class="m-4 w-fit relative hidden sm:block" color="primary" @click="useRouter().push('/')">
             <v-icon>mdi-home</v-icon>
             <v-tooltip location="bottom" activator="parent">
@@ -39,13 +69,13 @@ onMounted(async () => {
         <div v-if="owner" class="inline-flex ml-auto mr-0">
             <!-- only if owner_mode -->
             <div class="inline-flex actions" :class="owner_mode ? 'showActions' : ''">
-                <v-btn class="m-4 w-fit relative" color="primary" @click="summaryStore.updateSummary(data)">
+                <v-btn class="m-4 w-fit relative" color="primary" @click="summaryStore.updateSummary(data, linked_quizzes)">
                     <v-icon>mdi-content-save</v-icon>
                     <v-tooltip location="bottom" activator="parent">
                         <span>Save</span>
                     </v-tooltip>
                 </v-btn>
-                <v-btn class="m-4 w-fit relative" color="primary" @click="summaryStore.deleteSummary()">
+                <v-btn class="m-4 w-fit relative" color="primary" @click="requestDelete()">
                     <v-icon>mdi-delete</v-icon>
                     <v-tooltip location="bottom" activator="parent">
                         <span>Delete</span>
@@ -62,22 +92,41 @@ onMounted(async () => {
             </v-btn>
         </div>
     </nav>
-    <main class="md:p-4 md:flex p-4 w-full h-[calc(100vh-5rem)]">
+    <main class="md:p-4 flex flex-col md:flex-row p-4 w-full h-[calc(100vh-5rem)]">
         <div class="w-full overflow-auto bg-[rgb(var(--v-theme-surface))] dark:bg-[#cccccc] p-4 text-black rounded-md"
             v-if="summaryStore.curr_summary && summaryStore.curr_summary.data && (summaryStore.curr_summary.writer !== userStore.userId || !owner_mode)">
             <p v-html="summaryStore.curr_summary?.data" class="text-[rgb(var(--v-theme-))]"></p>
+            <!-- quizzes -->
+            <!-- {{ summaryStore.curr_summary?.quizzes }} -->
+            <div v-if="summaryStore.curr_summary?.quizzes">
+                <h2 class="text-2xl"><u>Linked Quizzes:</u></h2>
+                <div class="flex flex-wrap">
+                    <v-chip v-for="quiz, i in summaryStore.curr_summary?.quiz_objs" :key="quiz.id!" class="m-1" color="primary"
+                        @click="useRouter().push('/quiz/' + quiz.id)">
+                        <span class="text-black">
+                            {{ quiz.title }} ({{ quiz.questions.length }} Q.)
+                        </span>
+                        <v-icon>mdi-arrow-right</v-icon>
+                    </v-chip>
+                </div>
+            </div>
         </div>
-        <div v-else-if="data != 'empty'" class="flex flex-col w-full h-full">
-            <Editor v-model="data" />
+        <div v-else-if="data != 'empty'" class="flex flex-col w-full">
+            <Editor v-model="data" class="mb-4"/>
+            <div v-if="possible_quizzes.length > 0" class="flex flex-col">
+                <v-select v-model="linked_quizzes" :items="possible_quizzes" label="Linked Quizzes" multiple dense chips />
+            </div>
         </div>
-        <div class="flex flex-col pl-4 backdrop-blur-sm bg-[#ffffff49] rounded-r-lg md:max-w-sm w-full">
-            <h2 class="text-2xl"><u>Comments:</u></h2>
+        <div v-if="show_comments" class="flex flex-col p-4 backdrop-blur-sm bg-[#ffffff49] rounded-lg md:max-w-sm md:ml-2 w-full resize-y">
+            <h2 class="text-2x">
+                <v-icon class="mr-4" @click="show_comments = !show_comments">mdi-comment</v-icon>
+                <u>Comments:</u></h2>
             <div class="max-h-[calc(100vh-10rem)] overflow-x-auto">
                 <div v-if="summaryStore.curr_summary?.comments_objs">
                     <div v-for="comment, i in summaryStore.curr_summary?.comments_objs" class="b-2">
                         <!-- {{ comment }} -->
                         <Comment :content="comment.content" :writer="comment.writer_obj?.username"
-                            :updated="comment.updated" :stars="comment.stars"/>
+                            :updated="comment.updated" :stars="comment.stars" />
                     </div>
                 </div>
                 <WriteComment :id="id" @sendComment="summaryStore.createComment($event.txt, $event.stars)" />

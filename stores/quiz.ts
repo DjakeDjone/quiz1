@@ -5,9 +5,20 @@ import { useUserstore } from "./user";
 import { get_random_element, BSP_QUESTIONS, BSP_ANSWERS } from "./random_values";
 
 export interface Question {
+    qz_type: 'single' | 'multiple' | 'text' | 'number',
     question: string,
     answers: Answer[],
     possible_answers: number,
+    time_limit?: number, // in seconds
+}
+export type QuestionDoing = {
+    qz_type: 'single' | 'multiple' | 'text' | 'number',
+    question: string,
+    answers: Answer[],
+    time_limit?: number,
+    // 
+    possible: number,
+    chosen: number[],
 }
 
 export interface Answer {
@@ -24,6 +35,33 @@ export interface Quiz {
     questions: Question[],
 }
 
+export const calcPoints = (questions: QuestionDoing[]) => {
+    let score = 0;
+    for (let i = 0; i < questions.length; i++) {
+        const q = questions[i];
+        if (q.qz_type == 'single') {
+            if (q.chosen.length == 1) {
+                if (q.answers[q.chosen[0]].correct) {
+                    score++;
+                }
+            }
+        } else if (q.qz_type == 'multiple') {
+            if (q.chosen.length == q.possible) {
+                let correct = true;
+                for (let j = 0; j < q.chosen.length; j++) {
+                    if (!q.answers[q.chosen[j]].correct) {
+                        correct = false;
+                    }
+                }
+                if (correct) {
+                    score++;
+                }
+            }
+        }
+    }
+    return score;
+}
+
 export const useQuizStore = defineStore("quiz", {
     state: () => ({
         own_quizzes: [] as Quiz[],
@@ -33,6 +71,8 @@ export const useQuizStore = defineStore("quiz", {
         // search
         search: "",
         search_results: [] as Quiz[],
+        // 
+        quiz_doing: [] as QuestionDoing[],
     }),
     actions: {
         // search
@@ -86,6 +126,7 @@ export const useQuizStore = defineStore("quiz", {
                         question: question,
                         answers: [],
                         possible_answers: answers.length,
+                        qz_type: 'single',
                     } as Question;
                     for (let j = 0; j < answers.length; j++) {
                         const a = {
@@ -161,5 +202,34 @@ export const useQuizStore = defineStore("quiz", {
                 return false;
             }
         },
+        // Do Quiz
+        submitQuiz(questions: QuestionDoing[]) {
+            // calculate score
+            this.quiz_doing = questions;
+            let score = 0;
+            for (let i = 0; i < questions.length; i++) {
+                const q = questions[i];
+                if (q.qz_type == 'single') {
+                    if (q.chosen.length == 1) {
+                        if (q.answers[q.chosen[0]].correct) {
+                            score++;
+                        }
+                    }
+                } else if (q.qz_type == 'multiple') {
+                    if (q.chosen.length == q.possible) {
+                        let correct = true;
+                        for (let j = 0; j < q.chosen.length; j++) {
+                            if (!q.answers[q.chosen[j]].correct) {
+                                correct = false;
+                            }
+                        }
+                        if (correct) {
+                            score++;
+                        }
+                    }
+                }
+            }
+            return score;
+        }
     }
 });

@@ -13,7 +13,11 @@ onBeforeMount(async () => {
   const router = useRouter();
   if (!userstore.loggedIn) {
     // router.push('/login');
-    router.push('/info');
+    // check if the page is not a quiz page
+    if (router.currentRoute.value.path.startsWith('/quiz') || router.currentRoute.value.path.startsWith('/summary')) {
+    } else {
+      router.push('/info');
+    }
   }
 });
 

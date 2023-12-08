@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useUserstore } from '~/stores/user';
-import { useQuizStore, type Answer, type Question } from '~/stores/quiz';
+import { useQuizStore, type Answer, type Question, type QuestionDoing } from '~/stores/quiz';
 import { useMessagestore } from '~/stores/msg';
 
 const user = useUserstore();
@@ -8,33 +8,34 @@ const quizStore = useQuizStore();
 const quizId = useRoute().params.id as string;
 const loaded = ref(false);
 
+
+
 let idx_carousel = ref(0);
+const quiz = ref<QuestionDoing[]>([]);
 
 onMounted(async () => {
     console.log('quizId', quizId);
-    const quiz = await quizStore.loadQuiz(quizId);
-    if (!quiz) {
+    const quiz1 = await quizStore.loadQuiz(quizId);
+    if (!quiz1) {
         console.log('quiz not found');
         return;
     } else {
         console.log('quiz found');
+        quiz.value = quiz1.questions.map((q: Question) => {
+            return {
+                qz_type: q.qz_type,
+                question: q.question,
+                answers: q.answers,
+                possible: q.answers.filter((a: Answer) => a.correct).length,
+                chosen: [],
+                time_limit: q.time_limit,
+            }
+        });
         loaded.value = true;
     }
 });
 
-const choseAnswer = (answer: Answer) => {
-    answer.chosen = !answer.chosen;
-    if (quizStore.current_quiz?.questions) {
-        const question = quizStore.current_quiz.questions.find(q => q.id === answer.question);
-        if (question && question.possible_answers <= 1) {
-            question.answers.forEach(a => {
-                if (a.id !== answer.id) {
-                    a.chosen = false;
-                }
-            });
-        }
-    }
-}
+
 
 const next = async () => {
     if (idx_carousel.value < quizStore.current_quiz?.questions.length - 1) {
@@ -42,8 +43,9 @@ const next = async () => {
         console.log('idx', idx_carousel);
     } else {
         // submit
-        const points = await quizStore.submitAnswers();
-        if (points) {
+        const points = quizStore.submitQuiz(quiz.value);
+        console.log('points', points);
+        if (true) {
             useMessagestore().throwSuccess('Du hast ' + points + ' Punkte erreicht');
             useRouter().push('/quiz/' + quizStore.current_quiz?.id + '/result');
         } else {
@@ -69,23 +71,24 @@ const next = async () => {
             </v-btn>
         </nav>
         <v-carousel hide-delimiters v-model="idx_carousel" progress="primary" height="100%" :show-arrows="false">
-            <v-carousel-item v-for="question, i in quizStore.current_quiz?.questions" :key="question.id" :value="i">
+            <v-carousel-item v-for="question, i in quiz" :key="question.question">
                 <v-card>
                     <v-card-title>
                         <h2 class="text-2xl">{{ question.question }}</h2>
                     </v-card-title>
                     <v-card-text>
                         <v-list>
-                            <v-list-item v-for="answer, j in question.answers" :key="answer.id">
-                                <h3 class="text-xl flex">
-                                    <v-checkbox v-model="answer.chosen" @click="choseAnswer(answer)" true-icon="mdi-check"
-                                        false-icon="mdi-close">
-                                        <template v-slot:label>
-                                            <span>{{ answer.text }}</span>
-                                        </template>
-                                    </v-checkbox>
-                                </h3>
+                            <v-list-item v-for="answer, j in question.answers" :key="answer.answer">
+                                <!-- {{ question.qz_type }} -->
+                                <v-list-item-title>
+                                    <!-- {{ question.chosen }} -->
+                                    <v-checkbox v-if="question.qz_type == 'multiple'" v-model="question.chosen"
+                                        :label="answer.answer" :value="j" true-icon="mdi-check" false-icon="mdi-close" />
+                                    <v-checkbox v-if="question.qz_type == 'single'" v-model="question.chosen[0]"
+                                            :label="answer.answer" :value="j" true-icon="mdi-check" false-icon="mdi-close" :multiple="false" />
+                                </v-list-item-title>
                             </v-list-item>
+                            <!--  -->
                         </v-list>
                     </v-card-text>
                     <div class="flex justify-between mb-16 w-full">
@@ -113,6 +116,5 @@ const next = async () => {
                 </v-card>
             </v-carousel-item>
         </v-carousel>
-    </main>
-    <LoadingPage v-else />
-</template>
+</main>
+<LoadingPage v-else /></template>

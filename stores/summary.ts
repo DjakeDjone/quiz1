@@ -3,7 +3,7 @@ import PocketBase from 'pocketbase';
 import { useMessagestore } from "./msg";
 import { useUserstore, type User } from "./user";
 import { get_random_element, BSP_QUESTIONS, BSP_ANSWERS } from "./random_values";
-import type { Quiz } from "./quiz";
+import { useQuizStore, type Quiz } from "./quiz";
 
 export type Summary = {
     id: string;
@@ -12,10 +12,10 @@ export type Summary = {
     data: string;
     writer: string;
     comments: string[] | null;
-    quiz: string | null;
+    quizzes: string[] | null;
     stars: number;
     // for the frontend
-    quiz_obj: Quiz | null;
+    quiz_objs: Quiz[] | null;
     writer_obj: User | null;
     comments_objs: Comment[] | null;
 }
@@ -50,7 +50,7 @@ export const useSummaryStore = defineStore("summary", {
                 const record = await useUserstore().pb?.collection("summaries").create<Summary>({
                     data,
                     writer: useUserstore().userId,
-                    quiz: this.curr_summary?.quiz || null,
+                    quizzes: this.curr_summary?.quizzes,
                 });
                 if (record) {
                     // this.summaries.push(record);
@@ -76,7 +76,7 @@ export const useSummaryStore = defineStore("summary", {
                 if (records) {
                     this.summaries = records as unknown as Summary[];
                     this.summaries.forEach((summary, i) => {
-                        summary.quiz_obj = records[i].expand?.quiz as Quiz;
+                        summary.quiz_objs = records[i].expand?.quizzes as Quiz[] | null;
                         summary.comments_objs = records[i].expand?.comments as Comment[] | null;
                         if (summary.comments_objs) {
                             summary.comments_objs.forEach((comment, j) => {
@@ -112,7 +112,7 @@ export const useSummaryStore = defineStore("summary", {
                     if (records) {
                         this.own_summaries = records as unknown as Summary[];
                         this.own_summaries.forEach((summary, i) => {
-                            summary.quiz_obj = records[i].expand?.quiz as Quiz;
+                            summary.quiz_objs = records[i].expand?.quiz as Quiz[] | null;
                             summary.comments_objs = records[i].expand?.comments as Comment[] | null;
                             if (summary.comments_objs) {
                                 summary.comments_objs.forEach((comment, j) => {
@@ -130,7 +130,7 @@ export const useSummaryStore = defineStore("summary", {
         async loadSummary(id: string) {
             try {
                 const record = await useUserstore().pb?.collection("summaries").getOne(id, {
-                    expand: 'writer,comments.writer'
+                    expand: 'writer,comments.writer,quizzes'
                 });
                 console.log(record);
                 if (record) {
@@ -142,8 +142,8 @@ export const useSummaryStore = defineStore("summary", {
                         data: record.data,
                         writer: record.writer,
                         comments: record.comments,
-                        quiz: record.quiz,
-                        quiz_obj: record.expand?.quiz as Quiz | null,
+                        quizzes: record.quizzes,
+                        quiz_objs: record.expand?.quizzes as Quiz[] | null,
                         writer_obj: record.expand?.writer as User | null,
                         comments_objs: record.expand?.comments as Comment[] | null,
                     };
@@ -216,7 +216,7 @@ export const useSummaryStore = defineStore("summary", {
                 useMessagestore().throwError(e as string);
             }
         },
-        async updateSummary(data: string) {
+        async updateSummary(data: string, linked_quizzes: string[]) {
             if (!this.curr_summary) {
                 useMessagestore().throwError("No summary selected");
                 return;
@@ -224,6 +224,7 @@ export const useSummaryStore = defineStore("summary", {
             try {
                 const record = await useUserstore().pb?.collection<Summary>("summaries").update(this.curr_summary.id, {
                     data,
+                    quizzes: useQuizStore().own_quizzes.filter(q => linked_quizzes.includes(q.title)).map(q => q.id),
                 });
                 if (record) {
                     this.curr_summary.data = record.data;   
