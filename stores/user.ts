@@ -99,7 +99,6 @@ export const useUserstore = defineStore("user", {
                 if (this.username == "" || this.password == "") {
                     this.loadCookies();
                 }
-                console.log("Try session with:", this.username, this.password);
                 const authData = await this.pb!.collection('users').authWithPassword(
                     this.username,
                     this.password
