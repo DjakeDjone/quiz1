@@ -11,13 +11,14 @@ userstore.init();
 onBeforeMount(async () => {
   await userstore.session();
   const router = useRouter();
+  console.log("ROUTER:",router.currentRoute.value.path.indexOf('/summaries'));
   if (!userstore.loggedIn) {
     // router.push('/login');
     // check if the page is not a quiz page or summary page or a subpage of a summary or quiz page
-    if (router.currentRoute.value.path.endsWith('/quiz') || router.currentRoute.value.path.endsWith('/summary')) {
-      router.push('/login');
-    } else {
+    if (router.currentRoute.value.path.indexOf('/quiz') === -1 && router.currentRoute.value.path.indexOf('/summaries') === -1) {
       router.push('/info');
+    } else {
+      // router.push('/login');
     }
   }
 });
