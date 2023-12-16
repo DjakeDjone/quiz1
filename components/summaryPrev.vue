@@ -31,7 +31,8 @@ const summary = computed(() => {
 </script>
 
 <template>
-    <v-card width="100%" height="240" variant="outlined" class="transition-all hover:scale-[.99] cursor-pointer hover:backdrop-blur-sm !bg-[#ffffff96] dark:!bg-[#ffffff1f]">
+    <v-card width="100%" height="100" variant="outlined"
+        class="sm:!h-52 transition-all hover:scale-[.99] cursor-pointer hover:backdrop-blur-sm !bg-[#ffffff96] dark:!bg-[#ffffff1f]">
         <v-card-actions v-if="!create && summary" class="!bg-[#00000030]">
             <div class="border-b-2">
                 <p>
@@ -45,7 +46,8 @@ const summary = computed(() => {
             </div>
         </v-card-actions>
         <v-card-text class="break-words !pt-0 !px-2" v-if="summary">
-            <p v-html="summary.data"></p>
+            <h3 class="text-xl font-semibold">{{ summary.title }}</h3>
+            <p v-html="summary.description"></p>
         </v-card-text>
         <v-card-title v-if="create" class="w-full h-full !flex justify-center items-center">
             <div>

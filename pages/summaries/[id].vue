@@ -12,6 +12,8 @@ const owner = computed(() => summaryStore.curr_summary?.writer === userStore.use
 
 let owner_mode = ref(true);
 const data = ref("empty");
+const title = ref("");
+const description = ref("");
 const linked_quizzes = ref([] as string[])
 const possible_quizzes = ref([] as string[]);
 const stars = ref(0);
@@ -22,6 +24,8 @@ onMounted(async () => {
     await summaryStore.loadSummary(id);
     // summaryStore.loadSummaries();
     data.value = summaryStore.curr_summary?.data ?? '';
+    title.value = summaryStore.curr_summary?.title ?? '';
+    description.value = summaryStore.curr_summary?.description ?? '';
     linked_quizzes.value = summaryStore.curr_summary?.quiz_objs?.map((q) => q.title!) ?? [] as string[];
     // load the quizzes
     // wait untlin the user is loaded
@@ -47,7 +51,7 @@ const requestDelete = () => {
 
 const addQuiz = () => {
     // first save the summary
-    summaryStore.updateSummary(data.value, linked_quizzes.value);
+    summaryStore.updateSummary(title.value, description.value, data.value, linked_quizzes.value);
 }
 
 </script>
@@ -69,7 +73,7 @@ const addQuiz = () => {
         <div v-if="owner" class="inline-flex ml-auto mr-0">
             <!-- only if owner_mode -->
             <div class="inline-flex actions" :class="owner_mode ? 'showActions' : ''">
-                <v-btn class="m-4 w-fit relative" color="primary" @click="summaryStore.updateSummary(data, linked_quizzes)">
+                <v-btn class="m-4 w-fit relative" color="primary" @click="summaryStore.updateSummary(title, description, data, linked_quizzes)">
                     <v-icon>mdi-content-save</v-icon>
                     <v-tooltip location="bottom" activator="parent">
                         <span>Save</span>
@@ -95,6 +99,8 @@ const addQuiz = () => {
     <main class="md:p-4 flex flex-col md:flex-row p-4 w-full h-[calc(100vh-5rem)]">
         <div class="w-full overflow-auto bg-[rgb(var(--v-theme-surface))] dark:bg-[#cccccc] p-4 text-black rounded-md"
             v-if="summaryStore.curr_summary && summaryStore.curr_summary.data && (summaryStore.curr_summary.writer !== userStore.userId || !owner_mode)">
+            <h1 class="text-4xl">{{ summaryStore.curr_summary?.title }}</h1>
+            <!-- <h2 class="text-2xl"><u>Summary:</u></h2> -->
             <p v-html="summaryStore.curr_summary?.data" class="text-[rgb(var(--v-theme-))]"></p>
             <!-- quizzes -->
             <!-- {{ summaryStore.curr_summary?.quizzes }} -->
@@ -112,6 +118,8 @@ const addQuiz = () => {
             </div>
         </div>
         <div v-else-if="data != 'empty'" class="flex flex-col w-full">
+            <v-text-field v-model="title" label="Title" />
+            <v-textarea v-model="description" label="Description" autoGrow rows="1" />
             <Editor v-model="data" class="mb-4"/>
             <div v-if="possible_quizzes.length > 0" class="flex flex-col">
                 <v-select v-model="linked_quizzes" :items="possible_quizzes" label="Linked Quizzes" multiple dense chips />

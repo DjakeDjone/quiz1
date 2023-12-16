@@ -9,6 +9,8 @@ export type Summary = {
     id: string;
     created: string;
     updated: string;
+    title: string,
+    description: string,
     data: string;
     writer: string;
     comments: string[] | null;
@@ -18,6 +20,19 @@ export type Summary = {
     quiz_objs: Quiz[] | null;
     writer_obj: User | null;
     comments_objs: Comment[] | null;
+}
+
+export type SummaryPreview = {
+    id: string;
+    created: string;
+    updated: string;
+    title: string,
+    description: string,
+    writer: string;
+    stars: number;
+    // comments_count: number;
+    // for the frontend
+    writer_obj: User | null;
 }
 
 export type Comment = {
@@ -35,8 +50,8 @@ export type Comment = {
 }
 export const useSummaryStore = defineStore("summary", {
     state: () => ({
-        summaries: [] as Summary[],
-        own_summaries: [] as Summary[],
+        summaries: [] as SummaryPreview[],
+        own_summaries: [] as SummaryPreview[],
         loading: false,
         curr_summary: null as Summary | null,
     }),
@@ -48,6 +63,8 @@ export const useSummaryStore = defineStore("summary", {
             }
             try {
                 const record = await useUserstore().pb?.collection("summaries").create<Summary>({
+                    title: "New Summary",
+                    description: "Description",
                     data,
                     writer: useUserstore().userId,
                     quizzes: this.curr_summary?.quizzes,
@@ -68,21 +85,21 @@ export const useSummaryStore = defineStore("summary", {
             }
             this.loading = true;
             try {
-                const records = await useUserstore().pb?.collection("summaries").getFullList({
+                const records = await useUserstore().pb?.collection("summary_prev").getFullList({
                     sort: "-created",
-                    filter: filterword.length > 0 ? `data ~ '${filterword}'` : '',
+                    filter: filterword.length > 0 ? `description ~ '${filterword}' || title ~ '${filterword}'` : '',
                     expand: 'writer,comments,comments.writer'
                 });
                 if (records) {
                     this.summaries = records as unknown as Summary[];
                     this.summaries.forEach((summary, i) => {
-                        summary.quiz_objs = records[i].expand?.quizzes as Quiz[] | null;
-                        summary.comments_objs = records[i].expand?.comments as Comment[] | null;
-                        if (summary.comments_objs) {
-                            summary.comments_objs.forEach((comment, j) => {
-                                comment.writer_obj = records[i].expand?.comments[j].expand?.writer as User;
-                            });
-                        }
+                        // summary.quiz_objs = records[i].expand?.quizzes as Quiz[] | null;
+                        // summary.comments_objs = records[i].expand?.comments as Comment[] | null;
+                        // if (summary.comments_objs) {
+                        //     summary.comments_objs.forEach((comment, j) => {
+                        //         comment.writer_obj = records[i].expand?.comments[j].expand?.writer as User;
+                        //     });
+                        // }
                         summary.writer_obj = records[i].expand?.writer as User;
                     });
                 }
@@ -92,40 +109,40 @@ export const useSummaryStore = defineStore("summary", {
             this.loading = false;
         },
         async loadOwnSummaries() {
-                if (!useUserstore().loggedIn) {
-                    useMessagestore().throwError("You must be logged in to see your summaries");
-                    return;
+            if (!useUserstore().loggedIn) {
+                useMessagestore().throwError("You must be logged in to see your summaries");
+                return;
+            }
+            if (this.loading) {
+                while (this.loading) {
+                    await new Promise(r => setTimeout(r, 100));
                 }
-                if (this.loading) {
-                    while (this.loading) {
-                        await new Promise(r => setTimeout(r, 100));
-                    }
-                }
-                this.loading = true;
-                try {
-                    const records = await useUserstore().pb?.collection("summaries").getFullList({
-                        sort: "-created",
-                        filter: `writer='${useUserstore().userId}'`,
-                        expand: 'writer,comments,comments.writer'
+            }
+            this.loading = true;
+            try {
+                const records = await useUserstore().pb?.collection("summary_prev").getFullList({
+                    sort: "-created",
+                    filter: `writer='${useUserstore().userId}'`,
+                    expand: 'writer'
+                });
+                console.log("own summaries", records);
+                if (records) {
+                    this.own_summaries = records as unknown as Summary[];
+                    this.own_summaries.forEach((summary, i) => {
+                        // summary.quiz_objs = records[i].expand?.quiz as Quiz[] | null;
+                        // summary.comments_objs = records[i].expand?.comments as Comment[] | null;
+                        // if (summary.comments_objs) {
+                        //     summary.comments_objs.forEach((comment, j) => {
+                        //         comment.writer_obj = records[i].expand?.comments[j].expand?.writer as User;
+                        //     });
+                        // }
+                        summary.writer_obj = records[i].expand?.writer as User;
                     });
-                    console.log("own summaries", records);
-                    if (records) {
-                        this.own_summaries = records as unknown as Summary[];
-                        this.own_summaries.forEach((summary, i) => {
-                            summary.quiz_objs = records[i].expand?.quiz as Quiz[] | null;
-                            summary.comments_objs = records[i].expand?.comments as Comment[] | null;
-                            if (summary.comments_objs) {
-                                summary.comments_objs.forEach((comment, j) => {
-                                    comment.writer_obj = records[i].expand?.comments[j].expand?.writer as User;
-                                });
-                            }
-                            summary.writer_obj = records[i].expand?.writer as User;
-                        });
-                    }
-                } catch (e) {
-                    useMessagestore().throwError(e as string);
                 }
-                this.loading = false;
+            } catch (e) {
+                useMessagestore().throwError(e as string);
+            }
+            this.loading = false;
         },
         async loadSummary(id: string) {
             try {
@@ -136,6 +153,8 @@ export const useSummaryStore = defineStore("summary", {
                 if (record) {
                     this.curr_summary = {
                         id: record.id,
+                        title: record.title,
+                        description: record.description,
                         stars: record.stars,
                         created: record.created,
                         updated: record.updated,
@@ -169,11 +188,11 @@ export const useSummaryStore = defineStore("summary", {
                     filter: `summary='${id}'`,
                     expand: 'writer,comments.writer',
                     sort: '+created'
-                });    
+                });
                 if (record) {
                     this.curr_summary.comments_objs = record as unknown as Comment[];
                     this.curr_summary.comments_objs.forEach((comment, j) => {
-                    
+
                         comment.writer_obj = record[j].expand?.writer as User;
                         comment.comments_objs = record[j].expand?.comments as Comment[] | null;
                         // comment.stars = record[j].stars;
@@ -183,7 +202,7 @@ export const useSummaryStore = defineStore("summary", {
                             });
                         }
                     });
-                    console.log("comments:",this.curr_summary.comments_objs);
+                    console.log("comments:", this.curr_summary.comments_objs);
                 }
             } catch (e) {
                 useMessagestore().throwError(e as string);
@@ -216,18 +235,22 @@ export const useSummaryStore = defineStore("summary", {
                 useMessagestore().throwError(e as string);
             }
         },
-        async updateSummary(data: string, linked_quizzes: string[]) {
+        async updateSummary(title: string, description: string, data: string, linked_quizzes: string[]) {
             if (!this.curr_summary) {
                 useMessagestore().throwError("No summary selected");
                 return;
             }
             try {
                 const record = await useUserstore().pb?.collection<Summary>("summaries").update(this.curr_summary.id, {
+                    title: title,
+                    description: description,
                     data,
                     quizzes: useQuizStore().own_quizzes.filter(q => linked_quizzes.includes(q.title)).map(q => q.id),
                 });
                 if (record) {
-                    this.curr_summary.data = record.data;   
+                    this.curr_summary.title = record.title;
+                    this.curr_summary.description = record.description;
+                    this.curr_summary.data = record.data;
                 }
             } catch (e) {
                 useMessagestore().throwError(e as string);
