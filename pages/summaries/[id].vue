@@ -101,7 +101,13 @@ const addQuiz = () => {
             v-if="summaryStore.curr_summary && summaryStore.curr_summary.data && (summaryStore.curr_summary.writer !== userStore.userId || !owner_mode)">
             <h1 class="text-4xl">{{ summaryStore.curr_summary?.title }}</h1>
             <!-- <h2 class="text-2xl"><u>Summary:</u></h2> -->
-            <p v-html="summaryStore.curr_summary?.data" class="text-[rgb(var(--v-theme-))]"></p>
+            <i class="border-b-2">
+                {{ summaryStore.curr_summary?.description }}
+            </i>
+            <div class="summaryNotEditable !text-sm">
+                <p v-html="summaryStore.curr_summary?.data + '<style>li {margin-left: 2rem;} ul {list-style: revert-layer;}blockquote {border-left: 3px solid #000003;}</style>'">
+                </p>
+            </div>
             <!-- quizzes -->
             <!-- {{ summaryStore.curr_summary?.quizzes }} -->
             <div v-if="summaryStore.curr_summary?.quizzes">
@@ -160,5 +166,17 @@ p {
 
 .showActions {
     max-width: 15rem !important;
+}
+
+/* defome Style for the summary */
+.summaryNotEditable .showActions {
+    max-width: 15rem !important;
+}
+.summaryNotEditable ul {
+    list-style: inherit !important;
+}
+.summaryNotEditable ul li {
+    font-size: 1.5rem !important;
+    margin-left: 1rem !important;
 }
 </style>
