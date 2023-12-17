@@ -9,7 +9,7 @@ export default defineNuxtConfig({
   build: {
     transpile: ['vuetify', 'gsap'],
   },
-  ssr: false,
+  ssr: true,
   vite: {
     define: {
       'process.env.DEBUG': false,
