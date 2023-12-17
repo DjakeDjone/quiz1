@@ -1,0 +1,181 @@
+Create a quiz for me with with 10 questions to the summary ```1)Wirtschaften
+
+Wirtschaften heißt, bewusst mit knappen Ressourcen die Güter herzustellen, die unsere Bedürfnisse möglichst gut befriedigen.
+
+Bedürfnis ist das Empfinden eines Mangels, verbunden mit dem Wunsch ihn zu beseitigen.
+
+Grund- und Existenzbedürfnisse (Primärbedürfnisse): Die Abdeckung dieser Bedürfnisse ist Lebensnotwendig (z.B.: trinken, schlafen).
+
+Kultur- und Sozialbedürfnisse (Sekundärbedürfnisse): Die Abdeckung dieser Bedürfnisse erhöht den Lebensstandard und steigert das Lebensgefühl (z.B.: Reisen, Sport)
+
+Bedarf ist der Teil der Bedürfnisse, der durch Kaufkraft befriedigt werden kann.
+
+Güter sind die Mittel, die zur Deckung des Bedarfs gebraucht werden.
+
+Freie Güter: Güter die scheinbar unbegrenzt vorhanden sind (z.B.: Wasser, Luft)
+
+Wirtschaftsgüter: Güter, die einen Preis haben, müssen produziert und bezahlt werden
+
+Minimalprinzip: Ein bestimmtes Ziel mit so möglichst geringem Mitteleinsatz erreichen.
+
+Maximalprinzip: Mit bestimmten Mittel ein möglichst hohes Ziel zu erreichen.
+
+2)Was bedeutet Volkswirtschaft?
+
+Volkswirtschaft ist die Wirtschaft eines exakt abgegrenzten Bereichs, in der Regel eines Staates oder Staatenverbundes.
+
+Mikroökonomie: Analysiert das Verhalten von einzelnen Wirtschaftsteilnehmern, wie Haushalten oder Unternehmen, sowie deren Interaktionen auf den Märkten.
+
+Makroökonomie: Untersucht gesamtwirtschaftliche Phänomene (z.B.: Gesamtleistung einer Volkswirtschaft, Arbeitslosenquote)
+
+3)Wirtschaftskreislauf
+
+Unternehmen: produzieren Sachgüter bzw. stellen Dienstleistungen zur Verfügung
+
+Öffentliche Unternehmen:           staatlich (ÖBB,ORF)
+
+                                                               BL(EVN, Krankenhaus)
+
+                                                               Gemeinden(Wiener Linien)                              
+
+Private Haushalte: können sich aus einer oder mehreren Personen zusammensetzen. Die Haushalte verdienen durch ihre Arbeit Geld.
+
+Staat: Anteil an der Wirtschaft, indem er mit Gesetzen regelnd eingreift
+
+Banken: Bekommen Geldanlagen, vergeben Kredite
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+4)Grundlagen der Volkswirtschaftlichen Gesamtrechnung
+
+Volkswirtschaftliche Gesamtrechnung (VGR) ist eine Untersuchung und Darstellung des Wirtschaftsgeschehens einer Volkswirtschaft für eine abgelaufene Periode.
+
+Sozialprodukt:
+
+BIP (Brutto Inlands Produkt): BIP erfasst den Gesamtwert aller Sachgüter und Dienstleistungen, die innerhalb einer Volkswirtschaft in einem bestimmten Zeitabschnitt hergestellt werden.
+
+BNE (Brutto National Einkommen): Erfasst den Gesamtwert aller Sachgüter und Dienstleistungen, die in einem bestimmten Zeitabschnitt von Inländern im In- oder Ausland hergestellt wurden.
+
+Kritik am BIP/BNE:
+
+                Erfasst nicht: Schwarzarbeit, ehrenamtliche Arbeit, Kriminalität
+
+                Zusammensetzung spielt keine Rolle
+
+                Nachhaltigkeit
+
+5)Marktlehre
+
+Ein Markt liegt vor, wenn Nachfrager und Anbieter zusammentreffen und in wirtschaftliche Beziehung treten.
+
+Angebot: jene Menge an Gütern, die bestimmte Wirtschaftsteilnehmer zu einem bestimmten Preis verkaufen wollen
+
+Nachfrage: jene Menge an Gütern, die bestimmte Wirtschaftsteilnehmer zu bestimmtem Preis kaufen wollen
+
+Ein Marktgleichgewicht liegt vor, wenn die nachgefragte Menge mit der angebotenen Menge übereinstimmt. Der Preis wird als Gleichgewichtspreis, die Menge als Gleichgewichtsmenge bezeichnet.
+
+
+
+
+Einkommenselastizität: Bei Veränderung des Einkommens verändert sich das Konsumverhalten
+
+Nutzen ist das Ausmaß der individuellen Bedürfnisbefriedigung
+
+Zusatznutzen ist jene Veränderung des Gesamtnutzens, die durch eine weitere konsumierte Einheit eines Gutes eintritt (z.B.: noch ein Stück Kuchen).
+
+1.Gossen’sches Gesetz: Der Nutzen eines Gutes nimmt mit zunehmender Bedürfnisbefriedigung ab, bis bei Sättigung des Bedürfnisses ein weitere Konsum Widerwillen auslöst
+
+Je größer der Grenznutzen eines Produktes ist, desto mehr ist ein Konsument bereit zu zahlen. Wenn der Grenznutzen abnimmt, sind Konsumenten für jede zusätzliche Einheit immer weniger bereit zu zahlen.
+
+Marktform sagt aus, wie viele Anbieter und Nachfrager es auf dem Markt gibt.
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+Polypol: viele Marktteilnehmer, freie Konkurrenz,  freier Marktzugang, Informationsgleichstand
+
+Oligopol: Gefahr -> Absprachen/Kartelle
+
+Monopol: einer allein hat alle Marktanteile
+
+Kartelle: Preiskartelle (Bierkartell, Supermarktketten)
+
+                 Mengenkartelle (OPEC 80% des Erdöls)
+
+                 Gebiet/Region (Strom, Rauchfangkehrer)
+
+Vollkommender Markt:
+
+1)      Wenn die Güter nach Art der Beschaffung ident sind.
+
+2)      Wenn die Zahl der Anbieter und Nachfrager, die Preise, sowie die Qualität der Güter bekannt ist.
+
+3)      Der Marktzugang allen Anbietern und Nachfragern offen ist
+
+4)      Es keine räumliche oder zeitliche Differenzierung zwischen Angebot und Nachfrage gibt
+
+5)      Es keine Präferenzen bezüglich bestimmter Käufer und Verkäufer gibt
+
+Wenn nicht alle oder keine dieser Kriterien erfüllt sind, spricht man von einem unvollkommenen Markt.
+
+6)Die Produktionsfaktoren in der Volkswirtschaft
+
+Unter Produktionsfaktoren versteht man die eingesetzten Mittel, die für die Produktion von Sachgütern oder für die Erbringung von Dienstleistungen benötigt werden.
+
+Produktion – und Standortfaktoren:
+
+Standortfaktoren sind Betriebswirtschaftliche Faktoren an einem bestimmten Ort, die die Wirtschaftlichkeit eines Unternehmens beschreiben
+
+Harter Standartfaktor (direkter Einfluss auf den Gewinn): Qualität der Mitarbeiter, Kosten des Geldes, Produktionskosten
+
+Weicher Standartfaktor (indirekter Einfluss auf den Gewinn): Werbung, Trends, Beliebtheit
+
+Wirtschaftsstandort Österreich:
+
+Pro: gutes Sozialsystem, Zentrale Lage, gute Infrastruktur (Hotel, Schulen, Krankenhaus)
+
+Contra: Binnenstaat, hohe Steuern, hohe Lohn und Lohnnebenkosten
+```
+ with the format: ```
+ "questions": [
+    {
+      "answers": [
+        {
+            "correct": true,
+            "text": "Answer 1"
+        },
+        {
+            "correct": false,
+            "text": "Answer 2"
+        },
+        {
+            "correct": false,
+            "text": "Answer 3"
+        },
+        {
+            "correct": false,
+            "text": "Answer 4"
+        }
+        ],
+    "question": "Question 1"
+    },
+ ]
+
+```
