@@ -54,6 +54,8 @@ const addQuiz = () => {
     summaryStore.updateSummary(title.value, description.value, data.value, linked_quizzes.value);
 }
 
+
+
 </script>
 
 <template>
@@ -73,7 +75,8 @@ const addQuiz = () => {
         <div v-if="owner" class="inline-flex ml-auto mr-0">
             <!-- only if owner_mode -->
             <div class="inline-flex actions" :class="owner_mode ? 'showActions' : ''">
-                <v-btn class="m-4 w-fit relative" color="primary" @click="summaryStore.updateSummary(title, description, data, linked_quizzes)">
+                <v-btn class="m-4 w-fit relative" color="primary"
+                    @click="summaryStore.updateSummary(title, description, data, linked_quizzes)">
                     <v-icon>mdi-content-save</v-icon>
                     <v-tooltip location="bottom" activator="parent">
                         <span>Save</span>
@@ -96,25 +99,27 @@ const addQuiz = () => {
             </v-btn>
         </div>
     </nav>
-    <main class="md:p-4 flex flex-col md:flex-row p-4 w-full h-[calc(100vh-5rem)]">
-        <div class="w-full overflow-auto bg-[rgb(var(--v-theme-surface))] dark:bg-[#cccccc] p-4 text-black rounded-md"
+    <main class="md:p-4 flex flex-col md:flex-row p-4 w-full min-h-[calc(100vh-5rem)]">
+        <div class="w-full overflow-auto bg-[rgb(var(--v-theme-surface))] dark:bg-[#fff] p-4 text-black rounded-md h-full"
             v-if="summaryStore.curr_summary && summaryStore.curr_summary.data && (summaryStore.curr_summary.writer !== userStore.userId || !owner_mode)">
             <h1 class="text-4xl">{{ summaryStore.curr_summary?.title }}</h1>
             <!-- <h2 class="text-2xl"><u>Summary:</u></h2> -->
             <i class="border-b-2">
                 {{ summaryStore.curr_summary?.description }}
             </i>
-            <div class="summaryNotEditable !text-sm">
-                <p v-html="summaryStore.curr_summary?.data + '<style>li {margin-left: 2rem;} ul {list-style: revert-layer;}blockquote {border-left: 3px solid #000003;}</style>'">
-                </p>
+            <div class="summaryNotEditable !text-sm h-full">
+                <iframe class="border-red-800 border-2 max-h-[calc(100vh-10rem)]" height="800" width="100%"
+                    :srcdoc="summaryStore.curr_summary?.data"
+                    style="border: none; overflow: hidden; font: Arial !important; color: #333;" allowfullscreen>
+                </iframe>
             </div>
             <!-- quizzes -->
             <!-- {{ summaryStore.curr_summary?.quizzes }} -->
             <div v-if="summaryStore.curr_summary?.quizzes">
                 <h2 class="text-2xl"><u>Linked Quizzes:</u></h2>
                 <div class="flex flex-wrap">
-                    <v-chip v-for="quiz, i in summaryStore.curr_summary?.quiz_objs" :key="quiz.id!" class="m-1" color="primary"
-                        @click="useRouter().push('/quiz/' + quiz.id)">
+                    <v-chip v-for="quiz, i in summaryStore.curr_summary?.quiz_objs" :key="quiz.id!" class="m-1"
+                        color="primary" @click="useRouter().push('/quiz/' + quiz.id)">
                         <span class="text-black">
                             {{ quiz.title }} ({{ quiz.questions.length }} Q.)
                         </span>
@@ -126,24 +131,31 @@ const addQuiz = () => {
         <div v-else-if="data != 'empty'" class="flex flex-col w-full">
             <v-text-field v-model="title" label="Title" />
             <v-textarea v-model="description" label="Description" autoGrow rows="1" />
-            <Editor v-model="data" class="mb-4"/>
+            <Editor v-model="data" class="mb-4" />
             <div v-if="possible_quizzes.length > 0" class="flex flex-col">
                 <v-select v-model="linked_quizzes" :items="possible_quizzes" label="Linked Quizzes" multiple dense chips />
             </div>
         </div>
-        <div v-if="show_comments" class="flex flex-col p-4 backdrop-blur-sm bg-[#ffffff49] rounded-lg md:max-w-sm md:ml-2 w-full resize-y">
-            <h2 class="text-2x">
-                <v-icon class="mr-4" @click="show_comments = !show_comments">mdi-comment</v-icon>
-                <u>Comments:</u></h2>
-            <div class="max-h-[calc(100vh-10rem)] overflow-x-auto">
-                <div v-if="summaryStore.curr_summary?.comments_objs">
-                    <div v-for="comment, i in summaryStore.curr_summary?.comments_objs" class="b-2">
-                        <!-- {{ comment }} -->
-                        <Comment :content="comment.content" :writer="comment.writer_obj?.username"
-                            :updated="comment.updated" :stars="comment.stars" />
+        <div>
+            <div v-if="show_comments"
+                class="flex flex-col p-4 backdrop-blur-sm bg-[#ffffff49] rounded-lg md:max-w-sm md:ml-2 w-full">
+                <h2 class="text-2x">
+                    <v-icon class="mr-4" @click="show_comments = !show_comments">mdi-comment</v-icon>
+                    <u>Comments:</u>
+                </h2>
+                <div class="max-h-[calc(100vh-10rem)] overflow-x-auto">
+                    <div v-if="summaryStore.curr_summary?.comments_objs">
+                        <div v-for="comment, i in summaryStore.curr_summary?.comments_objs" class="b-2">
+                            <!-- {{ comment }} -->
+                            <Comment :content="comment.content" :writer="comment.writer_obj?.username"
+                                :updated="comment.updated" :stars="comment.stars" />
+                        </div>
                     </div>
+                    <WriteComment :id="id" @sendComment="summaryStore.createComment($event.txt, $event.stars)" />
                 </div>
-                <WriteComment :id="id" @sendComment="summaryStore.createComment($event.txt, $event.stars)" />
+            </div>
+            <div class="border-2 resize">
+                <h1>Hello world</h1>
             </div>
         </div>
     </main>
@@ -169,12 +181,18 @@ p {
 }
 
 /* defome Style for the summary */
+.summaryNotEditable {
+    min-height: 20rem !important;
+}
+
 .summaryNotEditable .showActions {
     max-width: 15rem !important;
 }
+
 .summaryNotEditable ul {
     list-style: inherit !important;
 }
+
 .summaryNotEditable ul li {
     font-size: 1.5rem !important;
     margin-left: 1rem !important;

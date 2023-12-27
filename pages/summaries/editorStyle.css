@@ -1,0 +1,15 @@
+* {
+    margin-top: .5rem;
+}
+
+li {
+    margin-left: 2rem;
+}
+
+ul {
+    list-style: revert-layer;
+}
+
+blockquote {
+    border-left: 3px solid #000003;
+}

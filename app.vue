@@ -11,7 +11,7 @@ userstore.init();
 onBeforeMount(async () => {
   await userstore.session();
   const router = useRouter();
-  console.log("ROUTER:",router.currentRoute.value.path.indexOf('/summaries'));
+  console.log("ROUTER:", router.currentRoute.value.path.indexOf('/summaries'));
   if (!userstore.loggedIn) {
     // router.push('/login');
     // check if the page is not a quiz page or summary page or a subpage of a summary or quiz page
@@ -24,16 +24,12 @@ onBeforeMount(async () => {
 });
 
 onMounted(() => {
-  // push messages
-  // messagestore.throwInfo("This is a test message!", 3000);
-  // setInterval(() => {
-  //   messagestore.throwInfo("This is a test message!", 3000);
-  // }, 1000);
 });
 
 </script>
 
 <template>
+  <!-- <NuxtImg src="/bg.svg" alt="background" layout="fill" fit="cover" class="fixed top-0 right-0 h-full object-contain" /> -->
   <main id="mainMain">
     <div class="page min-h-screen">
       <NuxtPage />
@@ -52,9 +48,9 @@ onMounted(() => {
 
 <style>
 body {
-  background-image: url('/bg.png');
-  background-size: 100% 100%;
-  background-position: center;
+  background-image: url('/bg.svg');
+  background-size: contain;
+  background-position: right;
   background-repeat: no-repeat;
   background-attachment: fixed;
   height: 100vh;
