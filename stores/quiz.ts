@@ -120,17 +120,16 @@ export const useQuizStore = defineStore("quiz", {
                 } as Quiz;
                 for (let i = 0; i < 3; i++) {
                     const question = get_random_element(BSP_QUESTIONS);
-                    const answers = get_random_element(BSP_ANSWERS);
-                    const correct = Math.floor(Math.random() * answers.length);
+                    const correct = 1;
                     const q = {
                         question: question,
                         answers: [],
-                        possible_answers: answers.length,
+                        possible_answers: 1,
                         qz_type: 'single',
                     } as Question;
-                    for (let j = 0; j < answers.length; j++) {
+                    for (let j = 0; j < 5; j++) {
                         const a = {
-                            answer: answers[j],
+                            answer: get_random_element(BSP_ANSWERS),
                             correct: j == correct,
                         } as Answer;
                         q.answers.push(a);
@@ -161,6 +160,12 @@ export const useQuizStore = defineStore("quiz", {
                     return false;
                 }
                 this.current_quiz = quiz;
+                for (let i = 0; i < quiz.questions.length; i++) {
+                    const q = quiz.questions[i];
+                    if (!q.qz_type) {
+                        q.qz_type = 'single';
+                    }
+                }
                 return quiz;
             } catch (e) {
                 useMessagestore().throwError("Quiz could not be loaded");
