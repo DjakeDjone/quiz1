@@ -7,8 +7,10 @@
         --accent: #856f82;
         --shadow: 0 0 0 0.25rem rgba(255, 140, 0, 0.25);
         --contrast: rgba(1, 1, 1, 0.314);
+        /* custom */
+        --card-filter: #00000091;
     }
-
+    
     .dark {
         --text: #fefdfb;
         --background: #090501;
@@ -17,5 +19,7 @@
         --accent: #907a8d;
         --shadow: 0 0 0 0.25rem rgba(255, 140, 0, 0.25);
         --contrast: rgba(255, 255, 255, 0.314);
+        /* custom */
+        --card-filter: #ffffff91;
     }
 }

@@ -56,6 +56,7 @@ const props = defineProps({
 .card-inner {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     padding: 1rem;
     width: 100%;
     border-radius: 0.5rem;

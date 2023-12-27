@@ -75,6 +75,10 @@ const onClick = () => {
     background-color: #00000000;
     padding: .5rem;
     display: inline-block;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .animated {
@@ -87,7 +91,7 @@ const onClick = () => {
 
 .btnActive:hover {
     position: relative;
-    top: -0.1rem;
+    top: -0.05rem;
 }
 
 .btnActive:hover>span {
@@ -100,7 +104,7 @@ const onClick = () => {
 
 .btnActive:active {
     position: relative;
-    top: 0.1rem;
+    top: 0.03rem;
 }
 
 .btnActive:active>span {

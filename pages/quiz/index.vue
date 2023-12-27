@@ -4,9 +4,12 @@ import { useQuizStore } from '~/stores/quiz';
 
 const user = useUserstore();
 const quizStore = useQuizStore();
+const filter = ref('');
+const own_quizzes_visible = ref(true);
 
 onMounted(async () => {
     // load quizzes
+    quizStore.loadPublicQuizzes();
     console.log('Loading quizzes');
     if (user.loggedIn) {
         quizStore.loadOwnQuizzes();
@@ -34,56 +37,83 @@ const createQuiz = async () => {
         console.error('Failed to create quiz');
     }
 };
+
+const search = (searchword: string) => {
+    console.log('Searching for ' + filter.value);
+    // if (searchword == '') {
+    //     return;
+    // }
+    quizStore.loadPublicQuizzes(searchword);
+};
+
+const calcHeight = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+        // let height_px = window.getComputedStyle(element).height;
+        let height = element.offsetHeight;
+        return height * 6;
+    }
+    return 0;
+};
+
 </script>
 
 <template>
-    <main class="p-4 max-w-3xl mx-auto">
-        <div class="flex flex-col sm:flex-row justify-between">
-            <h1 class="ml-0 m-2 text-4xl">Your quizzes</h1>
-            <div class="flex justify-between">
-                <v-btn class="m-2" color="primary" @click="createQuiz()">
-                    Create
-                    <v-icon>mdi-plus</v-icon>
-                    <v-tooltip location="bottom" activator="parent">
-                        <span>Create</span>
-                    </v-tooltip>
-                </v-btn>
-                <v-btn class="m-2" color="primary" @click="quizStore.loadOwnQuizzes()">
-                    <v-icon>mdi-refresh</v-icon>
-                    <v-tooltip location="bottom" activator="parent">
-                        <span>Refresh</span>
-                    </v-tooltip>
-                </v-btn>
-                <v-btn class="m-2" color="primary" @click="useRouter().push('/')">
-                    <v-icon>mdi-home</v-icon>
-                    <v-tooltip location="bottom" activator="parent">
-                        <span>Home</span>
-                    </v-tooltip>
-                </v-btn>
+    <main class="transition-all md:p-4">
+        <div id="ownQuizzes" class="p-4">
+            <h1 class="text-4xl">Your quizzes
+                <v-icon size="30" @click="own_quizzes_visible = !own_quizzes_visible">
+                    mdi-eye{{ own_quizzes_visible ? '' : '-off' }}
+                </v-icon>
+            </h1>
+            <div>
+                <p>
+                    Here you can find all your quizzes.
+                </p>
+            </div>
+            <!-- calc height of the container -->
+            <div id="ownQuizzesContainer" class="flex flex-wrap !justify-start overflow-hidden transition-all duration-700"
+                v-if="quizStore.own_quizzes" :style="{ maxHeight: own_quizzes_visible ?  '300vh': '0vh' }">
+                <div class="mr-2 !h-92 my-2">
+                    <b-card width="15rem" bg="var(--card-filter)" class="h-full" headline="Create Quiz">
+                        <b-button @click="createQuiz" class="h-full">Create</b-button>
+                    </b-card>
+                </div>
+                <div v-for="quiz, i in quizStore.own_quizzes" class="mr-2 !h-92 my-2">
+                    <b-card width="15rem" bg="var(--card-filter)" class="h-full" :headline="quiz.title"
+                        :subheadline="quiz.description">
+                        <b-button @click="() => { useRouter().push('/quiz/' + quiz.id + '/edit'); }">Edit</b-button>
+                        <b-button @click="() => { useRouter().push('/quiz/' + quiz.id + ''); }">Play</b-button>
+                    </b-card>
+                </div>
             </div>
         </div>
-        <div id="quizzesPrev" v-if="quizStore.own_quizzes">
-            <v-card v-for="quiz in quizStore.own_quizzes" :key="quiz.id!" class="m-2">
-                <v-card-title>
-                    <div class="flex justify-between w-full">
-                        <span>{{ quiz.title }}</span>
-                        <!-- <v-btn @click="quizStore.removeQuiz(quiz)"><v-icon>mdi-delete</v-icon>
-                            <v-tooltip location="bottom" activator="parent">
-                                <span>Delete</span>
-                            </v-tooltip>
-                        </v-btn> -->
-                    </div>
-                </v-card-title>
-                <v-card-text>
-                    <span>{{ quiz.description }}</span>
-                </v-card-text>
-                <v-card-actions>
-                    <v-btn color="primary"
-                        @click="useRouter().push('/quiz/' + quiz.id + '/edit')">Edit<v-icon>mdi-file-document-edit-outline</v-icon></v-btn>
-                    <v-btn color="primary"
-                        @click="useRouter().push('/quiz/' + quiz.id + '/')">Take<v-icon>mdi-play-circle-outline</v-icon></v-btn>
-                </v-card-actions>
-            </v-card>
+        <div id="publicQuizzes" class="p-4 border-t-2 border-dotted transition-all">
+            <h1 class="text-3xl">
+                Public quizzes
+            </h1>
+            <div>
+                <p>
+                    Here you can find all public quizzes.
+                </p>
+            </div>
+            <div id="filter">
+                <b-input class="w-full max-w-sm" v-model="filter" placeholder="Search"
+                    @typeing="() => { console.log('typeing'); }" @stopTypeing="() => { search(filter); }"
+                    @enter="() => { search(filter); }" @escape="() => { console.log('escape'); }" autofocus>
+                    <v-icon @click="() => { search(filter); }">
+                        mdi-magnify
+                    </v-icon>
+                </b-input>
+            </div>
+            <div class="flex flex-wrap justify-center md:!justify-start">
+                <div v-for="quiz, i in quizStore.public_quizzes" class="mr-2 !h-92 my-2">
+                    <b-card width="15rem" bg="var(--card-filter)" class="h-full" :headline="quiz.title"
+                        :subheadline="quiz.description">
+                        <b-button @click="() => { useRouter().push('/quiz/' + quiz.id + ''); }">Play</b-button>
+                    </b-card>
+                </div>
+            </div>
         </div>
     </main>
 </template>

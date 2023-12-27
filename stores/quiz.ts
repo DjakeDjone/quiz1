@@ -104,6 +104,29 @@ export const useQuizStore = defineStore("quiz", {
             }
 
         },
+        async loadPublicQuizzes(searchword: string = "") {
+            if (useUserstore().pb == null) {
+                useMessagestore().throwError("PocketBase not initialized");
+                return false;
+            }
+            try {
+                const quizzes = await useUserstore().pb?.collection<Quiz>("quizzes").getFullList({
+                    filter: "title ~ '" + searchword + "' || description ~ '" + searchword + "'",
+                    sort: "updated",
+                    limit: 20,
+                })
+                console.log("Loaded public quizzes", quizzes);
+                if (quizzes == null) {
+                    useMessagestore().throwError("Quizzes could not be loaded");
+                    return false;
+                }
+                this.public_quizzes = quizzes;
+                return true;
+            } catch (e) {
+                useMessagestore().throwError("Quizzes could not be loaded");
+                return false;
+            }
+        },
         async createQuiz() {
             if (useUserstore().pb == null) {
                 useMessagestore().throwError("PocketBase not initialized");

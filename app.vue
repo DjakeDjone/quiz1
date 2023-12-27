@@ -50,7 +50,7 @@ onMounted(() => {
 body {
   background-image: url('/bg.svg');
   background-size: contain;
-  background-position: right;
+  background-position: right top;
   background-repeat: no-repeat;
   background-attachment: fixed;
   height: 100vh;
