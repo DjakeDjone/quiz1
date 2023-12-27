@@ -14,6 +14,9 @@ export default defineNuxtConfig({
       noExternal: ['vuetify'],
     }
   },
+  image: {
+    dir: 'assets',
+  },
   // ssr: false,
   runtimeConfig: {
     public: {

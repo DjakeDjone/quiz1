@@ -102,7 +102,7 @@ onMounted(() => {
                 <b-card headline="Get started" subheadline="<span class='text-green'>- always free -</span>" width="20rem" bg="#ffffff2f">
                     <p class="offerAdvantage">
                         <v-icon>mdi-check</v-icon> <span>
-                            500MB Storage
+                            5 MB Storage
                         </span>
                     </p>
                     <p class="offerAdvantage mb-16">
