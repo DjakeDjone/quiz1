@@ -171,7 +171,17 @@ export const useSummaryStore = defineStore("summary", {
                             comment.writer_obj = record.expand?.comments[j].expand?.writer as User;
                         });
                     }
-                    this.loadComments(id);
+                    await this.loadComments(id);
+                    let stars = 0;
+                    if (this.curr_summary.comments_objs) {
+                        this.curr_summary.comments_objs.forEach((comment, j) => {
+                            stars += comment.stars;
+                        });
+                    }
+                    this.curr_summary.stars = stars / (this.curr_summary.comments_objs?.length || 1);
+                    console.log("summary:", this.curr_summary);
+                    console.log("stars:", this.curr_summary.stars);
+                    
                     return this.curr_summary;
                 }
 

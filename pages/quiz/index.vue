@@ -59,6 +59,15 @@ const calcHeight = (id: string) => {
 </script>
 
 <template>
+    <nav>
+        <b-button to="/" color="#ffffff50" :shadow="false">
+            <span>
+                <v-icon size="30">
+                    mdi-home
+                </v-icon>
+            </span>
+        </b-button>
+    </nav>
     <main class="transition-all md:p-4">
         <div id="ownQuizzes" class="p-4">
             <h1 class="text-4xl">Your quizzes
@@ -73,7 +82,7 @@ const calcHeight = (id: string) => {
             </div>
             <!-- calc height of the container -->
             <div id="ownQuizzesContainer" class="flex flex-wrap !justify-start overflow-hidden transition-all duration-700"
-                v-if="quizStore.own_quizzes" :style="{ maxHeight: own_quizzes_visible ?  '300vh': '0vh' }">
+                v-if="quizStore.own_quizzes" :style="{ maxHeight: own_quizzes_visible ? '300vh' : '0vh' }">
                 <div class="mr-2 !h-92 my-2">
                     <b-card width="15rem" bg="var(--card-filter)" class="h-full" headline="Create Quiz">
                         <b-button @click="createQuiz" class="h-full">Create</b-button>

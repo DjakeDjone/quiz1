@@ -26,13 +26,13 @@ const logout = async () => {
             <img src="/Logo.svg" class="h-8 md:-ml-2 md:-mr-1" />uiz-App
         </div>
         <div class="sm:ml-auto sm:inline-flex lg:w-fit w-full justify-between">
-            <v-btn class="w-full m-2 sm:w-fit" color="primary" @click="$router.push('/quiz/')">
+            <v-btn class="w-full m-2 sm:w-fit" color="primary" @click="useRouter().push('/quiz/')">
                 View own Quizzes
             </v-btn>
-            <v-btn class="w-full m-2 sm:w-fit" color="secondary" @click="$router.push('/lobby')">
+            <v-btn class="w-full m-2 sm:w-fit" color="secondary" @click="useRouter().push('/lobby')">
                 Groups and Lobby
             </v-btn>
-            <v-btn class="w-full m-2 sm:w-fit" color="primary" @click="$router.push('/summaries')">
+            <v-btn class="w-full m-2 sm:w-fit" color="primary" @click="useRouter().push('/summaries')">
                 Summaries
             </v-btn>
             <v-btn class="w-full m-2 sm:w-fit" color="secondary" @click="logout()">

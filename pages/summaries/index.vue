@@ -29,12 +29,13 @@ const createSummary = async () => {
 
 <template>
     <nav>
-        <v-btn class="m-4 w-fit relative" color="primary" @click="useRouter().push('/')">
-            <v-icon>mdi-home</v-icon>
-            <v-tooltip location="bottom" activator="parent">
-                <span>Home</span>
-            </v-tooltip>
-        </v-btn>
+        <b-button to="/" color="#ffffff50" :shadow="false">
+            <span>
+                <v-icon size="30">
+                    mdi-home
+                </v-icon>
+            </span>
+        </b-button>
     </nav>
     <main class="p-4 pl-8 min-h-[calc(100vh-4.3rem)]" id="mainSummaries">
         <h1 class="text-4xl">
@@ -54,9 +55,9 @@ const createSummary = async () => {
         <h2 class="text-2xl mt-28">
             <u>Public Summaries:</u>
         </h2>
-        <v-text-field v-model="searchword" label="Search" class="my-4 backdrop-blur-sm !bg-[#ffffff96] dark:!bg-[#ffffff1f] max-w-md"
-            variant="outlined" append-inner-icon="mdi-magnify" @click:append-inner="searchword = ''" color="primary"
-            hide-details />
+        <v-text-field v-model="searchword" label="Search"
+            class="my-4 backdrop-blur-sm !bg-[#ffffff96] dark:!bg-[#ffffff1f] max-w-md" variant="outlined"
+            append-inner-icon="mdi-magnify" @click:append-inner="searchword = ''" color="primary" hide-details />
         <!-- center -->
         <div v-if="summaryStore.summaries"
             class="py-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">

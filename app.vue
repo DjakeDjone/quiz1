@@ -1,4 +1,48 @@
 <script lang="ts" setup>
+// define page meta
+useHead({
+  titleTemplate: (titleChunk) => {
+    return titleChunk ? `${titleChunk} - Quizz-App` : "Quizz-App";
+  },
+  htmlAttrs: {
+    lang: "en"
+  },
+  meta: [
+    {
+      name: "description",
+      content: "A quiz app for everyone, create your own summaries with quizzes and share them with your friends!"
+    },
+    {
+      name: "viewport",
+      content: "width=device-width, initial-scale=1"
+    },
+    {
+      name: "theme-color",
+      content: "#ffffff"
+    },
+    {
+      name: "apple-mobile-web-app-capable",
+      content: "yes"
+    },
+    {
+      name: "apple-mobile-web-app-status-bar-style",
+      content: "black-translucent"
+    },
+    {
+      name: "apple-mobile-web-app-title",
+      content: "Quizz-App"
+    },
+    {
+      name: "msapplication-TileImage",
+      content: "/icons/ms-icon-144x144.png"
+    },
+    {
+      name: "msapplication-TileColor",
+      content: "#ffffff"
+    }
+  ]
+})
+
 import { useMessagestore } from './stores/msg';
 import { useUserstore } from './stores/user';
 
@@ -29,6 +73,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <NuxtLoadingIndicator color="rgb(var(--v-theme-primary))" />
   <!-- <NuxtImg src="/bg.svg" alt="background" layout="fill" fit="cover" class="fixed top-0 right-0 h-full object-contain" /> -->
   <main id="mainMain">
     <div class="page min-h-screen">
@@ -54,5 +99,16 @@ body {
   background-repeat: no-repeat;
   background-attachment: fixed;
   height: 100vh;
+}
+
+.page-enter-active,
+.page-leave-active {
+  transition: all 0.4s;
+}
+
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+  filter: blur(1rem);
 }
 </style>

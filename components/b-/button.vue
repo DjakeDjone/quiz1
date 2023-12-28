@@ -54,6 +54,7 @@ const onClick = () => {
     cursor: text;
     /* selectabile */
     -webkit-user-select: text;
+    user-select: text;
     -moz-user-select: text;
     font: "Fira Code", monospace;
     transition: 0.2s;
@@ -79,10 +80,6 @@ const onClick = () => {
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.animated {
-    /* animation: wiggle 0.4s; */
 }
 
 .btnActive {

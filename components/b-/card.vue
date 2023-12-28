@@ -63,10 +63,6 @@ const props = defineProps({
     height: 100%;
 }
 
-.card-headline {}
-
-.card-subheadline {}
-
 .card-content {
     margin-top: 1rem;
     height: 100%;

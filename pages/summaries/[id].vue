@@ -17,6 +17,7 @@ const description = ref("");
 const linked_quizzes = ref([] as string[])
 const possible_quizzes = ref([] as string[]);
 const stars = ref(0);
+const fullscreen = ref(false);
 const show_comments = ref(true);
 
 // load the summary
@@ -101,15 +102,36 @@ const addQuiz = () => {
     </nav>
     <main class="md:p-4 flex flex-col md:flex-row p-4 w-full min-h-[calc(100vh-5rem)]">
         <div class="w-full overflow-auto bg-[rgb(var(--v-theme-surface))] dark:bg-[#fff] p-4 text-black rounded-md h-full"
-            v-if="summaryStore.curr_summary && summaryStore.curr_summary.data && (summaryStore.curr_summary.writer !== userStore.userId || !owner_mode)">
-            <h1 class="text-4xl">{{ summaryStore.curr_summary?.title }}</h1>
-            <!-- <h2 class="text-2xl"><u>Summary:</u></h2> -->
+            v-if="summaryStore.curr_summary && summaryStore.curr_summary.data && (summaryStore.curr_summary.writer !== userStore.userId || !owner_mode)"
+            :style="fullscreen ? 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000;' : ''">
+            <!-- <h1 class="text-4xl">{{ summaryStore.curr_summary?.title }}</h1>
+            <h2 class="text-2xl"><u>Summary:</u></h2>
             <i class="border-b-2">
                 {{ summaryStore.curr_summary?.description }}
-            </i>
+            </i> -->
+            <div class="flex">
+                <div>
+                    <div v-for="star in 5" class="inline-flex">
+                        <v-icon v-if="star <= summaryStore.curr_summary?.stars" color="primary">
+                            mdi-star
+                        </v-icon>
+                        <v-icon v-else>
+                            mdi-star-outline
+                        </v-icon>
+                    </div>
+                </div>
+                <span class="ml-auto">
+                    <v-icon @click="fullscreen=true" v-if="!fullscreen">
+                        mdi-fullscreen
+                    </v-icon>
+                    <v-icon @click="fullscreen=false" v-else>
+                        mdi-fullscreen-exit
+                    </v-icon>
+                </span>
+            </div>
             <div class="summaryNotEditable !text-sm h-full">
-                <iframe class="border-red-800 border-2 max-h-[calc(100vh-10rem)]" height="800" width="100%"
-                    :srcdoc="summaryStore.curr_summary?.data"
+                <iframe class="border-red-800 border-2 max-h-screen" height="800" width="100%"
+                    :srcdoc="'<h1>'+summaryStore.curr_summary.title+'</h1><h2>'+summaryStore.curr_summary.description+'</h2>'  + summaryStore.curr_summary?.data"
                     style="border: none; overflow: hidden; font: Arial !important; color: #333;" allowfullscreen>
                 </iframe>
             </div>
@@ -153,9 +175,6 @@ const addQuiz = () => {
                     </div>
                     <WriteComment :id="id" @sendComment="summaryStore.createComment($event.txt, $event.stars)" />
                 </div>
-            </div>
-            <div class="border-2 resize">
-                <h1>Hello world</h1>
             </div>
         </div>
     </main>

@@ -96,6 +96,7 @@ const emit = defineEmits(['update:modelValue', 'typeing', 'enter', 'escape', 'st
     cursor: text;
     /* selectabile */
     -webkit-user-select: text;
+    user-select: text;
     -moz-user-select: text;
     font: "Fira Code", monospace;
     transition: 0.2s;

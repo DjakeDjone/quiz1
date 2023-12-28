@@ -168,6 +168,7 @@ onMounted(() => {
             #a86265);
     text-shadow: 0 0 0.5rem 0.5rem rgba(255, 255, 255, 0.1);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
