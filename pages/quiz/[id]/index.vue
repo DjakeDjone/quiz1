@@ -74,7 +74,9 @@ const next = async () => {
             <v-carousel-item v-for="question, i in quiz" :key="question.question">
                 <v-card>
                     <v-card-title>
-                        <h2 class="text-2xl">{{ question.question }}</h2>
+                            <!-- wrap the text -->
+                            <h2 class="block text-2xl !break-words overflow-hidden overflow-ellipsis whitespace-normal">
+                                {{ question.question }}</h2>
                     </v-card-title>
                     <v-card-text>
                         <v-list>
@@ -85,7 +87,8 @@ const next = async () => {
                                     <v-checkbox v-if="question.qz_type == 'multiple'" v-model="question.chosen"
                                         :label="answer.answer" :value="j" true-icon="mdi-check" false-icon="mdi-close" />
                                     <v-checkbox v-if="question.qz_type == 'single'" v-model="question.chosen[0]"
-                                            :label="answer.answer" :value="j" true-icon="mdi-check" false-icon="mdi-close" :multiple="false" />
+                                        :label="answer.answer" :value="j" true-icon="mdi-check" false-icon="mdi-close"
+                                        :multiple="false" />
                                 </v-list-item-title>
                             </v-list-item>
                             <!--  -->
@@ -116,5 +119,6 @@ const next = async () => {
                 </v-card>
             </v-carousel-item>
         </v-carousel>
-</main>
-<LoadingPage v-else /></template>
+    </main>
+    <LoadingPage v-else />
+</template>
