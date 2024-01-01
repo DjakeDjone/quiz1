@@ -20,6 +20,7 @@ onMounted(async () => {
             }
         });
     }
+    // animate
 });
 
 const createQuiz = async () => {
@@ -46,30 +47,21 @@ const search = (searchword: string) => {
     quizStore.loadPublicQuizzes(searchword);
 };
 
-const calcHeight = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-        // let height_px = window.getComputedStyle(element).height;
-        let height = element.offsetHeight;
-        return height * 6;
-    }
-    return 0;
-};
 
 </script>
 
 <template>
     <nav>
-        <b-button to="/" color="#ffffff50" :shadow="false">
+        <BButton to="/" color="#ffffff50" :shadow="false">
             <span>
                 <v-icon size="30">
                     mdi-home
                 </v-icon>
             </span>
-        </b-button>
+        </BButton>
     </nav>
     <main class="transition-all md:p-4">
-        <div id="ownQuizzes" class="p-4">
+        <div id="ownQuizzes" class="p-4" v-auto-animate>
             <h1 class="text-4xl">Your quizzes
                 <v-icon size="30" @click="own_quizzes_visible = !own_quizzes_visible">
                     mdi-eye{{ own_quizzes_visible ? '' : '-off' }}
@@ -81,8 +73,8 @@ const calcHeight = (id: string) => {
                 </p>
             </div>
             <!-- calc height of the container -->
-            <div id="ownQuizzesContainer" class="flex flex-wrap !justify-start overflow-hidden transition-all duration-700"
-                v-if="quizStore.own_quizzes" :style="{ maxHeight: own_quizzes_visible ? '300vh' : '0vh' }">
+            <div id="ownQuizzesContainer" class="flex flex-wrap !justify-start"
+                v-if="quizStore.own_quizzes && own_quizzes_visible">
                 <div class="mr-2 !h-92 my-2">
                     <b-card width="15rem" bg="var(--card-filter)" class="h-full" headline="Create Quiz">
                         <b-button @click="createQuiz" class="h-full">Create</b-button>

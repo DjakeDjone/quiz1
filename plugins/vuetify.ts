@@ -19,10 +19,7 @@ export default defineNuxtPlugin(nuxtApp => {
             },
         },
         components: {
-            ...components,
-            VSkeletonLoader,
-            VInfiniteScroll,
-            VBottomSheet
+            ...components
         },
         directives,
         theme: {
