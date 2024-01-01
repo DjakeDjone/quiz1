@@ -1,3 +1,19 @@
+# Quickstart
+*You can view this project live at [https://quiz.fri3dl.com](https://quiz.fri3dl.com)*
+
+## About
+This is a simple quiz app built with Nuxt 3 and Tailwind CSS. It uses pocketbase as a backend and is hosted on Oracle Cloud Infrastructure.
+
+## Features
+- [x] Write summaries
+- [x] Write comments on summaries
+- [x] Create quizzes
+- [x] Take quizzes
+- [x] View quiz results
+- [x] save files to pocketbase
+- [x] **Share your summaries and quizzes with others**
+
+
 # Nuxt 3 Minimal Starter
 
 Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
