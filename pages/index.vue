@@ -21,9 +21,12 @@ const logout = async () => {
     <nav
         class="flex flex-col sm:flex-row flex-wrap items-cente p-4 bg-gradient-to-tl bg-[#ffffff7a] backdrop-blur-md border-b-2">
         <div id="logo"
-            class="cursor-pointer m-2 mx-8 min-w-fit w-16 flex items-center scale-150 text-blue-600"
+            class="cursor-pointer m-2 mx-8 min-w-fit w-16 flex items-center scale-150"
             @click="$router.push('/')">
-            <img src="/Logo.svg" class="h-8 md:-ml-2 md:-mr-1" />uiz-App
+            <!-- <img src="/Logo.svg" class="h-8 md:-ml-2 md:-mr-1" />uiz-App -->
+            <h2>
+                Quizz-App
+            </h2>
         </div>
         <div class="sm:ml-auto sm:inline-flex lg:w-fit w-full justify-between">
             <v-btn class="w-full m-2 sm:w-fit" color="primary" @click="useRouter().push('/quiz/')">

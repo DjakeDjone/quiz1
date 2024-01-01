@@ -45,8 +45,8 @@ export const uploadFile = () => {
 export const useUserstore = defineStore("user", {
     state: () => ({
         loggedIn: false,
-        username: Cookies.get("username") || "",
-        password: Cookies.get("password") || "",
+        username: "",
+        password: "",
         email: Cookies.get("email") || "",
         groups: [] as Group[],
         current_group: {} as Group,
@@ -96,14 +96,9 @@ export const useUserstore = defineStore("user", {
                 useMessagestore().throwError("PocketBase not initialized");
             }
             try {
-                if (this.username == "" || this.password == "") {
-                    this.loadCookies();
-                }
-                const authData = await this.pb!.collection('users').authWithPassword(
-                    this.username,
-                    this.password
-                );
+                const authData = await this.pb!.collection('users').authRefresh();
                 this.loggedIn = true;
+                this.username = authData.record.username;
                 this.token = this.pb!.authStore.token;
                 this.userId = authData.record.id;
                 this.points = authData.record.points;
@@ -115,9 +110,10 @@ export const useUserstore = defineStore("user", {
                     this.files[i] = file;
                 }
                 this.loadGroups();
-                this.setCookies();
+                return true;
             } catch (e) {
                 useMessagestore().throwError("User could not be logged in");
+                return false;
             }
         },
         async loadGroups() {
@@ -147,29 +143,6 @@ export const useUserstore = defineStore("user", {
             Cookies.remove("password");
             Cookies.remove("email");
             this.pb!.authStore.clear();
-        },
-        checkCookie() {
-            if (Cookies.get("username") != undefined) {
-                this.cookieAllowed = true;
-            } else {
-                this.cookieAllowed = false;
-            }
-        },
-        async loadCookies() {
-            // this.username = Cookies.get("username") || "";
-            // this.password = Cookies.get("password") || "";
-            // this.email = Cookies.get("email") || "";
-            this.username = localStorage.getItem("username") || "";
-            this.password = localStorage.getItem("password") || "";
-            this.email = localStorage.getItem("email") || "";
-        },
-        setCookies() {
-            // if (this.cookieAllowed == false) {
-            //     return;
-            // }
-            localStorage.setItem("username", this.username);
-            localStorage.setItem("password", this.password);
-            localStorage.setItem("email", this.email);
         },
         getFile(file: string) {
             for (let i = 0; i < this.files.length; i++) {
