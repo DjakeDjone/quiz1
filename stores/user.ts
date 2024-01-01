@@ -84,7 +84,8 @@ export const useUserstore = defineStore("user", {
                 };
                 const record = await this.pb!.collection('users').create(data);
                 console.log(record);
-                this.session();
+                // this.session();
+                useRouter().push('/login');
                 return true;
             } catch (e) {
                 useMessagestore().throwError("User could not be registered");
@@ -94,6 +95,7 @@ export const useUserstore = defineStore("user", {
         async session() {
             if (this.pb == null) {
                 useMessagestore().throwError("PocketBase not initialized");
+                return false;
             }
             try {
                 const authData = await this.pb!.collection('users').authRefresh();
@@ -113,7 +115,43 @@ export const useUserstore = defineStore("user", {
                 return true;
             } catch (e) {
                 useMessagestore().throwError("User could not be logged in");
-                return false;
+                console.log(e.message, e);
+                if (e.message == "The request requires valid record authorization token to be set.") {
+                    this.logout();
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        },
+        async login() {
+            if (this.pb == null) {
+                useMessagestore().throwError("PocketBase not initialized");
+            }
+            try {
+                const authData = await this.pb!.collection('users').authWithPassword(this.username, this.password);
+                this.loggedIn = true;
+                this.token = this.pb!.authStore.token;
+                this.userId = authData.record.id;
+                this.points = authData.record.points;
+                this.email = authData.record.email;
+                this.friends = authData.record.friends;
+                console.log("user", authData.record);
+                for (let i = 0; i < authData.record.files.length; i++) {
+                    const file = useRuntimeConfig().public.apiBase + 'api/files/_pb_users_auth_/' + this.userId + '/' + authData.record.files[i];
+                    this.files[i] = file;
+                }
+                this.loadGroups();
+                return true;
+            } catch (e) {
+                useMessagestore().throwError("User could not be logged in");
+                console.log(e.message, e);
+                if (e.message == "The request requires valid record authorization token to be set.") {
+                    this.logout();
+                    return true;
+                } else {
+                    return false;
+                }
             }
         },
         async loadGroups() {
@@ -139,9 +177,6 @@ export const useUserstore = defineStore("user", {
             this.password = "";
             this.email = "";
             this.token = "";
-            Cookies.remove("username");
-            Cookies.remove("password");
-            Cookies.remove("email");
             this.pb!.authStore.clear();
         },
         getFile(file: string) {

@@ -63,10 +63,11 @@ onBeforeMount(async () => {
     const router = useRouter();
     console.log("ROUTER:", router.currentRoute.value.path.indexOf('/summaries'));
     if (!userstore.loggedIn) {
-      // router.push('/login');
-      // check if the page is not a quiz page or summary page or a subpage of a summary or quiz page
+
       if (router.currentRoute.value.path.indexOf('/quiz') === -1 && router.currentRoute.value.path.indexOf('/summaries') === -1) {
-        router.push('/info');
+        if (router.currentRoute.value.path.indexOf('/login') === -1 && router.currentRoute.value.path.indexOf('/register') === -1) {
+          router.push('/info');
+        }
       } else {
         // router.push('/login');
       }

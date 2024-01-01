@@ -18,7 +18,8 @@ const rulesPassword = [
 
 const login = async () => {
     loading.value = true;
-    await userstore.session();
+    // await userstore.session();
+    await userstore.login();
     if (userstore.loggedIn) {
         useRouter().push('/');
     }

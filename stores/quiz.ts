@@ -110,8 +110,12 @@ export const useQuizStore = defineStore("quiz", {
                 return false;
             }
             try {
+                let filter = "creator!='" + useUserstore().userId + "'";
+                if (searchword != "") {
+                    filter += " && (title ~ '" + searchword + "' || description ~ '" + searchword + "')";
+                }
                 const quizzes = await useUserstore().pb?.collection<Quiz>("quizzes").getFullList({
-                    filter: "title ~ '" + searchword + "' || description ~ '" + searchword + "'",
+                    filter: filter,
                     sort: "updated",
                     limit: 20,
                 })
@@ -124,6 +128,8 @@ export const useQuizStore = defineStore("quiz", {
                 return true;
             } catch (e) {
                 useMessagestore().throwError("Quizzes could not be loaded");
+                console.log(e);
+                
                 return false;
             }
         },

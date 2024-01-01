@@ -9,7 +9,7 @@ const own_quizzes_visible = ref(true);
 
 onMounted(async () => {
     // load quizzes
-    quizStore.loadPublicQuizzes();
+    quizStore.loadPublicQuizzes("");
     console.log('Loading quizzes');
     if (user.loggedIn) {
         quizStore.loadOwnQuizzes();
@@ -20,7 +20,6 @@ onMounted(async () => {
             }
         });
     }
-    // animate
 });
 
 const createQuiz = async () => {
@@ -80,7 +79,7 @@ const search = (searchword: string) => {
                         <b-button @click="createQuiz" class="h-full">Create</b-button>
                     </b-card>
                 </div>
-                <div v-for="quiz, i in quizStore.own_quizzes" class="mr-2 !h-92 my-2">
+                <div v-for="quiz, i in quizStore.own_quizzes" class="mr-2 !h-92 my-2" :key="quiz.id || quiz.title">
                     <b-card width="15rem" bg="var(--card-filter)" class="h-full" :headline="quiz.title"
                         :subheadline="quiz.description">
                         <b-button @click="() => { useRouter().push('/quiz/' + quiz.id + '/edit'); }">Edit</b-button>
@@ -107,8 +106,8 @@ const search = (searchword: string) => {
                     </v-icon>
                 </b-input>
             </div>
-            <div class="flex flex-wrap justify-center md:!justify-start">
-                <div v-for="quiz, i in quizStore.public_quizzes" class="mr-2 !h-92 my-2">
+            <div class="flex flex-wrap justify-center md:!justify-start" v-auto-animate>
+                <div v-for="quiz, i in quizStore.public_quizzes" class="mr-2 !h-92 my-2" :key="quiz.id || quiz.title">
                     <b-card width="15rem" bg="var(--card-filter)" class="h-full" :headline="quiz.title"
                         :subheadline="quiz.description">
                         <b-button @click="() => { useRouter().push('/quiz/' + quiz.id + ''); }">Play</b-button>
