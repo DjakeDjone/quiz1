@@ -132,11 +132,9 @@ const addQuiz = () => {
             <div class="summaryNotEditable !text-sm h-full">
                 <iframe class="border-red-800 border-2 max-h-screen" height="800" width="100%"
                     :srcdoc="'<h1>'+summaryStore.curr_summary.title+'</h1><h2>'+summaryStore.curr_summary.description+'</h2>'  + summaryStore.curr_summary?.data"
-                    style="border: none; overflow: hidden; font: Arial !important; color: #333;" allowfullscreen>
+                    style="border: none; overflow: hidden; font: Arial !important; color: #333; max-width: 100%;" allowfullscreen>
                 </iframe>
             </div>
-            <!-- quizzes -->
-            <!-- {{ summaryStore.curr_summary?.quizzes }} -->
             <div v-if="summaryStore.curr_summary?.quizzes">
                 <h2 class="text-2xl"><u>Linked Quizzes:</u></h2>
                 <div class="flex flex-wrap">
@@ -149,6 +147,8 @@ const addQuiz = () => {
                     </v-chip>
                 </div>
             </div>
+            <!-- quizzes -->
+            <!-- {{ summaryStore.curr_summary?.quizzes }} -->
         </div>
         <div v-else-if="data != 'empty'" class="flex flex-col w-full">
             <v-text-field v-model="title" label="Title" />
