@@ -1,12 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [// ...
-    '@pinia/nuxt',
-    '@nuxtjs/tailwindcss',
-    'nuxt-icons',
-    '@nuxt/image',
-    '@formkit/auto-animate'
-  ],
+  '@pinia/nuxt', '@nuxtjs/tailwindcss', 'nuxt-icons', '@nuxt/image', '@formkit/auto-animate', '@vite-pwa/nuxt'],
   build: {
     transpile: ['vuetify', 'gsap'],
   },

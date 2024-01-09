@@ -118,7 +118,7 @@ const addQuiz = () => {
     <main class="md:p-4 flex flex-col md:flex-row p-4 w-full min-h-[calc(100vh-5rem)]">
         <div class="w-full overflow-auto bg-[rgb(var(--v-theme-surface))] dark:bg-[#fff] p-4 text-black rounded-md h-full"
             v-if="summaryStore.curr_summary && summaryStore.curr_summary.data && (summaryStore.curr_summary.writer !== userStore.userId || !owner_mode)"
-            :style="fullscreen ? 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000;' : ''">
+            :style="fullscreen ? 'position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1000;' : ''">
             <!-- <h1 class="text-4xl">{{ summaryStore.curr_summary?.title }}</h1>
             <h2 class="text-2xl"><u>Summary:</u></h2>
             <i class="border-b-2">
@@ -145,14 +145,13 @@ const addQuiz = () => {
                 </span>
             </div>
             <div class="summaryNotEditable !text-sm h-full">
-                <iframe class="border-red-800 border-2 max-h-screen" height="800" width="100%"
+                <iframe class="border-red-800 border-2" :class="{ 'h-[calc(100vh-14.7rem)]': !fullscreen, 'h-[calc(100vh-3rem)]': fullscreen }"
+                 width="100%"
                     :srcdoc="'<h1>'+summaryStore.curr_summary.title+'</h1><h2>'+summaryStore.curr_summary.description+'</h2>'  + summaryStore.curr_summary?.data + '<style>' + style_summary + '</style>'"
                     style="border: none; overflow: hidden; font: Arial !important; color: #333; max-width: 100%;" allowfullscreen>
                 </iframe>
             </div>
-            <!-- quizzes -->
-            <!-- {{ summaryStore.curr_summary?.quizzes }} -->
-            <div v-if="summaryStore.curr_summary?.quizzes">
+            <div v-if="summaryStore.curr_summary?.quizzes && !fullscreen">
                 <h2 class="text-2xl"><u>Linked Quizzes:</u></h2>
                 <div class="flex flex-wrap">
                     <v-chip v-for="quiz, i in summaryStore.curr_summary?.quiz_objs" :key="quiz.id!" class="m-1"
@@ -164,6 +163,8 @@ const addQuiz = () => {
                     </v-chip>
                 </div>
             </div>
+            <!-- quizzes -->
+            <!-- {{ summaryStore.curr_summary?.quizzes }} -->
         </div>
         <div v-else-if="data != 'empty'" class="flex flex-col w-full">
             <v-text-field v-model="title" label="Title" />
